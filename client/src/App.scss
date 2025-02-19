@@ -1,0 +1,23 @@
+@import url('https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,100..900;1,100..900&display=swap');
+:root {
+   --black: #000;
+   --white: #fff;
+   --width-content: 1400px;
+}
+
+*{
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: "Roboto", serif;
+}
+body {
+  font-family: "Pangea", serif;
+}
+a[href]{
+  text-decoration: none;
+}
+button,input, [tabindex] {
+  outline: none;
+  border: none;
+}

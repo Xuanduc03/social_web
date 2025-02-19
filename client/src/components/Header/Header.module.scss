@@ -1,0 +1,146 @@
+// Header.module.scss
+.navbarContainer {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px 20px;
+    background-color: #ffffff;
+    box-shadow: 0px 2px 5px rgba(0, 0, 0, 0.1);
+    position: sticky;
+    top: 0;
+    z-index: 1000;
+  }
+  
+  .leftSection {
+    display: flex;
+    align-items: center;
+  }
+  
+  .logo {
+    font-size: 24px;
+    color: #1877f2;
+    font-weight: bold;
+    margin-right: 20px;
+  
+    .imgLogo {
+      height: 30px;
+    }
+  }
+  
+  .searchBar {
+    display: flex;
+    align-items: center;
+    background-color: #f0f2f5;
+    border-radius: 999px;
+    padding: 5px 15px;
+  
+    input {
+      border: none;
+      outline: none;
+      background: transparent;
+      padding: 5px;
+      width: 200px;
+    }
+  }
+  
+  .centerSection {
+    display: flex;
+    align-items: center;
+    gap: 25px;
+  
+    @media (max-width: 768px) {
+      gap: 15px;
+    }
+  }
+  
+  .iconButton {
+    font-size: 20px;
+    padding: 5px 20px;
+    position: relative;
+    border-radius: 7px;
+    color: #606770;
+    cursor: pointer;
+    transition: 0.3s all ease-in-out;
+  
+    &:hover {
+      color: #1877f2;
+      background: #ddd;
+    }
+  
+    .notificationDot {
+      position: absolute;
+      top: -5px;
+      right: -5px;
+      width: 8px;
+      height: 8px;
+      background-color: red;
+      border-radius: 50%;
+    }
+  }
+  
+  .rightSection {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+  }
+  
+  .avatar {
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    background-image: url("https://scontent.fhan2-4.fna.fbcdn.net/v/t39.30808-6/459026421_1231801741296134_6024370460723247118_n.jpg");
+    background-size: cover;
+    background-position: center;
+    cursor: pointer;
+  }
+  
+  .dropdown {
+    font-size: 16px;
+    cursor: pointer;
+  
+    .dropdownContent {
+      background-color: #f9f9f9;
+      min-width: 160px;
+      box-shadow: 0px 8px 16px rgba(0, 0, 0, 0.2);
+      padding: 12px 16px;
+      z-index: 100;
+    }
+  
+    &:hover {
+      color: #1877f2;
+    }
+  }
+  
+  .dropdownMenu {
+    position: absolute;
+    top: 45px;
+    right: 0;
+    margin-top: 10px;
+    background-color: white;
+    border-radius: 10px;
+    box-shadow: 0px 2px 5px rgba(0, 0, 0, 0.2);
+    overflow: hidden;
+    width: 180px;
+    display: none;
+  
+    &.open {
+      display: block;
+    }
+  
+    ul {
+      list-style: none;
+      margin: 0;
+      padding: 0;
+    }
+  
+    li {
+      padding: 10px 15px;
+      cursor: pointer;
+      color: #333;
+  
+      &:hover {
+        background-color: #f0f2f5;
+      }
+    }
+  }
+  

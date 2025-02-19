@@ -1,10 +1,24 @@
-import './App.css';
+import './App.scss';
+import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+import publicRoute from "./routes";
+import { ToastContainer } from 'react-toastify';
+import Header from './components/Header/Header';
+
 
 function App() {
   return (
-    <div className="App">
-      <h1>hello world</h1>
-    </div>
+    <Router>
+      <div className="App">
+        <Header />
+        <ToastContainer />
+        <Routes>
+          {publicRoute.map((pages, index) => {
+            const Page = pages.component;
+            return <Route key={index} path={pages.path} element={<Page /> }/>
+          })}
+        </Routes>
+      </div>
+    </Router>
   );
 }
 
