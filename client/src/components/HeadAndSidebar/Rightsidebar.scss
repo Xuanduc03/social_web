@@ -1,7 +1,34 @@
-.widget{
-    margin-top: 30px;
+.widget {
+    width: 350px;
+    padding: 10px;
+    background-color: white;
+    border-radius: 8px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+  }
+  
+  .widgetHeader {
+    border-bottom: 1px solid #ddd;
+  }
+  
+  .widgetContacts {
+    margin-top: 10px;
+  }
+  
+  .contactItem {
+    display: flex;
+    align-items: center;
+    padding: 8px 0;
+  }
+  
+  .contactAvatar {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
     margin-right: 10px;
-    height: 100vh;
-    position: sticky;
-    top: 0;
-}
+  }
+  
+  .contactItem p {
+    font-size: 14px;
+    font-weight: 500;
+  }
+  
