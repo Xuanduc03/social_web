@@ -1,12 +1,12 @@
 const bcrypt = require("bcrypt");
-const userModel = require("../models/user");
+const User = require("../models/user");
 const jwt = require("jsonwebtoken");
 
 module.exports.Register = async (req, res) => {
     try {
         const {username, email, password} = req.body;
 
-        const user = await userModel.findOne({email});
+        const user = await User.findOne({email});
 
         if(user){
             throw new Error("User already exists");
@@ -34,8 +34,7 @@ module.exports.Register = async (req, res) => {
             ...req.body,
             password: hashPassword
         }
-        console.log(payload)
-        const newUser = new userModel(payload);
+        const newUser = new User(payload);
         const saveUser = await newUser.save();
 
         res.status(200).json({
@@ -65,7 +64,7 @@ module.exports.Login = async (req, res) => {
             throw new Error("please provide password");
         }
 
-        const userData = await userModel.findOne({username});
+        const userData = await User.findOne({username});
         console.log(userData);
         if(!userData) {
             throw new Error("User has not account");
@@ -106,29 +105,18 @@ module.exports.Login = async (req, res) => {
 
 module.exports.Logout = async (req, res) => {
     try {
-
-        const token = req.cookies?.token;
-
-        if(!token){
-            throw new Error("token is not found");
-        }
-        res.clearCookie("token", {
-            httpOnly: true,
-            secure: true
-        });
-    
-        res.status(200).json({
-            message: "logout",
+        res.clearCookie("token", { httpOnly: true, secure: true });
+        res.json({
+            message: "Logout Successful",
             success: true,
             error: false
         });
-
     } catch (error) {
-        res.status(401).json({
-            message: error.message || error,
-            suuccess: false,
-            error: false
-        })
+        res.status(500).json({
+            message: "Logout failed",
+            success: false,
+            error: true
+        });
     }
 };
 
@@ -141,7 +129,7 @@ module.exports.SetAvatar = async (req, res,next) => {
             return res.status(401).json({message: "avatar image is required"});
         }
 
-        const userData = await userModel.findByIdAndUpdate(
+        const userData = await User.findByIdAndUpdate(
             userId, 
             {
             isAvatarImageSet: true,
@@ -159,7 +147,7 @@ module.exports.SetAvatar = async (req, res,next) => {
 
 module.exports.GetAllUsers = async (req, res, next) => {
     try {
-        const users = await userModel.find({_id : {$ne: req.params.id}}).select([
+        const users = await User.find({_id : {$ne: req.params.id}}).select([
             "email",
             "username",
             "avatarImage",
@@ -168,5 +156,25 @@ module.exports.GetAllUsers = async (req, res, next) => {
         return res.json(users);
     } catch (error) {
         next(error);
+    }
+}
+
+module.exports.GetUser = async (req, res, next) => {
+    try {
+        const user = await User.findById(req.user._id).select("-password");
+
+        res.status(200).json({
+            data: user,
+            error: false,
+            success: true,
+            message: "user details"
+        });
+        
+    } catch (error) {
+        res.status(400).json({
+            message: error.message || error,
+            success: false,
+            error : true
+        })
     }
 }
