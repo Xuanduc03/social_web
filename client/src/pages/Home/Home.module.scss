@@ -1,0 +1,44 @@
+.homeContainer {
+  display: flex;
+  padding: 10px;
+  background-color: #f0f2f5;
+
+  .mainContent {
+    display: flex;
+    justify-content: space-between;
+    width: 100%;
+    gap: 20px;
+  }
+
+  .sidebar,
+  .rightSidebar {
+    width: 280px; // Độ rộng Sidebar
+    height: 100vh;
+    position: sticky;
+    top: 0;
+    overflow: hidden; // Không cuộn Sidebar
+  }
+
+  .feed {
+    flex: 1;
+    overflow-y: auto; // Chỉ Feed được cuộn
+    height: 100vh;
+    padding: 10px;
+    scrollbar-width: thin;
+    scrollbar-color: #b0b3b8 transparent;
+  }
+
+  /* Thiết lập thanh cuộn mượt */
+  .feed::-webkit-scrollbar {
+    width: 6px;
+  }
+
+  .feed::-webkit-scrollbar-thumb {
+    background: #b0b3b8;
+    border-radius: 10px;
+  }
+
+  .feed::-webkit-scrollbar-track {
+    background: transparent;
+  }
+}

@@ -1,0 +1,41 @@
+.sidebar {
+    flex: 0.3;
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+    border-radius: 10px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+  }
+  
+  .sidebarRow {
+    display: flex;
+    align-items: center;
+    padding: 10px;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background 0.3s;
+  
+    &:hover {
+      background: #ffff;
+    }
+  
+    .MuiAvatar-root {
+      width: 40px;
+      height: 40px;
+      margin-right: 10px;
+    }
+  
+    svg {
+      font-size: 30px;
+      color: #1877f2;
+      margin-right: 10px;
+    }
+  
+    p {
+      font-size: 16px;
+      font-weight: 500;
+      color: #050505;
+    }
+  }
+  

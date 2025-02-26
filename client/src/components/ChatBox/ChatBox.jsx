@@ -1,60 +1,72 @@
-import React from "react";
+import React, { useState } from "react";
 import styles from "./ChatBox.module.scss";
 import classNames from "classnames/bind";
+import { Avatar, IconButton } from "@mui/material";
+import SendIcon from "@mui/icons-material/Send";
+import CloseIcon from "@mui/icons-material/Close";
+import MoreVertIcon from "@mui/icons-material/MoreVert";
 
 const cx = classNames.bind(styles);
 
-const ChatBox = () => {
+const ChatBox = ({ onClose }) => {
+  const [messages, setMessages] = useState([
+    { id: 1, text: "Hello! How are you?", sender: "received" },
+    { id: 2, text: "I'm doing great! What about you?", sender: "sent" },
+    { id: 3, text: "I'm good too! Thanks for asking.", sender: "received" },
+  ]);
+  const [newMessage, setNewMessage] = useState("");
+
+  const sendMessage = () => {
+    if (newMessage.trim() !== "") {
+      setMessages([...messages, { id: messages.length + 1, text: newMessage, sender: "sent" }]);
+      setNewMessage("");
+    }
+  };
+
   return (
-    <div className={cx("container")}> 
+    <div className={cx("chatBox")}>
       {/* Header */}
-      <div className={cx("header")}> 
-        <div className={cx("userInfo")}> 
-          <div className={cx("avatar")}>
-            <img src="https://via.placeholder.com/40" alt="User Avatar" />
-          </div>
+      <div className={cx("chatHeader")}>
+        <div className={cx("userInfo")}>
+          <Avatar src="https://via.placeholder.com/40" />
           <div>
             <h4>John Doe</h4>
             <p>Active now</p>
           </div>
         </div>
+        <div className={cx("headerActions")}>
+          <IconButton>
+            <MoreVertIcon />
+          </IconButton>
+          <IconButton onClick={onClose}>
+            <CloseIcon />
+          </IconButton>
+        </div>
       </div>
 
       {/* Message Area */}
-      <div className={cx("messages")}> 
-        <div className={cx("messageWrapper")}> 
-          <div className={cx("message", "received")}>
-            <p>Hello! How are you?</p>
+      <div className={cx("chatBody")}>
+        {messages.map((msg) => (
+          <div key={msg.id} className={cx("messageWrapper", msg.sender)}>
+            <div className={cx("message")}>
+              <p>{msg.text}</p>
+            </div>
           </div>
-        </div>
-        <div className={cx("messageWrapper")}> 
-          <div className={cx("message", "sent")}>
-            <p>I'm doing great! What about you?</p>
-          </div>
-        </div>
-        <div className={cx("messageWrapper")}> 
-          <div className={cx("message", "received")}>
-            <p>I'm good too! Thanks for asking.</p>
-          </div>
-        </div>
+        ))}
       </div>
 
       {/* Input Area */}
-      <div className={cx("inputArea")}> 
-        <div className={cx("inputBox")}> 
-          <input type="text" placeholder="Type a message..." />
-          <button className={cx("sendButton")}>
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              viewBox="0 0 24 24"
-              fill="currentColor"
-              width="20px"
-              height="20px"
-            >
-              <path d="M2 21l21-9-21-9v7l15 2-15 2z" />
-            </svg>
-          </button>
-        </div>
+      <div className={cx("chatFooter")}>
+        <input
+          type="text"
+          placeholder="Type a message..."
+          value={newMessage}
+          onChange={(e) => setNewMessage(e.target.value)}
+          onKeyDown={(e) => e.key === "Enter" && sendMessage()}
+        />
+        <IconButton onClick={sendMessage}>
+          <SendIcon />
+        </IconButton>
       </div>
     </div>
   );

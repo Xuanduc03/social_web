@@ -1,6 +1,6 @@
 import React from "react";
 import styles from "./Chat.module.scss"; // Import SCSS module
-import SidebarChat from "~/components/Sidebar/Chat/SidebarChat";
+import SidebarChat from "~/components/Layout/SidebarChat";
 import ChatBox from "~/components/ChatBox/ChatBox";
 
 const Chat = () => {
