@@ -1,12 +1,15 @@
 .profile-sidebar {
   width: 300px;
-  background: #fff;
-  border-radius: 8px;
-  padding: 16px;
-  box-shadow: 0px 2px 10px rgba(0, 0, 0, 0.1);
-  
+  height: auto;
+
   .sidebar-section {
+    display: flex;
+    background: #fff;
     margin-bottom: 20px;
+    border-radius: 8px;
+    padding: 10px;
+    flex-direction: column;
+    box-shadow: 0px 2px 10px rgba(0, 0, 0, 0.1);
     
     h3 {
       font-size: 18px;

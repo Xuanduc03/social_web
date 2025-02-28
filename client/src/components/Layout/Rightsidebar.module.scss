@@ -1,0 +1,57 @@
+.widget {
+  width: 300px;
+  right: 0;
+
+  border-radius: 10px;
+  padding: 10px;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+
+  .widgetHeader {
+    font-size: 16px;
+    font-weight: bold;
+    padding-bottom: 10px;
+    border-bottom: 1px solid #ddd;
+  }
+
+  .widgetContacts {
+    margin-top: 10px;
+  }
+
+  .contactItem {
+    display: flex;
+    align-items: center;
+    padding: 8px;
+    border-radius: 8px;
+    transition: background 0.2s;
+
+    &:hover {
+      background: #fff;
+    }
+
+    p {
+      margin-left: 10px;
+      font-size: 14px;
+      font-weight: 500;
+    }
+  }
+
+  .avatarWrapper {
+    position: relative;
+    width: 40px;
+    height: 40px;
+
+    .contactAvatar {
+      width: 100%;
+      height: 100%;
+      border-radius: 50%;
+    }
+
+    .onlineIcon {
+      position: absolute;
+      bottom: 2px;
+      right: 2px;
+      color: #31a24c;
+      font-size: 18px;
+    }
+  }
+}

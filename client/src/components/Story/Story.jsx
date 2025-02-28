@@ -1,30 +1,49 @@
-import React from 'react'
-import "./Story.scss"
-import { Avatar } from '@mui/material'
+import React from "react";
+import styles from "./Story.module.scss";
+import { Avatar } from "@mui/material";
+
+const stories = [
+  {
+    id: 1,
+    name: "Nguyễn Văn A",
+    avatar: "https://i.pravatar.cc/150?img=1",
+    background: "https://source.unsplash.com/random/300x500?nature"
+  },
+  {
+    id: 2,
+    name: "Trần Thị B",
+    avatar: "https://i.pravatar.cc/150?img=2",
+    background: "https://source.unsplash.com/random/300x500?city"
+  },
+  {
+    id: 3,
+    name: "Phạm Văn C",
+    avatar: "https://i.pravatar.cc/150?img=3",
+    background: "https://source.unsplash.com/random/300x500?ocean"
+  },
+  {
+    id: 4,
+    name: "Lê Thị D",
+    avatar: "https://i.pravatar.cc/150?img=4",
+    background: "https://source.unsplash.com/random/300x500?forest"
+  }
+];
+
 function Story() {
   return (
-    <div className="storyReel">
-        <div className="story" style={{backgroundImage:'url(https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcR132TBAD0-GhGhN8_2Xr-3obkFd4NzFbk6Hg&s)'}}>
-            <Avatar/>
-            <h4>User</h4>
+    <div className={styles.storyReel}>
+      {stories.map((story) => (
+        <div
+          key={story.id}
+          className={styles.story}
+          style={{ backgroundImage: `url(${story.background})` }}
+        >
+          <Avatar src={story.avatar} className={styles.avatar} />
+          <h4>{story.name}</h4>
         </div>
-
-        <div className="story" style={{backgroundImage:'url(https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcR132TBAD0-GhGhN8_2Xr-3obkFd4NzFbk6Hg&s)'}}>
-            <Avatar/>
-            <h4>User</h4>
-        </div>
-
-        <div className="story" style={{backgroundImage:'url(https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcR132TBAD0-GhGhN8_2Xr-3obkFd4NzFbk6Hg&s)'}}>
-            <Avatar/>
-            <h4>User</h4>
-        </div>
-
-        <div className="story" style={{backgroundImage:'url(https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcR132TBAD0-GhGhN8_2Xr-3obkFd4NzFbk6Hg&s)'}}>
-            <Avatar/>
-            <h4>User</h4>
-        </div>
+      ))}
     </div>
-  )
+  );
 }
 
-export default Story
+export default Story;

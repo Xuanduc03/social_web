@@ -1,100 +1,110 @@
 .post {
-  background: #ffffff;
-  color: #050505;
-  padding: 16px;
-  border-radius: 8px;
-  width: 470px;
-  margin: 20px auto;
-  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
-  font-family: Arial, sans-serif;
+  background: white;
+  border-radius: 10px;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+  padding: 15px;
+  margin-bottom: 15px;
+  transition: 0.3s;
 
-  .post-header {
-    display: flex;
-    align-items: center;
-    margin-bottom: 10px;
+  &:hover {
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+  }
+}
 
-    .avatar {
-      width: 40px;
-      height: 40px;
-      border-radius: 50%;
-      margin-right: 10px;
-    }
+/* Header */
+.post-header {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 10px;
 
-    h4 {
-      margin: 0;
-      font-size: 16px;
-      font-weight: bold;
-      color: #050505;
-    }
-
-    p {
-      margin: 0;
-      font-size: 12px;
-      color: #050505;
-    }
+  .avatar {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
   }
 
-  .post-content {
-    margin-bottom: 10px;
-    font-size: 14px;
-    line-height: 1.5;
+  h4 {
+    font-size: 16px;
+    margin: 0;
   }
 
-  .post-image img {
+  .post-time {
+    font-size: 12px;
+    color: gray;
+  }
+}
+
+/* Nội dung */
+.post-content {
+  font-size: 14px;
+  margin-bottom: 10px;
+}
+
+/* Ảnh trong bài viết */
+.post-image {
+  margin: 10px 0;
+  img {
     width: 100%;
     border-radius: 8px;
-  }
+    transition: 0.3s;
 
-  .post-actions {
-    padding: 10px 0;
-    border-top: 1px solid #ddd;
-    font-size: 14px;
+    &:hover {
+      transform: scale(1.02);
+    }
+  }
+}
+
+/* Thống kê like & bình luận */
+.post-actions {
+  display: flex;
+  justify-content: space-between;
+  font-size: 14px;
+  color: gray;
+  padding: 8px 0;
+
+  .reaction-count {
     display: flex;
-    justify-content: space-between;
     align-items: center;
-
-    .likes {
-      color: #050505;
-    }
-
-    .action-buttons {
-      span {
-        margin-left: 10px;
-        color: #050505;
-        cursor: pointer;
-
-        &:hover {
-          text-decoration: underline;
-        }
-      }
-    }
+    gap: 5px;
   }
 
-  .post-buttons {
+  .likes {
+    font-weight: bold;
+    color: #1877f2;
+  }
+
+  .action-buttons {
     display: flex;
-    justify-content: space-around;
-    padding: 10px 0;
-    border-top: 1px solid #3a3b3c;
+    gap: 15px;
+  }
+}
 
-    .btn {
-      background: none;
-      border: none;
-      color: #606770;
-      font-size: 14px;
-      padding: 10px;
-      cursor: pointer;
-      transition: all 0.2s ease-in-out;
+/* Nút tương tác */
+.post-buttons {
+  display: flex;
+  justify-content: space-around;
+  padding-top: 10px;
+  border-top: 1px solid #ddd;
 
-      &:hover {
-        color: #1877f2;
-        background: #f0f2f5;
-        border-radius: 6px;
-      }
+  .btn {
+    flex: 1;
+    background: transparent;
+    border: none;
+    font-size: 14px;
+    color: #606770;
+    line-height: 10px;
+    cursor: pointer;
+    border-radius: 5px;
+    transition: background 0.3s;
 
-      &.liked {
-        color: #1877f2;
-        font-weight: bold;
-      }
+    &:hover {
+      background: #f0f2f5;
+    }
+
+    &.liked {
+      color: #1877f2;
+      font-weight: bold;
     }
   }
 }

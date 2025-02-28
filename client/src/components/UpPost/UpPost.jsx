@@ -63,7 +63,7 @@ function UpPost() {
       <div className="upPost">
         <div className="upPostTop">
           <Avatar src="" />
-          <input type="text" placeholder="Nam ơi, bạn đang nghĩ gì thế?" onClick={handleOpen} />
+          <input type="text" placeholder="Bạn đang nghĩ gì thế?" onClick={handleOpen} />
         </div>
 
         <div className="upPostBottom">

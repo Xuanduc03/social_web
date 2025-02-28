@@ -1,28 +1,22 @@
-import { useEffect } from "react";
-import "./App.css";
-import Header from "./components/HeadAndSidebar/Header";
-// import Sidebar from "./components/HeadAndSidebar/Sidebar";
-// import Feed from "./components/Feed/Feed";
-// import Rightsidebar from "./components/HeadAndSidebar/Rightsidebar";
-import Profile from "./components/Profile/Profile";
+import './App.scss';
+import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+import publicRoute from "./routes";
+import { ToastContainer } from 'react-toastify';
+import Header from './components/Layout/Header';
 function App() {
-  useEffect(() => {
-    document.title = "Social Web";
-  }, []);
-
   return (
-    <div className="App">
-      <Header/>
-
-      {/* <div className="appBody">
-        <Sidebar/>
-        <Feed/>
-        <Rightsidebar/>
-      </div> */}
-      <div className="appBody">
-        <Profile/>
+    <Router>
+      <div className="App">
+        <Header />
+        <ToastContainer />
+        <Routes>
+          {publicRoute.map((pages, index) => {
+            const Page = pages.component;
+            return <Route key={index} path={pages.path} element={<Page />} />;
+          })}
+        </Routes>
       </div>
-    </div>
+    </Router>
   );
 }
 

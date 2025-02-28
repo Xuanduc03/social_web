@@ -3,6 +3,7 @@ import "./Feed.scss"
 import Story from "../Story/Story"
 import Post from '../Post/Post'
 import UpPost from '../UpPost/UpPost'
+
 function Feed() {
   return (
     <div className="feed">
@@ -15,4 +16,4 @@ function Feed() {
   )
 }
 
-export default Feed
+export default Feed;
