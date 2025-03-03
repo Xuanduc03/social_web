@@ -1,82 +1,197 @@
-.registerContainer {
+// Register.module.scss
+.registerPage {
+  min-height: 100vh;
+  background: linear-gradient(135deg, #f0f2f5 0%, #e6e9ec 100%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+
+  .registerContainer {
     display: flex;
-    justify-content: center;
+    max-width: 1000px;
+    width: 100%;
+    gap: 40px;
     align-items: center;
-    height: 100vh;
-    background: #f0f2f5;
+
+    // Register Left
+    .registerLeft {
+      flex: 1;
+      text-align: left;
+      color: #2c3e50;
+
+      h1 {
+        font-size: 48px;
+        font-weight: 700;
+        color: #007bff;
+        margin: 0 0 10px;
+        text-shadow: 0 2px 5px rgba(0, 123, 255, 0.2);
+      }
+
+      p {
+        font-size: 20px;
+        line-height: 1.4;
+        margin: 0;
+        max-width: 400px;
+      }
+    }
+
+    // Register Right
+    .registerRight {
+      flex: 1;
+
+      .registerBox {
+        background: #fff;
+        border-radius: 15px;
+        box-shadow: 0 6px 25px rgba(0, 0, 0, 0.1);
+        padding: 30px;
+        max-width: 450px;
+
+        h2 {
+          font-size: 28px;
+          font-weight: 700;
+          color: #2c3e50;
+          margin: 0 0 5px;
+          text-align: center;
+        }
+
+        p {
+          font-size: 14px;
+          color: #666;
+          margin: 0 0 20px;
+          text-align: center;
+        }
+
+        form {
+          display: flex;
+          flex-direction: column;
+          gap: 15px;
+
+          .inputGroup {
+            display: flex;
+            gap: 10px;
+
+            input {
+              flex: 1;
+            }
+          }
+
+          input {
+            padding: 12px 15px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            font-size: 15px;
+            color: #333;
+            outline: none;
+            transition: all 0.3s ease;
+
+            &::placeholder {
+              color: #999;
+            }
+
+            &:focus {
+              border-color: #007bff;
+              box-shadow: 0 0 5px rgba(0, 123, 255, 0.3);
+            }
+          }
+
+          label {
+            font-size: 14px;
+            color: #2c3e50;
+            font-weight: 600;
+            margin-top: 10px;
+          }
+
+          .genderGroup {
+            display: flex;
+            gap: 20px;
+
+            label {
+              display: flex;
+              align-items: center;
+              gap: 5px;
+              font-size: 14px;
+              color: #555;
+              font-weight: 500;
+              cursor: pointer;
+
+              input[type="radio"] {
+                width: 16px;
+                height: 16px;
+                accent-color: #007bff; // Màu xanh cho radio button
+                cursor: pointer;
+              }
+            }
+          }
+
+          .registerButton {
+            padding: 12px;
+            background: #007bff;
+            color: #fff;
+            border: none;
+            border-radius: 25px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            margin-top: 20px;
+            transition: all 0.3s ease;
+
+            &:hover {
+              background: #0056b3;
+              transform: translateY(-2px);
+              box-shadow: 0 4px 10px rgba(0, 123, 255, 0.3);
+            }
+          }
+        }
+      }
+    }
   }
-  
-  .registerBox {
-    background: white;
-    padding: 20px;
-    border-radius: 8px;
-    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
-    width: 360px;
-    text-align: center;
-  }
-  
-  h2 {
-    color: #1877f2;
-    margin-bottom: 5px;
-  }
-  
-  p {
-    font-size: 14px;
-    color: #606770;
-    margin-bottom: 15px;
-  }
-  
-  .inputGroup {
-    display: flex;
-    gap: 10px;
-  }
-  
-  input {
-    width: 100%;
+}
+
+// Responsive
+@media (max-width: 768px) {
+  .registerPage {
     padding: 10px;
-    margin-bottom: 10px;
-    border: 1px solid #ccd0d5;
-    border-radius: 5px;
-    font-size: 14px;
-  }
-  
-  .genderGroup {
-    display: flex;
-    justify-content: space-between;
-    margin-bottom: 15px;
-  
-    label {
-      display: flex;
-      align-items: center;
-      gap: 5px;
-    }
-  }
-  
-  .registerButton {
-    width: 100%;
-    padding: 12px;
-    background: #42b72a;
-    color: white;
-    font-weight: bold;
-    border: none;
-    border-radius: 5px;
-    cursor: pointer;
-    transition: 0.3s;
-  
-    &:hover {
-      background: #36a420;
-    }
-  }
-  
-  /* Responsive */
-  @media (max-width: 400px) {
-    .registerBox {
-      width: 100%;
-      padding: 15px;
-    }
-  
-    .inputGroup {
+
+    .registerContainer {
       flex-direction: column;
+      gap: 20px;
+
+      .registerLeft {
+        text-align: center;
+
+        h1 {
+          font-size: 36px;
+        }
+
+        p {
+          font-size: 16px;
+          max-width: 100%;
+        }
+      }
+
+      .registerRight {
+        .registerBox {
+          padding: 20px;
+          max-width: 100%;
+
+          h2 {
+            font-size: 24px;
+          }
+
+          form {
+            .inputGroup {
+              flex-direction: column;
+              gap: 15px;
+            }
+
+            .genderGroup {
+              flex-direction: column;
+              gap: 10px;
+            }
+          }
+        }
+      }
     }
   }
-  
+}

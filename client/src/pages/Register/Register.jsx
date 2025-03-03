@@ -1,7 +1,11 @@
 import React, { useState } from "react";
 import styles from "./Register.module.scss";
+import axios from "axios";
+import { toast } from "react-toastify";
+import { Link, useNavigate } from "react-router-dom";
 
 const Register = () => {
+  const navigate = useNavigate();
   const [form, setForm] = useState({
     firstName: "",
     lastName: "",
@@ -15,102 +19,134 @@ const Register = () => {
     setForm({ ...form, [e.target.name]: e.target.value });
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    console.log("User Data:", form);
+
+    try {
+      const response = await axios.post("http://localhost:8080/api/register", form, {
+        headers: {
+          "Content-Type": "application/json",
+        },
+      });
+
+      if (response.data.success) {
+        toast.success("Đăng ký thành công");
+        navigate("/login");
+      } else {
+        toast.error(response.data.message || "Đăng ký thất bại");
+      }
+    } catch (error) {
+      // Xử lý lỗi chi tiết từ backend
+      const errorMessage = error.response?.data?.message || "Lỗi kết nối server, vui lòng thử lại!";
+      console.error("Registration Error:", error);
+      toast.error(errorMessage);
+    }
   };
 
   return (
-    <div className={styles.registerContainer}>
-      <div className={styles.registerBox}>
-        <h2>Đăng ký</h2>
-        <p>Miễn phí và sẽ luôn như vậy.</p>
+    <div className={styles.registerPage}>
+      <div className={styles.registerContainer}>
+        <div className={styles.registerLeft}>
+          <h1>Social Humg</h1>
+          <p>Connect with friends and the world around you on Facebook.</p>
+        </div>
 
-        <form onSubmit={handleSubmit}>
-          <div className={styles.inputGroup}>
-            <input
-              type="text"
-              name="firstName"
-              placeholder="Họ"
-              value={form.firstName}
-              onChange={handleChange}
-              required
-            />
-            <input
-              type="text"
-              name="lastName"
-              placeholder="Tên"
-              value={form.lastName}
-              onChange={handleChange}
-              required
-            />
+        <div className={styles.registerRight}>
+          <div className={styles.registerBox}>
+            <h2>Sign Up</h2>
+            <p>It’s free and always will be.</p>
+
+            <form onSubmit={handleSubmit} method="post">
+              <div className={styles.inputGroup}>
+                <input
+                  type="text"
+                  name="firstName"
+                  placeholder="First name"
+                  value={form.firstName}
+                  onChange={handleChange}
+                  required
+                />
+                <input
+                  type="text"
+                  name="lastName"
+                  placeholder="Last name"
+                  value={form.lastName}
+                  onChange={handleChange}
+                  required
+                />
+              </div>
+
+              <input
+                type="email"
+                name="email"
+                placeholder="Mobile number or email"
+                value={form.email}
+                onChange={handleChange}
+                required
+              />
+
+              <input
+                type="password"
+                name="password"
+                placeholder="New password"
+                value={form.password}
+                onChange={handleChange}
+                required
+              />
+
+              <label>Birthday:</label>
+              <input
+                type="date"
+                name="birthday"
+                value={form.birthday}
+                onChange={handleChange}
+                required
+              />
+
+              <label>Gender:</label>
+              <div className={styles.genderGroup}>
+                <label>
+                  <input
+                    type="radio"
+                    name="gender"
+                    value="Male"
+                    onChange={handleChange}
+                    required
+                  />
+                  Male
+                </label>
+                <label>
+                  <input
+                    type="radio"
+                    name="gender"
+                    value="Female"
+                    onChange={handleChange}
+                    required
+                  />
+                  Female
+                </label>
+                <label>
+                  <input
+                    type="radio"
+                    name="gender"
+                    value="Other"
+                    onChange={handleChange}
+                    required
+                  />
+                  Other
+                </label>
+              </div>
+
+              <button type="submit" className={styles.registerButton}>
+                Sign Up
+              </button>
+
+              <p className={styles.link}>
+                Bạn đã có tài khoản? <Link to="/login">Đăng nhập ngay</Link>
+              </p>
+            </form>
           </div>
-
-          <input
-            type="email"
-            name="email"
-            placeholder="Email hoặc số điện thoại"
-            value={form.email}
-            onChange={handleChange}
-            required
-          />
-
-          <input
-            type="password"
-            name="password"
-            placeholder="Mật khẩu mới"
-            value={form.password}
-            onChange={handleChange}
-            required
-          />
-
-          <label>Ngày sinh:</label>
-          <input
-            type="date"
-            name="birthday"
-            value={form.birthday}
-            onChange={handleChange}
-            required
-          />
-
-          <label>Giới tính:</label>
-          <div className={styles.genderGroup}>
-            <label>
-              <input
-                type="radio"
-                name="gender"
-                value="Nam"
-                onChange={handleChange}
-                required
-              />
-              Nam
-            </label>
-            <label>
-              <input
-                type="radio"
-                name="gender"
-                value="Nữ"
-                onChange={handleChange}
-                required
-              />
-              Nữ
-            </label>
-            <label>
-              <input
-                type="radio"
-                name="gender"
-                value="Khác"
-                onChange={handleChange}
-                required
-              />
-              Khác
-            </label>
-          </div>
-
-          <button type="submit" className={styles.registerButton}>
-            Đăng ký
-          </button>
-        </form>
+        </div>
       </div>
     </div>
   );

@@ -1,101 +1,222 @@
 .chatBox {
-  width: 350px;
-  height: 500px;
+  width: 100%;
+  height: 100vh;
+  background: #1a1a1a; // Nền đen chủ đạo
   display: flex;
   flex-direction: column;
-  background: #fff;
-  border-radius: 10px;
-  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
   overflow: hidden;
-  position: fixed;
-  bottom: 20px;
-  right: 20px;
+  color: #ffffff;
+  transition: all 0.3s ease;
+
+  .chatHeader {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 15px 20px;
+    background: #252525; // Nền header tối hơn chút
+    border-bottom: 1px solid #333;
+
+    .userInfo {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+
+      .headerAvatar {
+        width: 40px;
+        height: 40px;
+        border: 2px solid #00c4cc; // Viền xanh ngọc
+        border-radius: 50%;
+        transition: transform 0.3s ease;
+
+        &:hover {
+          transform: scale(1.1);
+        }
+      }
+
+      h4 {
+        margin: 0;
+        font-size: 16px;
+        font-weight: 600;
+        color: #fff;
+      }
+
+      p {
+        margin: 0;
+        font-size: 12px;
+        color: #00cc00; // Màu xanh lá cho trạng thái active
+      }
+    }
+
+    .headerActions {
+      display: flex;
+      gap: 5px;
+
+      .actionButton {
+        color: #ddd;
+
+        &:hover {
+          color: #007bff; // Màu xanh khi hover
+          background: #333;
+        }
+      }
+    }
+  }
+
+  .chatBody {
+    flex: 1;
+    padding: 20px;
+    overflow-y: auto;
+    background: #1f1f1f; // Nền khu vực tin nhắn
+
+    &::-webkit-scrollbar {
+      width: 6px;
+    }
+
+    &::-webkit-scrollbar-thumb {
+      background: #007bff;
+      border-radius: 3px;
+    }
+
+    &::-webkit-scrollbar-track {
+      background: #2c2c2c;
+    }
+
+    .messageWrapper {
+      display: flex;
+      margin-bottom: 15px;
+
+      &.sent {
+        justify-content: flex-end;
+
+        .message {
+          background: #007bff; // Tin nhắn gửi màu xanh
+          border-radius: 15px 15px 0 15px;
+        }
+      }
+
+      &.received {
+        justify-content: flex-start;
+
+        .message {
+          background: #333; // Tin nhắn nhận màu xám đậm
+          border-radius: 15px 15px 15px 0;
+        }
+      }
+
+      .message {
+        max-width: 60%;
+        padding: 10px 15px;
+        border-radius: 15px;
+        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.3);
+        transition: transform 0.2s ease;
+
+        &:hover {
+          transform: translateY(-2px);
+        }
+
+        p {
+          margin: 0;
+          font-size: 14px;
+          color: #fff;
+          word-wrap: break-word;
+        }
+      }
+    }
+  }
+
+  .chatFooter {
+    display: flex;
+    align-items: center;
+    padding: 15px 20px;
+    background: #252525;
+    border-top: 1px solid #333;
+
+    input {
+      flex: 1;
+      padding: 10px 15px;
+      background: #2c2c2c;
+      border: 1px solid #444;
+      border-radius: 20px;
+      color: #ddd;
+      font-size: 14px;
+      outline: none;
+      transition: all 0.3s ease;
+
+      &::placeholder {
+        color: #888;
+      }
+
+      &:focus {
+        border-color: #007bff;
+        background: #333;
+        box-shadow: 0 0 5px rgba(0, 123, 255, 0.5);
+      }
+    }
+
+    .sendButton {
+      margin-left: 10px;
+      color: #007bff;
+
+      &:hover {
+        color: #0056b3;
+        background: #333;
+      }
+
+      .MuiSvgIcon-root {
+        font-size: 24px;
+      }
+    }
+  }
 }
 
-/* Header */
-.chatHeader {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 12px;
-  background: #1877f2;
-  color: #fff;
-}
+// Responsive
+@media (max-width: 768px) {
+  .chatBox {
+    width: 100%;
+    height: 100vh;
+    border-radius: 0;
 
-.userInfo {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-}
+    .chatHeader {
+      padding: 10px 15px;
 
-.userInfo h4 {
-  margin: 0;
-  font-size: 16px;
-}
+      .userInfo {
+        .headerAvatar {
+          width: 35px;
+          height: 35px;
+        }
 
-.userInfo p {
-  font-size: 12px;
-  opacity: 0.8;
-}
+        h4 {
+          font-size: 14px;
+        }
 
-/* Chat Body */
-.chatBody {
-  flex: 1;
-  padding: 10px;
-  overflow-y: auto;
-  background: #f0f2f5;
-  display: flex;
-  flex-direction: column;
-}
+        p {
+          font-size: 11px;
+        }
+      }
+    }
 
-.messageWrapper {
-  display: flex;
-  margin-bottom: 8px;
-}
+    .chatBody {
+      padding: 15px;
 
-.received {
-  justify-content: flex-start;
-}
+      .messageWrapper {
+        .message {
+          max-width: 75%;
+          padding: 8px 12px;
 
-.sent {
-  justify-content: flex-end;
-}
+          p {
+            font-size: 13px;
+          }
+        }
+      }
+    }
 
-.message {
-  max-width: 70%;
-  padding: 10px;
-  border-radius: 10px;
-  font-size: 14px;
-}
+    .chatFooter {
+      padding: 10px 15px;
 
-.received .message {
-  background: #e4e6eb;
-  color: #000;
-}
-
-.sent .message {
-  background: #1877f2;
-  color: #fff;
-}
-
-/* Footer */
-.chatFooter {
-  display: flex;
-  align-items: center;
-  padding: 10px;
-  background: #fff;
-  border-top: 1px solid #ddd;
-}
-
-.chatFooter input {
-  flex: 1;
-  padding: 8px;
-  border: none;
-  border-radius: 5px;
-  outline: none;
-  background: #f0f2f5;
-}
-
-.chatFooter button {
-  margin-left: 8px;
+      input {
+        padding: 8px 12px;
+        font-size: 13px;
+      }
+    }
+  }
 }

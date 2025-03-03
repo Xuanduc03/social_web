@@ -10,7 +10,7 @@ const publicRoute = [
     {path: "/", component: Home},
     {path: "/chat", component: Chat},
     {path: "/profile", component: Profile},
-    {path: "/regsiter", component: Register},
+    {path: "/register", component: Register},
     {path: "/login", component: Login},
 ];
 

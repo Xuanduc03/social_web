@@ -1,20 +1,64 @@
 const jwt = require("jsonwebtoken");
 const User = require("../models/user");
 
-exports.authProtect = async (req, res, next) => {
-  try {
-    const token = req.cookies.token; // Lấy token từ cookie
+const authProtect = async (req, res, next) => {
+    try {
+        let token;
 
-    if (!token) {
-      return res.status(401).json({ success: false, message: "Bạn chưa đăng nhập" });
+        // Check for token in cookies or authorization header
+        if (req.cookies?.token) {
+            token = req.cookies.token;
+        } else if (req.headers.authorization?.startsWith("Bearer ")) {  // Added space after Bearer
+            token = req.headers.authorization.split(" ")[1];
+        }
+
+        // If no token found
+        if (!token) {
+            return res.status(401).json({
+                message: "Không có token xác thực!",
+                success: false,
+                error: true
+            });
+        }
+
+        // Verify token
+        const decoded = jwt.verify(token, process.env.TOKEN_SECRET_KEY);
+        
+        // Debug log (remove in production)
+        console.log("Decoded token:", decoded);
+
+        // Find user by ID from decoded token
+        const user = await User.findById(decoded._id || decoded.id).select("-password");
+        
+        if (!user) {
+            return res.status(404).json({
+                message: "Không tìm thấy người dùng!",
+                success: false,
+                error: true
+            });
+        }
+
+        // Attach user to request object
+        req.user = user;
+        next();
+
+    } catch (error) {
+        console.error("Auth middleware error:", error);
+
+        // Specific error handling for JWT errors
+        let message = "Token không hợp lệ!";
+        if (error.name === "TokenExpiredError") {
+            message = "Token đã hết hạn!";
+        } else if (error.name === "JsonWebTokenError") {
+            message = "Token không hợp lệ!";
+        }
+
+        return res.status(401).json({
+            message: message,
+            success: false,
+            error: true
+        });
     }
-
-    // Giải mã token để lấy user ID
-    const decoded = jwt.verify(token, process.env.TOKEN_SECRET_KEY);
-    req.user = await User.findById(decoded._id).select("-password");
-
-    next();
-  } catch (error) {
-    res.status(401).json({ success: false, message: "Token không hợp lệ" });
-  }
 };
+
+module.exports = { authProtect };  // Export as object for consistency

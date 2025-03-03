@@ -1,0 +1,294 @@
+// ProfileHeader.module.scss
+.profileHeader {
+  width: 100%;
+  max-width: 900px;
+  margin: 0 auto 20px;
+  background: #fff;
+  border-radius: 15px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+  overflow: hidden;
+  transition: all 0.3s ease;
+
+  &:hover {
+    box-shadow: 0 6px 25px rgba(0, 0, 0, 0.15);
+  }
+
+  .coverPhoto {
+    position: relative;
+    height: 300px;
+    background: linear-gradient(135deg, #007bff 0%, #00c4cc 100%);
+    border-radius: 15px 15px 0 0;
+
+    .editCover {
+      position: absolute;
+      bottom: 15px;
+      right: 15px;
+      padding: 8px 15px;
+      background: #fff;
+      color: #007bff;
+      font-weight: 600;
+      border: none;
+      border-radius: 20px;
+      cursor: pointer;
+      transition: all 0.3s ease;
+
+      &:hover {
+        background: #007bff;
+        color: #fff;
+        transform: translateY(-2px);
+        box-shadow: 0 4px 10px rgba(0, 123, 255, 0.3);
+      }
+    }
+  }
+
+  .profileInfo {
+    display: flex;
+    align-items: flex-end;
+    padding: 20px;
+    position: relative;
+    top: -80px;
+
+    .avatarContainer {
+      position: relative;
+      margin-right: 20px;
+
+      .avatar {
+        width: 160px;
+        height: 160px;
+        border-radius: 50%;
+        object-fit: cover;
+        border: 5px solid #fff;
+        box-shadow: 0 0 15px rgba(0, 0, 0, 0.2);
+        transition: transform 0.3s ease;
+
+        &:hover {
+          transform: scale(1.05);
+        }
+      }
+
+      .editAvatar {
+        position: absolute;
+        bottom: 10px;
+        right: 10px;
+        width: 36px;
+        height: 36px;
+        background: #fff;
+        color: #007bff;
+        border: none;
+        border-radius: 50%;
+        font-size: 18px;
+        cursor: pointer;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+        transition: all 0.3s ease;
+
+        &:hover {
+          background: #007bff;
+          color: #fff;
+          transform: scale(1.1);
+        }
+      }
+    }
+
+    .info {
+      flex: 1;
+      padding-bottom: 10px;
+
+      .name {
+        margin: 0;
+        font-size: 28px;
+        font-weight: 700;
+        color: #2c3e50;
+        letter-spacing: 0.5px;
+      }
+
+      .friendsCount {
+        margin: 5px 0 0;
+        font-size: 16px;
+        color: #666;
+        font-weight: 500;
+      }
+    }
+
+    .actions {
+      display: flex;
+      gap: 10px;
+
+      .addStory {
+        padding: 10px 20px;
+        border: none;
+        border-radius: 25px;
+        font-size: 14px;
+        font-weight: 600;
+        cursor: pointer;
+        background: #007bff;
+        color: #fff;
+        transition: all 0.3s ease;
+
+        &:hover {
+          background: #0066cc;
+          transform: translateY(-2px);
+          box-shadow: 0 4px 10px rgba(0, 123, 255, 0.3);
+        }
+      }
+
+      .editProfile {
+        padding: 10px 20px;
+        border: none;
+        border-radius: 25px;
+        font-size: 14px;
+        font-weight: 600;
+        cursor: pointer;
+        background: #e9ecef;
+        color: #2c3e50;
+        transition: all 0.3s ease;
+
+        &:hover {
+          background: #d1d5db;
+          transform: translateY(-2px);
+          box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+        }
+      }
+    }
+  }
+
+
+}
+.uploadAvatarModal {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 400px;
+  background: #fff;
+  border-radius: 15px;
+  box-shadow: 0 6px 25px rgba(0, 0, 0, 0.2);
+  padding: 20px;
+  text-align: center;
+
+  h3 {
+    margin: 0 0 15px;
+    font-size: 20px;
+    font-weight: 700;
+    color: #2c3e50;
+  }
+
+  .previewContainer {
+    margin-bottom: 20px;
+
+    .previewImage {
+      width: 200px;
+      height: 200px;
+      object-fit: cover;
+      border-radius: 10px;
+      border: 1px solid #ddd;
+    }
+
+    p {
+      font-size: 14px;
+      color: #666;
+    }
+  }
+
+  input[type="file"] {
+    margin-bottom: 20px;
+    display: block;
+    width: 100%;
+  }
+
+  .modalActions {
+    display: flex;
+    gap: 10px;
+    justify-content: center;
+
+    .uploadButton {
+      padding: 10px 20px;
+      border: none;
+      border-radius: 25px;
+      font-size: 14px;
+      font-weight: 600;
+      cursor: pointer;
+      background: #007bff;
+      color: #fff;
+      transition: all 0.3s ease;
+
+      &:hover {
+        background: #0066cc;
+        transform: translateY(-2px);
+        box-shadow: 0 4px 10px rgba(0, 123, 255, 0.3);
+      }
+    }
+
+    .cancelButton {
+      padding: 10px 20px;
+      border: none;
+      border-radius: 25px;
+      font-size: 14px;
+      font-weight: 600;
+      cursor: pointer;
+      background: #e9ecef;
+      color: #2c3e50;
+      transition: all 0.3s ease;
+
+      &:hover {
+        background: #d1d5db;
+        transform: translateY(-2px);
+        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+      }
+    }
+  }
+}
+@media (max-width: 768px) {
+  .profileHeader {
+    margin: 0 10px;
+
+    .coverPhoto {
+      height: 200px;
+    }
+
+    .profileInfo {
+      flex-direction: column;
+      align-items: center;
+      text-align: center;
+      top: -60px;
+      padding: 15px;
+
+      .avatarContainer {
+        margin: 0 0 15px;
+
+        .avatar {
+          width: 120px;
+          height: 120px;
+        }
+
+        .editAvatar {
+          width: 30px;
+          height: 30px;
+          font-size: 16px;
+        }
+      }
+
+      .actions {
+        flex-direction: column;
+        width: 100%;
+
+        .addStory,
+        .editProfile {
+          width: 100%;
+          padding: 12px;
+        }
+      }
+    }
+
+    .uploadAvatarModal {
+      width: 90%;
+      padding: 15px;
+
+      .previewContainer {
+        .previewImage {
+          width: 150px;
+          height: 150px;
+        }
+      }
+    }
+  }
+}

@@ -1,41 +1,124 @@
+// Sidebar.scss
 .sidebar {
-    flex: 0.3;
-    padding: 20px;
-    display: flex;
-    flex-direction: column;
-    gap: 15px;
-    border-radius: 10px;
-    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+  width: 280px;
+  padding: 20px 10px;
+  background: linear-gradient(180deg, #f7f9fc 0%, #e9ecef 100%);
+  border-radius: 15px;
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.1);
+  position: sticky;
+  top: 20px;
+  transition: all 0.3s ease;
+
+  &:hover {
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.12);
   }
-  
+
   .sidebarRow {
     display: flex;
     align-items: center;
-    padding: 10px;
-    border-radius: 8px;
+    gap: 12px;
+    padding: 12px 15px;
+    margin: 5px 0;
+    border-radius: 12px;
+    background: rgba(255, 255, 255, 0.8);
     cursor: pointer;
-    transition: background 0.3s;
-  
+    transition: all 0.3s ease;
+
     &:hover {
-      background: #ffff;
+      background: #007bff;
+      color: #fff;
+      transform: translateX(5px);
+      box-shadow: 0 4px 15px rgba(0, 123, 255, 0.3);
+
+      .MuiAvatar-root {
+        border-color: #fff;
+        transform: scale(1.1);
+      }
+
+      .MuiSvgIcon-root {
+        color: #fff;
+      }
     }
-  
+
+    // Avatar
     .MuiAvatar-root {
-      width: 40px;
-      height: 40px;
-      margin-right: 10px;
+      width: 36px;
+      height: 36px;
+      border: 2px solid #007bff;
+      padding: 2px;
+      transition: all 0.3s ease;
     }
-  
-    svg {
-      font-size: 30px;
-      color: #1877f2;
-      margin-right: 10px;
+
+    // Icon
+    .MuiSvgIcon-root {
+      font-size: 28px;
+      color: #007bff;
+      transition: color 0.3s ease;
     }
-  
+
+    // Text
     p {
-      font-size: 16px;
+      margin: 0;
+      font-size: 15px;
       font-weight: 500;
-      color: #050505;
+      color: #2c3e50;
+      transition: color 0.3s ease;
+    }
+
+    &:first-child {
+      background: linear-gradient(90deg, #007bff 0%, #00c4cc 100%);
+      color: #fff;
+
+      .MuiAvatar-root {
+        border-color: #fff;
+      }
+
+      p {
+        font-weight: 600;
+        color: #fff;
+      }
+
+      &:hover {
+        background: linear-gradient(90deg, #0066cc 0%, #009b9f 100%);
+        transform: translateX(8px);
+      }
     }
   }
-  
+}
+
+// Responsive
+@media (max-width: 768px) {
+  .sidebar {
+    width: 240px;
+    padding: 15px 8px;
+
+    .sidebarRow {
+      padding: 10px 12px;
+
+      .MuiAvatar-root {
+        width: 32px;
+        height: 32px;
+      }
+
+      .MuiSvgIcon-root {
+        font-size: 24px;
+      }
+
+      p {
+        font-size: 14px;
+      }
+    }
+  }
+}
+
+@media (max-width: 480px) {
+  .sidebar {
+    width: 100%;
+    border-radius: 10px;
+    padding: 10px;
+
+    .sidebarRow {
+      padding: 8px 10px;
+    }
+  }
+}

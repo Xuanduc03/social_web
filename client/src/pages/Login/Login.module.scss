@@ -1,0 +1,183 @@
+// Login.module.scss
+.loginPage {
+    min-height: 100vh;
+    background: linear-gradient(135deg, #f0f2f5 0%, #e6e9ec 100%);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+  
+    .loginContainer {
+      display: flex;
+      max-width: 1000px;
+      width: 100%;
+      gap: 40px;
+      align-items: center;
+  
+      // Login Left
+      .loginLeft {
+        flex: 1;
+        text-align: left;
+        color: #2c3e50;
+  
+        h1 {
+          font-size: 48px;
+          font-weight: 700;
+          color: #007bff;
+          margin: 0 0 10px;
+          text-shadow: 0 2px 5px rgba(0, 123, 255, 0.2);
+        }
+  
+        p {
+          font-size: 20px;
+          line-height: 1.4;
+          margin: 0;
+          max-width: 400px;
+        }
+      }
+  
+      // Login Right
+      .loginRight {
+        flex: 1;
+  
+        .loginBox {
+          background: #fff;
+          border-radius: 15px;
+          box-shadow: 0 6px 25px rgba(0, 0, 0, 0.1);
+          padding: 30px;
+          max-width: 400px;
+  
+          h2 {
+            font-size: 28px;
+            font-weight: 700;
+            color: #2c3e50;
+            margin: 0 0 5px;
+            text-align: center;
+          }
+  
+          p {
+            font-size: 14px;
+            color: #666;
+            margin: 0 0 20px;
+            text-align: center;
+          }
+  
+          form {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+  
+            input {
+              padding: 12px 15px;
+              border: 1px solid #ddd;
+              border-radius: 8px;
+              font-size: 15px;
+              color: #333;
+              outline: none;
+              transition: all 0.3s ease;
+  
+              &::placeholder {
+                color: #999;
+              }
+  
+              &:focus {
+                border-color: #007bff;
+                box-shadow: 0 0 5px rgba(0, 123, 255, 0.3);
+              }
+            }
+  
+            .loginButton {
+              padding: 12px;
+              background: #007bff;
+              color: #fff;
+              border: none;
+              border-radius: 25px;
+              font-size: 16px;
+              font-weight: 600;
+              cursor: pointer;
+              transition: all 0.3s ease;
+  
+              &:hover {
+                background: #0056b3;
+                transform: translateY(-2px);
+                box-shadow: 0 4px 10px rgba(0, 123, 255, 0.3);
+              }
+            }
+  
+            .forgotPassword {
+              text-align: center;
+              color: #007bff;
+              font-size: 14px;
+              text-decoration: none;
+              transition: all 0.3s ease;
+  
+              &:hover {
+                color: #0056b3;
+                text-decoration: underline;
+              }
+            }
+  
+            .divider {
+              height: 1px;
+              background: #ddd;
+              margin: 15px 0;
+            }
+  
+            .registerLink {
+              padding: 12px;
+              background: #42b72a;
+              color: #fff;
+              border: none;
+              border-radius: 25px;
+              font-size: 15px;
+              font-weight: 600;
+              cursor: pointer;
+              transition: all 0.3s ease;
+  
+              &:hover {
+                background: #36a420;
+                transform: translateY(-2px);
+                box-shadow: 0 4px 10px rgba(66, 183, 42, 0.3);
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+  
+  // Responsive
+  @media (max-width: 768px) {
+    .loginPage {
+      padding: 10px;
+  
+      .loginContainer {
+        flex-direction: column;
+        gap: 20px;
+  
+        .loginLeft {
+          text-align: center;
+  
+          h1 {
+            font-size: 36px;
+          }
+  
+          p {
+            font-size: 16px;
+            max-width: 100%;
+          }
+        }
+  
+        .loginRight {
+          .loginBox {
+            padding: 20px;
+            max-width: 100%;
+  
+            h2 {
+              font-size: 24px;
+            }
+          }
+        }
+      }
+    }
+  }

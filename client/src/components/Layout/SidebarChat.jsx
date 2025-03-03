@@ -15,13 +15,14 @@ const SidebarChat = () => {
         <h1>Đoạn chat</h1>
       </div>
       <div className={cx("searchBar")}>
-        <input type="text" placeholder="Search..." />
+        <input type="text" placeholder="Tìm kiếm..." />
       </div>
       <div className={cx("chatList")}>
         {Array.from({ length: 8 }).map((_, index) => (
           <div key={index} className={cx("chatItem")}>
             <div className={cx("avatar")}>
               <img src={`https://i.pravatar.cc/40?img=${index + 1}`} alt="Avatar" />
+              <span className={cx("statusDot", { active: index % 2 === 0 })}></span>
             </div>
             <div className={cx("chatInfo")}>
               <h4>User {index + 1}</h4>
@@ -31,7 +32,7 @@ const SidebarChat = () => {
         ))}
       </div>
       <div className={cx("footer")}>
-        <button>New Chat</button>
+        <button>Chat mới</button>
       </div>
     </div>
   );

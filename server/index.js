@@ -1,4 +1,5 @@
 const express = require("express");
+const path = require("path");
 const cors = require("cors");
 const cookieParser = require("cookie-parser");
 const connectDB = require("./config/db");
@@ -11,11 +12,12 @@ require("dotenv").config();
 
 app.use(cors({
     origin : process.env.FONTEND_URL,
-    credentials: true 
+    credentials: true
 }));
 
 app.use(express.json());
 app.use("/api", router);
+app.use("/uploads", express.static(path.join(__dirname, "uploads")));
 
 connectDB().then(() => {
     app.listen(process.env.PORT, () => {

@@ -1,0 +1,255 @@
+.upPost {
+  max-width: 600px;
+  margin: 20px auto;
+  background: #fff;
+  border-radius: 12px;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+  padding: 15px;
+  transition: all 0.3s ease;
+
+  &:hover {
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.15);
+  }
+
+  .upPostTop {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding-bottom: 10px;
+    border-bottom: 1px solid #eee;
+
+    .avatar {
+      width: 40px;
+      height: 40px;
+      border: 2px solid #007bff;
+      border-radius: 50%;
+    }
+
+    input {
+      flex: 1;
+      padding: 10px 15px;
+      border: none;
+      background: #f0f2f5;
+      border-radius: 20px;
+      font-size: 15px;
+      color: #333;
+      outline: none;
+      cursor: pointer;
+      transition: all 0.3s ease;
+
+      &::placeholder {
+        color: #777;
+      }
+
+      &:hover {
+        background: #e6e9ec;
+      }
+    }
+  }
+
+  .upPostBottom {
+    display: flex;
+    justify-content: space-around;
+    padding-top: 10px;
+
+    .upPostOption {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 8px 15px;
+      border-radius: 10px;
+      cursor: pointer;
+      transition: all 0.3s ease;
+
+      &:hover {
+        background: #f0f2f5;
+      }
+
+      .MuiSvgIcon-root {
+        font-size: 24px;
+      }
+
+      p {
+        margin: 0;
+        font-size: 14px;
+        color: #555;
+        font-weight: 500;
+      }
+    }
+  }
+}
+
+.modalPop {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 500px;
+  background: #fff;
+  border-radius: 15px;
+  box-shadow: 0 6px 25px rgba(0, 0, 0, 0.2);
+  padding: 20px;
+  outline: none;
+
+  form {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+
+    .modalHeading {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding-bottom: 10px;
+      border-bottom: 1px solid #eee;
+
+      h3 {
+        margin: 0;
+        font-size: 18px;
+        font-weight: 700;
+        color: #2c3e50;
+      }
+
+      .MuiIconButton-root {
+        color: #555;
+
+        &:hover {
+          color: #007bff;
+          background: #f0f2f5;
+        }
+      }
+    }
+
+    .modalHeaderTop {
+      .uploadinfo {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        text-decoration: none;
+
+        .avatar {
+          width: 40px;
+          height: 40px;
+          border: 2px solid #007bff;
+          border-radius: 50%;
+        }
+
+        h5 {
+          margin: 0;
+          font-size: 16px;
+          color: #2c3e50;
+          font-weight: 600;
+        }
+      }
+    }
+
+    .modalBody {
+      textarea {
+        width: 100%;
+        padding: 15px;
+        border: 1px solid #ddd;
+        border-radius: 10px;
+        font-size: 16px;
+        color: #333;
+        resize: none;
+        outline: none;
+        transition: all 0.3s ease;
+
+        &::placeholder {
+          color: #777;
+        }
+
+        &:focus {
+          border-color: #007bff;
+          box-shadow: 0 0 5px rgba(0, 123, 255, 0.3);
+        }
+      }
+
+      .previewImages {
+        display: flex;
+        gap: 10px;
+        flex-wrap: wrap;
+        margin-top: 10px;
+
+        .previewImage {
+          width: 100px;
+          height: 100px;
+          object-fit: cover;
+          border-radius: 8px;
+          border: 1px solid #ddd;
+        }
+      }
+    }
+
+    .modalFooter {
+      .modalOptions {
+        display: flex;
+        justify-content: space-around;
+        padding: 10px 0;
+        border-top: 1px solid #eee;
+
+        .modalOption {
+          display: flex;
+          align-items: center;
+          gap: 8px;
+          padding: 8px 15px;
+          border-radius: 10px;
+          cursor: pointer;
+          transition: all 0.3s ease;
+
+          &:hover {
+            background: #f0f2f5;
+          }
+
+          .MuiSvgIcon-root {
+            font-size: 24px;
+          }
+
+          p {
+            margin: 0;
+            font-size: 14px;
+            color: #555;
+            font-weight: 500;
+          }
+
+          .fileLabel {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            cursor: pointer;
+          }
+        }
+      }
+    }
+
+    .postSubmit {
+      padding: 10px;
+      background: #007bff;
+      color: #fff;
+      border: none;
+      border-radius: 25px;
+      font-size: 15px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.3s ease;
+
+      &:hover {
+        background: #0056b3;
+        transform: translateY(-2px);
+        box-shadow: 0 4px 10px rgba(0, 123, 255, 0.3);
+      }
+    }
+  }
+}
+
+@media (max-width: 600px) {
+  .upPost {
+    margin: 10px;
+    padding: 10px;
+  }
+
+  .modalPop {
+    width: 90%;
+    padding: 15px;
+  }
+}
