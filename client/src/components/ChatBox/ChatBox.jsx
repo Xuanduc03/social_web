@@ -10,9 +10,9 @@ const cx = classNames.bind(styles);
 
 const ChatBox = ({ onClose }) => {
   const [messages, setMessages] = useState([
-    { id: 1, text: "Hello! How are you?", sender: "received" },
-    { id: 2, text: "I'm doing great! What about you?", sender: "sent" },
-    { id: 3, text: "I'm good too! Thanks for asking.", sender: "received" },
+    { id: 1, text: "Xin chào! Bạn khỏe không?", sender: "received" },
+    { id: 2, text: "Mình ổn lắm! Còn bạn thì sao?", sender: "sent" },
+    { id: 3, text: "Mình cũng tốt! Cảm ơn đã hỏi.", sender: "received" },
   ]);
   const [newMessage, setNewMessage] = useState("");
 
@@ -28,17 +28,20 @@ const ChatBox = ({ onClose }) => {
       {/* Header */}
       <div className={cx("chatHeader")}>
         <div className={cx("userInfo")}>
-          <Avatar src="https://via.placeholder.com/40" />
+          <Avatar
+            src="https://via.placeholder.com/40"
+            className={cx("headerAvatar")}
+          />
           <div>
             <h4>John Doe</h4>
-            <p>Active now</p>
+            <p>Đang hoạt động</p>
           </div>
         </div>
         <div className={cx("headerActions")}>
-          <IconButton>
+          <IconButton className={cx("actionButton")}>
             <MoreVertIcon />
           </IconButton>
-          <IconButton onClick={onClose}>
+          <IconButton className={cx("actionButton")} onClick={onClose}>
             <CloseIcon />
           </IconButton>
         </div>
@@ -47,7 +50,7 @@ const ChatBox = ({ onClose }) => {
       {/* Message Area */}
       <div className={cx("chatBody")}>
         {messages.map((msg) => (
-          <div key={msg.id} className={cx("messageWrapper", msg.sender)}>
+          <div key={msg.id} className={cx("messageWrapper", { [msg.sender]: true })}>
             <div className={cx("message")}>
               <p>{msg.text}</p>
             </div>
@@ -59,12 +62,12 @@ const ChatBox = ({ onClose }) => {
       <div className={cx("chatFooter")}>
         <input
           type="text"
-          placeholder="Type a message..."
+          placeholder="Nhập tin nhắn..."
           value={newMessage}
           onChange={(e) => setNewMessage(e.target.value)}
           onKeyDown={(e) => e.key === "Enter" && sendMessage()}
         />
-        <IconButton onClick={sendMessage}>
+        <IconButton className={cx("sendButton")} onClick={sendMessage}>
           <SendIcon />
         </IconButton>
       </div>

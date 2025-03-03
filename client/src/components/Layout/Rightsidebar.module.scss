@@ -1,57 +1,166 @@
+// Rightsidebar.module.scss
 .widget {
   width: 300px;
-  right: 0;
+  background: linear-gradient(135deg, #ffffff 0%, #f9faff 100%);
+  border-radius: 15px;
+  padding: 15px;
+  box-shadow: 0 5px 25px rgba(0, 0, 0, 0.08);
+  position: sticky;
+  top: 20px;
+  transition: transform 0.3s ease;
 
-  border-radius: 10px;
-  padding: 10px;
-  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+  &:hover {
+    transform: translateY(-5px);
+  }
 
+  // Header
   .widgetHeader {
-    font-size: 16px;
-    font-weight: bold;
     padding-bottom: 10px;
-    border-bottom: 1px solid #ddd;
-  }
+    border-bottom: 2px solid rgba(0, 123, 255, 0.2);
 
-  .widgetContacts {
-    margin-top: 10px;
-  }
-
-  .contactItem {
-    display: flex;
-    align-items: center;
-    padding: 8px;
-    border-radius: 8px;
-    transition: background 0.2s;
-
-    &:hover {
-      background: #fff;
-    }
-
-    p {
-      margin-left: 10px;
-      font-size: 14px;
-      font-weight: 500;
-    }
-  }
-
-  .avatarWrapper {
-    position: relative;
-    width: 40px;
-    height: 40px;
-
-    .contactAvatar {
-      width: 100%;
-      height: 100%;
-      border-radius: 50%;
-    }
-
-    .onlineIcon {
-      position: absolute;
-      bottom: 2px;
-      right: 2px;
-      color: #31a24c;
+    h4 {
+      margin: 0;
       font-size: 18px;
+      font-weight: 700;
+      color: #2c3e50;
+      letter-spacing: 0.5px;
+      position: relative;
+
+      &::after {
+        content: '';
+        position: absolute;
+        bottom: -12px;
+        left: 0;
+        width: 40px;
+        height: 3px;
+        background: #007bff;
+        border-radius: 2px;
+      }
+    }
+  }
+
+  // Danh sách liên hệ
+  .widgetContacts {
+    padding-top: 15px;
+    max-height: 400px;
+    overflow-y: auto;
+    scrollbar-width: thin;
+    scrollbar-color: #007bff #f0f2f5;
+
+    &::-webkit-scrollbar {
+      width: 6px;
+    }
+
+    &::-webkit-scrollbar-thumb {
+      background: #007bff;
+      border-radius: 3px;
+    }
+
+    &::-webkit-scrollbar-track {
+      background: #f0f2f5;
+    }
+
+    .contactItem {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 10px;
+      margin-bottom: 8px;
+      border-radius: 10px;
+      background: rgba(255, 255, 255, 0.9);
+      cursor: pointer;
+      transition: all 0.3s ease;
+
+      &:hover {
+        background: #e6f0ff;
+        transform: scale(1.02);
+        box-shadow: 0 2px 10px rgba(0, 123, 255, 0.1);
+      }
+
+      .avatarWrapper {
+        position: relative;
+        display: flex;
+        align-items: center;
+
+        .contactAvatar {
+          width: 40px;
+          height: 40px;
+          border-radius: 50%;
+          object-fit: cover;
+          border: 2px solid #fff;
+          box-shadow: 0 0 0 2px #007bff;
+          transition: transform 0.2s ease;
+
+          &:hover {
+            transform: scale(1.1);
+          }
+        }
+
+        .onlineIcon {
+          position: absolute;
+          bottom: 0;
+          right: 0;
+          font-size: 12px;
+          color: #00cc00;
+          background: #fff;
+          border-radius: 50%;
+          padding: 1px;
+          box-shadow: 0 0 0 2px #fff;
+        }
+      }
+
+      p {
+        margin: 0;
+        font-size: 15px;
+        color: #34495e;
+        font-weight: 500;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+      }
+    }
+
+    // Thông báo không có liên hệ
+    > p {
+      text-align: center;
+      color: #7f8c8d;
+      font-style: italic;
+      margin: 20px 0;
+    }
+  }
+}
+
+// Responsive
+@media (max-width: 768px) {
+  .widget {
+    width: 250px;
+    padding: 10px;
+
+    .widgetHeader {
+      h4 {
+        font-size: 16px;
+      }
+    }
+
+    .widgetContacts {
+      .contactItem {
+        padding: 8px;
+
+        .avatarWrapper {
+          .contactAvatar {
+            width: 35px;
+            height: 35px;
+          }
+
+          .onlineIcon {
+            font-size: 10px;
+          }
+        }
+
+        p {
+          font-size: 14px;
+        }
+      }
     }
   }
 }

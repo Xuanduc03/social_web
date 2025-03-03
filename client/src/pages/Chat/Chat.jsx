@@ -8,7 +8,7 @@ const Chat = () => {
     <div className={styles.chatContainer}>
       <div className={styles.container}>
         <SidebarChat />
-        <ChatBox />
+        <ChatBox onClose={() => {}} /> {/* onClose để trống vì không cần đóng khi full màn */}
       </div>
     </div>
   );

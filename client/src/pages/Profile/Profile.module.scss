@@ -1,89 +1,146 @@
+// Profile.module.scss
 .profile {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    background: #f0f2f5;
-  }
-  
-  /* Thanh điều hướng Profile */
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 20px;
+
+  // Thanh điều hướng Profile
   .profileNav {
-    width: 100%;
-    max-width: 900px;
+    background: #ffffff;
+    border-radius: 12px;
+    box-shadow: 0 2px 15px rgba(0, 0, 0, 0.1);
+    padding: 10px 20px;
     display: flex;
     justify-content: space-between;
     align-items: center;
-    background: white;
-    padding: 15px 20px;
-    border-radius: 10px;
-    margin-top: -20px;
-    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
-    position: relative;
+    margin-bottom: 20px;
+    position: sticky;
+    top: 70px;
     z-index: 10;
-  
+    transition: all 0.3s ease;
+
+    &:hover {
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
+    }
+
     .navLinks {
       display: flex;
-      gap: 20px;
       list-style: none;
-      font-size: 16px;
-      font-weight: 500;
-      color: #606770;
-      cursor: pointer;
-  
+      margin: 0;
+      padding: 0;
+      gap: 15px;
+
       li {
         padding: 10px 15px;
+        font-size: 15px;
+        font-weight: 500;
+        color: #555;
+        cursor: pointer;
         border-radius: 8px;
-        transition: 0.3s;
-        
+        transition: all 0.3s ease;
+
         &:hover {
-          background: #e4e6eb;
+          background: #f0f2f5;
+          color: #007bff;
+        }
+
+        &.active {
+          background: #007bff;
+          color: #fff;
+          font-weight: 600;
+
+          &:hover {
+            background: #0056b3;
+          }
         }
       }
-  
-      .active {
-        border-bottom: 3px solid #1877f2;
-        color: #1877f2;
-      }
     }
-  
+
     .navActions {
       display: flex;
       gap: 10px;
-  
+
       button {
-        background: #e4e6eb;
-        border: none;
         padding: 8px 15px;
-        border-radius: 8px;
-        font-weight: 500;
+        border: none;
+        border-radius: 20px;
+        font-size: 14px;
+        font-weight: 600;
         cursor: pointer;
-        transition: 0.3s;
-  
-        &:hover {
-          background: #d8dadf;
+        transition: all 0.3s ease;
+
+        &.settings {
+          background: #e9ecef;
+          color: #2c3e50;
+
+          &:hover {
+            background: #d1d5db;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+          }
+        }
+
+        &.filter {
+          background: #007bff;
+          color: #fff;
+
+          &:hover {
+            background: #0056b3;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 10px rgba(0, 123, 255, 0.3);
+          }
         }
       }
     }
   }
-  
-  /* Bố cục chính */
+
+  // Bố cục chính
   .profileContent {
     display: flex;
-    max-width: 900px;
-    width: 100%;
-    margin-top: 20px;
     gap: 20px;
+
+    .postSection {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+    }
   }
-  
-  /* Sidebar trái */
-  .profileSidebar {
-    flex: 1;
+}
+
+// Responsive
+@media (max-width: 900px) {
+  .profile {
+    padding: 10px;
+
+    .profileNav {
+      flex-direction: column;
+      align-items: flex-start;
+      padding: 10px;
+
+      .navLinks {
+        flex-wrap: wrap;
+        gap: 10px;
+
+        li {
+          padding: 8px 12px;
+          font-size: 14px;
+        }
+      }
+
+      .navActions {
+        margin-top: 10px;
+        width: 100%;
+        justify-content: space-between;
+      }
+    }
+
+    .profileContent {
+      flex-direction: column;
+
+      .postSection {
+        width: 100%;
+      }
+    }
   }
-  
-  /* Danh sách bài viết */
-  .postSection {
-    flex: 2;
-    display: flex;
-    flex-direction: column;
-    gap: 15px;
-  }
-  
+}

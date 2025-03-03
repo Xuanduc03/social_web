@@ -1,36 +1,52 @@
+// Feed.scss
 .feed {
-    flex: 1;
-    display: flex;
-    flex-direction: column;
+  max-width: 700px; // Giới hạn chiều rộng để feed không quá dàn trải
+  margin: 0 auto; // Căn giữa
+  padding: 20px 0; // Padding trên dưới để thoáng hơn
+  display: flex;
+  flex-direction: column;
+  gap: 20px; // Khoảng cách giữa các thành phần chính
+
+  // Story
+  .storyReel {
+    margin: 0 20px; // Căn lề 2 bên để đồng bộ với các phần khác
+  }
+
+  // UpPost
+  .upPost {
+    margin: 0 20px; // Căn lề 2 bên để đồng bộ
+  }
+
+  // Post
+  > div[class^="post"] { // Áp dụng cho tất cả các Post component
+    margin: 0 20px; // Căn lề 2 bên để đồng bộ
+  }
+}
+
+// Responsive
+@media (max-width: 768px) {
+  .feed {
+    padding: 10px 0;
     gap: 15px;
-    max-width: 600px;
-    margin: 0 auto;
-    padding: 20px 0;
-  
-    .storyReel {
-      display: flex;
-      gap: 10px;
-      overflow-x: auto;
-      padding-bottom: 10px;
-      scroll-snap-type: x mandatory;
-  
-      &::-webkit-scrollbar {
-        display: none;
-      }
-    }
-  
-    .upPost {
-      background: white;
-      padding: 15px;
-      border-radius: 10px;
-      box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
-    }
-  
-    .post {
-      background: white;
-      padding: 15px;
-      border-radius: 10px;
-      box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+
+    .storyReel,
+    .upPost,
+    > div[class^="post"] {
+      margin: 0 10px; // Giảm margin trên màn hình nhỏ
     }
   }
-  
+}
+
+@media (max-width: 480px) {
+  .feed {
+    max-width: 100%; // Full-width trên mobile
+    padding: 5px 0;
+    gap: 10px;
+
+    .storyReel,
+    .upPost,
+    > div[class^="post"] {
+      margin: 0 5px; // Giảm margin tối đa trên mobile
+    }
+  }
+}
