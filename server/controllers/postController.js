@@ -359,3 +359,41 @@ module.exports.commentPost = async (req, res) => {
     });
   }
 };
+
+
+
+//lấy id bài viết theo người dùng
+module.exports.getPostsByUserId = async (req, res) => {
+  try {
+    const userId = req.params.userId;
+
+    // Kiểm tra xem userId có hợp lệ không
+    if (!mongoose.Types.ObjectId.isValid(userId)) {
+      return res.status(400).json({
+        message: "ID người dùng không hợp lệ",
+        success: false,
+        error: true,
+      });
+    }
+
+    // Tìm tất cả bài viết của user theo userId, sắp xếp theo thời gian mới nhất
+    const posts = await Post.find({ user: userId })
+      .populate("user", "firstName lastName avatarImage") // Lấy thông tin người tạo bài viết
+      .populate("comments.user", "firstName lastName avatarImage") // Lấy thông tin người bình luận
+      .sort({ createdAt: -1 }); // Sắp xếp bài viết mới nhất trước
+
+    res.status(200).json({
+      data: posts,
+      message: "Lấy danh sách bài viết của người dùng thành công",
+      success: true,
+      error: false,
+    });
+  } catch (error) {
+    console.error("Get User Posts Error:", error);
+    res.status(500).json({
+      message: error.message || "Lỗi server khi lấy bài viết",
+      success: false,
+      error: true,
+    });
+  }
+};

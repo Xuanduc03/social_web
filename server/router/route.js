@@ -8,6 +8,7 @@ const {
   deletePost,
   toggleLikePost,
   commentPost,
+  getPostsByUserId,
 } = require('../controllers/postController');
 const { authProtect } = require("../middleware/authProtect");
 const uploadAvatar = require("../middleware/uploadAvatar"); // Middleware upload avatar
@@ -23,10 +24,14 @@ router.post('/upload-avatar', authProtect, uploadAvatar.single("avatar"), SetAva
 
 router.get('/posts', getAllPosts); // Lấy tất cả bài viết (công khai)
 router.get('/posts/:id', getPostById); // Lấy bài viết theo ID (công khai)
+router.get("/posts/user/:userId",getPostsByUserId);// Lấy bài viết theo ID (người dùng)
+
 router.post('/posts', authProtect, uploadPost, createPost); // Tạo bài viết (yêu cầu đăng nhập, sử dụng multer mới)
 router.put('/posts/:id', authProtect, updatePost); // Cập nhật bài viết (yêu cầu đăng nhập)
 router.delete('/posts/:id', authProtect, deletePost); // Xóa bài viết (yêu cầu đăng nhập)
 router.post('/posts/:id/like', authProtect, toggleLikePost); // Thích/bỏ thích bài viết
 router.post('/posts/:id/comment', authProtect, commentPost); // Bình luận bài viết
+
+
 
 module.exports = router;

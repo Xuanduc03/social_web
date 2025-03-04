@@ -160,7 +160,7 @@ const Post = ({ id, photoURL, image,likes, comments, username, time, message, on
         </div>
         <div className={cx("actionButtons")}>
           <span>
-            <strong>{comments.length}</strong> Bình luận
+            <strong>{comments ? comments.length : 0}</strong> Bình luận
           </span>
           <span>Chia sẻ</span>
         </div>
