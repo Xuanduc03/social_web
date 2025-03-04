@@ -64,7 +64,11 @@
     }
   
     .comment {
-      padding: 10px 0;
+      display: block;
+      background: #eeeded;
+      border-radius: 20px;
+      padding: 10px 10px;
+      margin-bottom: 10px;
       border-bottom: 1px solid #f5f5f5;
   
       .commentHeader {
@@ -81,7 +85,7 @@
           font-size: 0.8em;
           color: #666;
         }
-      }
+      
   
       p {
         margin: 0;
@@ -109,3 +113,4 @@
       }
     }
   }
+}

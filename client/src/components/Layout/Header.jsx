@@ -7,7 +7,7 @@ import { Avatar, IconButton } from '@mui/material';
 import ChatIcon from '@mui/icons-material/Chat';
 import NotificationsIcon from '@mui/icons-material/Notifications';
 import ArrowDropDownIcon from '@mui/icons-material/ArrowDropDown';
-import { Link } from 'react-router-dom';
+import { Link, Navigate } from 'react-router-dom';
 import axios from 'axios';
 import { toast } from 'react-toastify';
 
@@ -44,7 +44,7 @@ function Header() {
             const response = await axios.get("http://localhost:8080/api/logout", { withCredentials: true });
             if(response.data.success){
                 toast.success("Đăng xuất thành công");
-                window.location.reload();
+                Navigate("/login")
             }else {
                 toast.error(response.data.message);
             }

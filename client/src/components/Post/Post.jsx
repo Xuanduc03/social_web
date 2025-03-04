@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import ThumbUpIcon from "@mui/icons-material/ThumbUp";
 import MoreHorizIcon from "@mui/icons-material/MoreHoriz";
 import axios from "axios";
+import { format ,formatDistanceToNow } from "date-fns";
 import { toast } from "react-toastify";
 import { IconButton, Menu, MenuItem } from "@mui/material";
 import { useNavigate } from "react-router-dom";
@@ -10,7 +11,8 @@ import styles from "./Post.module.scss";
 
 const cx = classNames.bind(styles);
 
-const Post = ({ id, photoURL, image,likes, comments, username, time, message, onUpdate, onDelete }) => {
+const Post = ({userId, id, photoURL, image, likes, comments, username, time, message, onUpdate, onDelete }) => {
+
   const navigate = useNavigate();
   const [liked, setLiked] = useState(false);
   const [editing, setEditing] = useState(false);
@@ -20,10 +22,18 @@ const Post = ({ id, photoURL, image,likes, comments, username, time, message, on
   const handleOpenComments = (id) => {
     navigate(`/post/${id}/comments`);
   };
+  const handleProfile = (id) => {
+    navigate(`/profile/${id}`);
+  }
 
   const handleMenuOpen = (event) => {
     setAnchorEl(event.currentTarget);
   };
+
+  const formatDate = (dateString) => {
+    const date = new Date(dateString);
+    return `${format(date, 'dd/MM/yyyy')} (${formatDistanceToNow(date, {addSuffix: true})})`
+  }
 
   const handleMenuClose = () => {
     setAnchorEl(null);
@@ -86,18 +96,20 @@ const Post = ({ id, photoURL, image,likes, comments, username, time, message, on
     handleMenuClose();
   };
 
+
   return (
     <div className={cx("post")}>
       {/* Header */}
       <div className={cx("postHeader")}>
         <img
+        onClick={() => handleProfile(userId)}
           src={photoURL || "https://via.placeholder.com/40"}
           alt="avatar"
           className={cx("avatar")}
         />
         <div className={cx("userInfo")}>
           <h4>{username}</h4>
-          <p className={cx("postTime")}>{time}</p>
+          <p className={cx("postTime")}>{formatDate(time)}</p>
         </div>
         <IconButton
           onClick={handleMenuOpen}
@@ -144,19 +156,18 @@ const Post = ({ id, photoURL, image,likes, comments, username, time, message, on
           <p>{message}</p>
         )}
       </div>
-
       {/* Ảnh đính kèm */}
       {image && (
         <div className={cx("postImage")}>
           <img src={image} alt="Post" />
         </div>
       )}
-
       {/* Thống kê cảm xúc */}
       <div className={cx("postActions")}>
         <div className={cx("reactionCount")}>
-          <span role="img" aria-label="like">👍❤️😆</span>
-          <span className={cx("likes")}>{liked ? "Bạn" : likes.length}</span>
+
+          <span role="img" aria-label="like">👍</span>
+          <span className={cx("likes")}>{liked ? "Bạn đã thích" : likes.length}</span>
         </div>
         <div className={cx("actionButtons")}>
           <span>
@@ -165,7 +176,6 @@ const Post = ({ id, photoURL, image,likes, comments, username, time, message, on
           <span>Chia sẻ</span>
         </div>
       </div>
-
       {/* Nút tương tác */}
       <div className={cx("postButtons")}>
         <button

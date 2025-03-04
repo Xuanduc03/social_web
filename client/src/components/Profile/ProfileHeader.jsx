@@ -3,8 +3,10 @@ import styles from "./ProfileHeader.module.scss"; // Sửa import thành module
 import axios from "axios";
 import { toast } from "react-toastify";
 import { Modal } from "@mui/material";
+import { useParams } from "react-router-dom";
 
 const ProfileHeader = () => {
+  const {userId} = useParams();
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);
   const [modalOpen, setModalOpen] = useState(false);
@@ -14,7 +16,7 @@ const ProfileHeader = () => {
   useEffect(() => {
     const fetchUser = async () => {
       try {
-        const response = await axios.get("http://localhost:8080/api/me", { withCredentials: true });
+        const response = await axios.get(`http://localhost:8080/api/user/${userId}`, { withCredentials: true });
         if (response.data.success) {
           setUser(response.data.data);
         } else {
@@ -87,7 +89,7 @@ const handleUpload = async () => {
       <div className={styles.profileInfo}>
         <div className={styles.avatarContainer}>
           <img
-            src={user?.avatarImage || "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTJlpgOzwjh3d5VTbE4aqLWMaSSCIb7Xlj3aw&s"}
+            src={user?.avatarImage || "https://static.vecteezy.com/system/resources/thumbnails/009/292/244/small_2x/default-avatar-icon-of-social-media-user-vector.jpg"}
             alt="Avatar"
             className={styles.avatar}
           />
@@ -100,7 +102,7 @@ const handleUpload = async () => {
             {loading ? "Loading..." : user ? `${user.firstName} ${user.lastName}` : "User Name"}
           </h1>
           <p className={styles.friendsCount}>
-            {loading ? "..." : user?.friendsCount || "Friend"}
+            {loading ? "..." : user?.friends.length || "Friend"} Người bạn
           </p>
         </div>
         <div className={styles.actions}>

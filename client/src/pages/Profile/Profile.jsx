@@ -5,31 +5,30 @@ import ProfileSidebar from "~/components/Profile/ProfileSidebar";
 import Post from "~/components/Post/Post";
 import axios from "axios";
 import { useParams } from "react-router-dom"; // Để lấy ID từ URL
+
 const Profile = () => {
-  
   const { userId } = useParams(""); // Lấy userId từ URL
   const [posts, setPosts] = useState([]);
 
-
- // Gọi API để lấy bài viết theo ID người dùng
- useEffect(() => {
-  const fetchUserPosts = async () => {
-    try {
-      const response = await axios.get(`http://localhost:8080/api/posts/user/${userId}`);
-      if (response.data.success) {
-        setPosts(response.data.data);
-        console.log(response.data.data)
-      } else {
-        console.error("Không thể lấy bài viết!");
+  // Gọi API để lấy bài viết theo ID người dùng
+  useEffect(() => {
+    const fetchUserPosts = async () => {
+      try {
+        const response = await axios.get(`http://localhost:8080/api/posts/user/${userId}`);
+        if (response.data.success) {
+          setPosts(response.data.data);
+          console.log(response.data.data)
+        } else {
+          console.error("Không thể lấy bài viết!");
+        }
+      } catch (error) {
+        console.error("Lỗi khi lấy bài viết:", error);
       }
-    } catch (error) {
-      console.error("Lỗi khi lấy bài viết:", error);
-    }
-  };
+    };
 
-  fetchUserPosts();
-}, [userId]);
- 
+    fetchUserPosts();
+  }, [userId]);
+
   return (
     <div className={styles.profile}>
       {/* Ảnh đại diện & ảnh bìa */}
@@ -58,7 +57,7 @@ const Profile = () => {
 
         {/* Danh sách bài viết */}
         <div className={styles.postSection}>
-        {posts.length > 0 ? (
+          {posts.length > 0 ? (
             posts.map((post) => (
               <Post
                 key={post._id}

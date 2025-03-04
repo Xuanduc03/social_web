@@ -9,7 +9,7 @@ import axios from 'axios';
 function Feed() {
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);
-  const [posts, setPosts] = useState([]); // State để lưu danh sách bài viết
+  const [posts, setPosts] = useState([]);
 
   useEffect(() => {
     const fetchUser = async () => {
@@ -42,17 +42,14 @@ function Feed() {
     fetchPosts();
   }, []);
 
-  // Hàm thêm bài viết mới
   const handleAddPost = (newPost) => {
-    setPosts([newPost, ...posts]); // Thêm bài mới vào đầu danh sách
+    setPosts([newPost, ...posts]);
   };
 
-  // Hàm cập nhật bài viết
   const handleUpdatePost = (updatedPost) => {
     setPosts(posts.map((post) => (post._id === updatedPost._id ? updatedPost : post)));
   };
 
-  // Hàm xóa bài viết
   const handleDeletePost = (postId) => {
     setPosts(posts.filter((post) => post._id !== postId));
   };
@@ -65,16 +62,17 @@ function Feed() {
         <Post
           key={post._id}
           id={post._id}
-          photoURL={post.user?.avatarImage || "https://via.placeholder.com/40"}
+          userId={post.user._id}
+          photoURL={post.user?.avatarImage || "https://static.vecteezy.com/system/resources/thumbnails/009/292/244/small_2x/default-avatar-icon-of-social-media-user-vector.jpg"}
           image={post.images?.[0]?.url || ""}
           username={`${post.user?.firstName || "Guest"} ${post.user?.lastName || ""}`}
-          time={new Date(post.createdAt).toLocaleTimeString()}
+          time={post.createdAt}
           message={post.content || ""}
           likes={post.likes}
           comments={post.comments}
           onUpdate={handleUpdatePost}
           onDelete={handleDeletePost}
-      />
+        />
       ))}
     </div>
   );

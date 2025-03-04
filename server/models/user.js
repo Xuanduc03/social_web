@@ -37,7 +37,18 @@ const userSchema = new mongoose.Schema({
     createAt: {
         type: Date,
         default: Date.now
-    }
+    },
+
+    //Friends
+    friendRequests: [
+        {
+          user: { type: mongoose.Schema.Types.ObjectId, ref: "User", required: true },
+          status: { type: String, enum: ["pending", "accepted", "rejected"], default: "pending" },
+          requestedAt: { type: Date, default: Date.now },
+        },
+      ],
+    friends: [{ type: mongoose.Schema.Types.ObjectId, ref: "User" }],
+    
 });
 
 const User = mongoose.model("User", userSchema);

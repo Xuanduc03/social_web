@@ -3,6 +3,7 @@ import style from "./UpComment.module.scss";
 import { TextField, Button, Avatar, Modal } from '@mui/material';
 import axios from "axios";
 import { toast } from "react-toastify";
+import { format ,formatDistanceToNow } from "date-fns";
 import { useNavigate, useParams } from "react-router-dom";
 
 const UpComment = () => {
@@ -66,13 +67,18 @@ const UpComment = () => {
           username: "Current User", // Có thể thay bằng username từ API
           time: new Date().toLocaleString()
         }]);
-        setCommentContent(""); 
         navigate("/");
       }
     } catch (error) {
       toast.error(error.response?.data?.message || "Lỗi khi gửi bình luận!");
     }
   };
+
+   const formatDate = (dateString) => {
+      const date = new Date(dateString);
+      return `${format(date, 'dd/MM/yyyy')} (${formatDistanceToNow(date, {addSuffix: true})})`
+    }
+  
 
   // Hiển thị loading khi chưa có dữ liệu
   if (!postData) return <div>Loading...</div>;
@@ -94,7 +100,7 @@ const UpComment = () => {
             />
             <div className={style.userInfo}>
               <h4 className={style.username}>{`${postData.user.firstName} ${postData.user.lastName}`}</h4>
-              <p className={style.time}>{new Date(postData.createdAt).toLocaleString()}</p>
+              <p className={style.time}>{formatDate(postData.createdAt)}</p>
             </div>
           </div>
           <div className={style.postContent}>
@@ -118,7 +124,7 @@ const UpComment = () => {
               <div key={comment._id} className={style.comment}>
                 <div className={style.commentHeader}>
                 <strong>{loading ? "Loading..." : comment ? `${comment.user.firstName} ${comment.user.lastName}` : "User Name"}</strong>
-                <span>{new Date(comment.createdAt).toLocaleString()}</span>
+                <span>{formatDate(comment.createdAt)}</span>
                 </div>
                 <p>{comment.text}</p>
               </div>

@@ -1,21 +1,74 @@
-import React from "react";
-import styles from "./FriendRequests.module.scss"; // Import module SCSS
+import React, { useState, useEffect } from "react";
+import styles from "./FriendRequests.module.scss";
 import FriendCard from "./FriendCard";
+import axios from "axios";
+import { toast } from "react-toastify";
 
 const FriendRequests = () => {
-  const friendRequests = [
-    { id: 1, name: "User", avatar: "https://i.pravatar.cc/150", mutualFriends: 3 },
-    { id: 2, name: "User", avatar: "https://i.pravatar.cc/151", mutualFriends: 1 },
-    { id: 3, name: "User", avatar: "https://i.pravatar.cc/152", mutualFriends: 1 },
-    { id: 4, name: "User", avatar: "https://i.pravatar.cc/153", mutualFriends: 2 }
-  ];
+  const [friendRequests, setFriendRequests] = useState([]);
+
+  useEffect(() => {
+    const fetchFriendRequests = async () => {
+      try {
+        const response = await axios.get("http://localhost:8080/api/friend-requests", {
+          withCredentials: true,
+        });
+        setFriendRequests(response.data.data);
+      } catch (error) {
+        console.error("Error fetching friend requests:", error);
+      }
+    };
+    fetchFriendRequests();
+  }, []);
+
+  const handleConfirm = async (friendId) => {
+    try {
+      const response = await axios.post(
+        "http://localhost:8080/api/accept-friend-request",
+        { friendId },
+        { withCredentials: true }
+      );
+      if (response.data.success) {
+        toast.success("Đã chấp nhận lời mời kết bạn!");
+        setFriendRequests(friendRequests.filter((f) => f.user._id !== friendId));
+      }
+    } catch (error) {
+      toast.error("Lỗi khi chấp nhận lời mời!");
+    }
+  };
+
+  const handleRemove = async (friendId) => {
+    try {
+      const response = await axios.post(
+        "http://localhost:8080/api/reject-friend-request",
+        { friendId },
+        { withCredentials: true }
+      );
+      if (response.data.success) {
+        toast.success("Đã xóa lời mời kết bạn!");
+        setFriendRequests(friendRequests.filter((f) => f.user._id !== friendId));
+      }
+    } catch (error) {
+      toast.error("Lỗi khi xóa lời mời!");
+    }
+  };
 
   return (
     <div className={styles["friend-requests"]}>
       <h2>Lời mời kết bạn</h2>
       <div className={styles["requests-list"]}>
-        {friendRequests.map((friend) => (
-          <FriendCard key={friend.id} friend={friend} />
+        {friendRequests.map((request) => (
+          <FriendCard
+            key={request.user._id}
+            friend={{
+              id: request.user._id,
+              name: `${request.user.firstName} ${request.user.lastName}`,
+              avatar: request.user.avatarImage || "https://static.vecteezy.com/system/resources/thumbnails/009/292/244/small_2x/default-avatar-icon-of-social-media-user-vector.jpg",
+              mutualFriends: request.mutualFriends,
+            }}
+            onConfirm={() => handleConfirm(request.user._id)}
+            onRemove={() => handleRemove(request.user._id)}
+          />
         ))}
       </div>
     </div>
