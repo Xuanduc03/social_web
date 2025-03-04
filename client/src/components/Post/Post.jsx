@@ -1,25 +1,26 @@
 import React, { useState } from "react";
-import cx from "classnames";
-import "./Post.scss";
-import ThumbUpIcon from '@mui/icons-material/ThumbUp';
+import ThumbUpIcon from "@mui/icons-material/ThumbUp";
+import MoreHorizIcon from "@mui/icons-material/MoreHoriz";
 import axios from "axios";
 import { toast } from "react-toastify";
 import { IconButton, Menu, MenuItem } from "@mui/material";
-import MoreHorizIcon from '@mui/icons-material/MoreHoriz'; // Biểu tượng ba chấm
 import { useNavigate } from "react-router-dom";
+import classNames from "classnames/bind";
+import styles from "./Post.module.scss";
 
-const Post = ({ id, photoURL, image, comments, username, time, message, onUpdate, onDelete }) => {
+const cx = classNames.bind(styles);
+
+const Post = ({ id, photoURL, image,likes, comments, username, time, message, onUpdate, onDelete }) => {
   const navigate = useNavigate();
   const [liked, setLiked] = useState(false);
   const [editing, setEditing] = useState(false);
   const [editContent, setEditContent] = useState(message);
-  const [anchorEl, setAnchorEl] = useState(null); // State cho menu ba chấm
+  const [anchorEl, setAnchorEl] = useState(null);
 
-  // Navigate tới UpComment với postId
   const handleOpenComments = (id) => {
-    navigate(`/post/${id}/comments`); // Chuyển hướng tới route chi tiết bình luận
+    navigate(`/post/${id}/comments`);
   };
-  // Xử lý mở/đóng menu ba chấm
+
   const handleMenuOpen = (event) => {
     setAnchorEl(event.currentTarget);
   };
@@ -30,24 +31,22 @@ const Post = ({ id, photoURL, image, comments, username, time, message, onUpdate
 
   const handleLike = async () => {
     try {
-      const response = await axios.put(
+      const response = await axios.post(
         `http://localhost:8080/api/posts/${id}/like`,
-        { content: editContent },
+        {},
         { withCredentials: true }
       );
       if (response.data.success) {
-        toast.success("Cập nhật bài viết thành công!");
-        onUpdate({ ...response.data.data, _id: id });
-        setEditing(false);
+        setLiked(!liked);
+        toast.success(liked ? "Đã bỏ thích bài viết!" : "Đã thích bài viết!");
       } else {
-        toast.error(response.data.message || "Cập nhật thất bại!");
+        toast.error(response.data.message || "Thích bài thất bại!");
       }
     } catch (error) {
-      toast.error(error.response?.data?.message || "Lỗi khi cập nhật bài viết!");
+      toast.error(error.response?.data?.message || "Lỗi khi thích bài viết!");
     }
-    handleMenuClose();
-  }
-  // Xử lý sửa bài viết
+  };
+
   const handleEdit = async () => {
     try {
       const response = await axios.put(
@@ -68,7 +67,6 @@ const Post = ({ id, photoURL, image, comments, username, time, message, onUpdate
     handleMenuClose();
   };
 
-  // Xử lý xóa bài viết
   const handleDelete = async () => {
     if (window.confirm("Bạn có chắc muốn xóa bài viết này?")) {
       try {
@@ -77,7 +75,7 @@ const Post = ({ id, photoURL, image, comments, username, time, message, onUpdate
         });
         if (response.data.success) {
           toast.success("Xóa bài viết thành công!");
-          onDelete(id); // Xóa khỏi danh sách
+          onDelete(id);
         } else {
           toast.error(response.data.message || "Xóa thất bại!");
         }
@@ -85,26 +83,25 @@ const Post = ({ id, photoURL, image, comments, username, time, message, onUpdate
         toast.error(error.response?.data?.message || "Lỗi khi xóa bài viết!");
       }
     }
-    handleMenuClose(); // Đóng menu sau khi xóa
+    handleMenuClose();
   };
 
   return (
-    <div className="post">
+    <div className={cx("post")}>
       {/* Header */}
-      <div className="post-header">
+      <div className={cx("postHeader")}>
         <img
           src={photoURL || "https://via.placeholder.com/40"}
           alt="avatar"
-          className="avatar"
+          className={cx("avatar")}
         />
-        <div>
+        <div className={cx("userInfo")}>
           <h4>{username}</h4>
-          <p className="post-time">{time}</p>
+          <p className={cx("postTime")}>{time}</p>
         </div>
-        {/* Nút ba chấm */}
         <IconButton
           onClick={handleMenuOpen}
-          style={{ marginLeft: "auto" }}
+          className={cx("moreButton")}
         >
           <MoreHorizIcon />
         </IconButton>
@@ -112,60 +109,83 @@ const Post = ({ id, photoURL, image, comments, username, time, message, onUpdate
           anchorEl={anchorEl}
           open={Boolean(anchorEl)}
           onClose={handleMenuClose}
+          className={cx("dropMenu")}
         >
-          <MenuItem onClick={() => { setEditing(true); handleMenuClose(); }}>Sửa</MenuItem>
-          <MenuItem onClick={handleDelete}>Xóa</MenuItem>
+          <MenuItem
+            onClick={() => {
+              setEditing(true);
+              handleMenuClose();
+            }}
+            className={cx("menuItem")}
+          >
+            <i class="fa-solid fa-pen"></i>
+            Sửa
+          </MenuItem>
+          <MenuItem
+            onClick={handleDelete}
+            className={cx("menuItem", "deleteItem")}
+          >
+            <i class="fa-solid fa-circle-xmark"></i>
+            Xóa
+          </MenuItem>
         </Menu>
       </div>
 
       {/* Nội dung bài viết */}
-      <div className="post-content">
-
+      <div className={cx("postContent")}>
         {editing ? (
           <textarea
             value={editContent}
             onChange={(e) => setEditContent(e.target.value)}
             rows="3"
+            className={cx("editTextarea")}
           />
         ) : (
           <p>{message}</p>
         )}
       </div>
 
-      {/* Ảnh đính kèm (nếu có) */}
+      {/* Ảnh đính kèm */}
       {image && (
-        <div className="post-image">
-          <img
-            src={image}
-            alt="Post"
-          />
-
+        <div className={cx("postImage")}>
+          <img src={image} alt="Post" />
         </div>
       )}
 
       {/* Thống kê cảm xúc */}
-      <div className="post-actions">
-        <div className="reaction-count">
+      <div className={cx("postActions")}>
+        <div className={cx("reactionCount")}>
           <span role="img" aria-label="like">👍❤️😆</span>
-          <span className="likes">{liked ? "Bạn và 123 người khác" : "123 người thích"}</span>
+          <span className={cx("likes")}>{liked ? "Bạn" : likes.length}</span>
         </div>
-        <div className="action-buttons">
-          <span><strong>{comments.length}</strong>  Bình luận</span>
+        <div className={cx("actionButtons")}>
+          <span>
+            <strong>{comments.length}</strong> Bình luận
+          </span>
           <span>Chia sẻ</span>
         </div>
       </div>
 
       {/* Nút tương tác */}
-      <div className="post-buttons">
-        <button className={cx("btn", { liked })} onClick={() => setLiked(!liked)}>
+      <div className={cx("postButtons")}>
+        <button
+          className={cx("btn", { liked })}
+          onClick={handleLike}
+        >
           <ThumbUpIcon /> {liked ? "Đã thích" : "Thích"}
         </button>
-        <button className="btn" onClick={() => handleOpenComments(id)} key={id}>💬 Bình luận</button>
-        <button className="btn">🔗 Chia sẻ</button>
+        <button className={cx("btn")} onClick={() => handleOpenComments(id)}>
+          💬 Bình luận
+        </button>
+        <button className={cx("btn")}>🔗 Chia sẻ</button>
         {editing && (
-          <div style={{ marginTop: "10px" }}>
-            <button className="btn" onClick={handleEdit}>Lưu</button>
-            <button className="btn" onClick={() => setEditing(false)}>Hủy</button>
+          <div className={cx("editActions")}>
+            <button className={cx("btn", "saveBtn")} onClick={handleEdit}>
+              Lưu
+            </button>
+            <button className={cx("btn", "cancelBtn")} onClick={() => setEditing(false)}>
+              Hủy
+            </button>
           </div>
         )}
       </div>

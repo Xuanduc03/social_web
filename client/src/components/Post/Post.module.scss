@@ -1,0 +1,281 @@
+.post {
+  width: 100%;
+  max-width: 600px;
+  margin: 20px auto;
+  background: #ffffff; // Nền trắng
+  border-radius: 15px;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1); // Shadow nhẹ hơn
+  padding: 15px;
+  color: #333; // Chữ đen xám
+  transition: all 0.3s ease;
+
+  &:hover {
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.15);
+  }
+
+  .postHeader {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding-bottom: 10px;
+    border-bottom: 1px solid #eee; // Viền sáng hơn
+
+    .avatar {
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      object-fit: cover;
+      border: 2px solid #007bff; // Viền xanh đậm
+    }
+
+    .userInfo {
+      flex: 1;
+
+      h4 {
+        margin: 0;
+        font-size: 16px;
+        font-weight: 600;
+        color: #2c3e50; // Xám đậm cho tên
+      }
+
+      .postTime {
+        margin: 2px 0 0;
+        font-size: 12px;
+        color: #777; // Xám nhạt
+      }
+    }
+
+    .moreButton {
+      color: #666; // Xám trung cho nút ba chấm
+      padding: 6px;
+      transition: all 0.3s ease;
+      position: relative;
+
+      &:hover {
+        color: #007bff; // Chuyển xanh khi hover
+        background: #f0f2f5; // Nền xám nhạt
+        border-radius: 50%;
+        box-shadow: 0 0 8px rgba(0, 123, 255, 0.2);
+      }
+
+      .MuiSvgIcon-root {
+        font-size: 26px;
+      }
+    }
+
+    .dropMenu {
+      .menuPaper {
+        background: #ffffff; // Nền trắng
+        border-radius: 15px;
+        box-shadow: 0 8px 25px rgba(0, 0, 0, 0.2); // Shadow nhẹ hơn
+        min-width: 160px;
+        border: 1px solid #ddd; // Viền xám nhạt
+        overflow: hidden;
+      }
+
+      .menuItem {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        padding: 12px 20px;
+        color: #555; // Chữ xám đậm
+        font-size: 15px;
+        font-weight: 500;
+        background: transparent;
+        transition: all 0.3s ease;
+
+        &:hover {
+          background: #f0f2f5; // Nền xám nhạt khi hover
+          color: #007bff; // Chữ xanh khi hover
+        }
+
+        .menuIcon {
+          font-size: 16px;
+        }
+
+        &.deleteItem {
+          color: #e63946; // Đỏ nhạt hơn cho "Xóa"
+
+          &:hover {
+            background: #e63946;
+            color: #fff;
+          }
+        }
+      }
+    }
+  }
+
+  .postContent {
+    padding: 10px 0;
+
+    p {
+      margin: 0;
+      font-size: 15px;
+      color: #333;
+      word-wrap: break-word;
+    }
+
+    .editTextarea {
+      width: 100%;
+      padding: 10px;
+      background: #f9f9f9; // Nền sáng nhẹ
+      border: 1px solid #ddd;
+      border-radius: 8px;
+      color: #333;
+      font-size: 15px;
+      resize: none;
+      outline: none;
+
+      &:focus {
+        border-color: #007bff;
+        box-shadow: 0 0 5px rgba(0, 123, 255, 0.3);
+      }
+    }
+  }
+
+  .postImage {
+    margin: 10px 0;
+
+    img {
+      width: 100%;
+      max-height: 400px;
+      object-fit: cover;
+      border-radius: 10px;
+      border: 1px solid #ddd; // Viền sáng
+    }
+  }
+
+  .postActions {
+    display: flex;
+    justify-content: space-between;
+    padding: 10px 0;
+    border-top: 1px solid #eee;
+    border-bottom: 1px solid #eee;
+    font-size: 14px;
+    color: #666; // Xám trung
+
+    .reactionCount {
+      display: flex;
+      align-items: center;
+      gap: 5px;
+
+      .likes {
+        color: #555;
+      }
+    }
+
+    .actionButtons {
+      display: flex;
+      gap: 15px;
+
+      span {
+        cursor: pointer;
+        transition: color 0.3s ease;
+
+        &:hover {
+          color: #007bff;
+        }
+      }
+    }
+  }
+
+  .postButtons {
+    display: flex;
+    gap: 10px;
+    padding-top: 10px;
+
+    .btn {
+      flex: 1;
+      padding: 8px 10px;
+      background: #f0f2f5; // Nền xám nhạt
+      color: #555; // Chữ xám đậm
+      border: none;
+      border-radius: 20px;
+      font-size: 14px;
+      font-weight: 500;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 5px;
+      transition: all 0.3s ease;
+
+      &:hover {
+        background: #e6e9ec;
+        color: #007bff;
+      }
+
+      &.liked {
+        background: #007bff;
+        color: #fff;
+
+        &:hover {
+          background: #0056b3;
+        }
+      }
+
+      &.saveBtn {
+        background: #007bff;
+        color: #fff;
+
+        &:hover {
+          background: #0056b3;
+        }
+      }
+
+      &.cancelBtn {
+        background: #e63946;
+        color: #fff;
+
+        &:hover {
+          background: #cc3333;
+        }
+      }
+
+      .MuiSvgIcon-root {
+        font-size: 20px;
+      }
+    }
+
+    .editActions {
+      display: flex;
+      gap: 10px;
+      width: 100%;
+      margin-top: 10px;
+    }
+  }
+}
+
+@media (max-width: 600px) {
+  .post {
+    margin: 10px;
+    padding: 10px;
+
+    .postHeader {
+      .avatar {
+        width: 35px;
+        height: 35px;
+      }
+
+      h4 {
+        font-size: 14px;
+      }
+
+      .postTime {
+        font-size: 11px;
+      }
+    }
+
+    .postButtons {
+      flex-direction: column;
+
+      .btn {
+        width: 100%;
+      }
+
+      .editActions {
+        flex-direction: column;
+      }
+    }
+  }
+}

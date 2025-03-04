@@ -70,6 +70,7 @@ function Feed() {
           username={`${post.user?.firstName || "Guest"} ${post.user?.lastName || ""}`}
           time={new Date(post.createdAt).toLocaleTimeString()}
           message={post.content || ""}
+          likes={post.likes}
           comments={post.comments}
           onUpdate={handleUpdatePost}
           onDelete={handleDeletePost}

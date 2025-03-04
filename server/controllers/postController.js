@@ -303,6 +303,9 @@ module.exports.commentPost = async (req, res) => {
     const { text } = req.body;
     const userId = req.user?.id;
 
+    console.log("post id", req.params.id);
+    console.log("text", text);
+    console.log("userid", req.user.id)
     if (!userId) {
       return res.status(401).json({
         message: "Bạn chưa đăng nhập",

@@ -5,7 +5,7 @@
   padding: 20px 0; // Padding trên dưới để thoáng hơn
   display: flex;
   flex-direction: column;
-  gap: 20px; // Khoảng cách giữa các thành phần chính
+  gap: 10px; // Khoảng cách giữa các thành phần chính
 
   // Story
   .storyReel {
@@ -14,7 +14,7 @@
 
   // UpPost
   .upPost {
-    margin: 0 20px; // Căn lề 2 bên để đồng bộ
+    margin: 0 auto; // Căn lề 2 bên để đồng bộ
   }
 
   // Post

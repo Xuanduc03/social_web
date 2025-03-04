@@ -17,7 +17,6 @@ const ProfileHeader = () => {
         const response = await axios.get("http://localhost:8080/api/me", { withCredentials: true });
         if (response.data.success) {
           setUser(response.data.data);
-          console.log("Thông tin user:", response.data.data);
         } else {
           console.log("Không lấy được thông tin user:", response.data.message);
         }
