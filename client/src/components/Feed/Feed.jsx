@@ -8,7 +8,7 @@ import axios from 'axios';
 function Feed() {
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);
-  const [posts, setPosts] = useState([]); // State để lưu danh sách bài viết
+  const [posts, setPosts] = useState([]);
 
   useEffect(() => {
     const fetchUser = async () => {
@@ -30,8 +30,7 @@ function Feed() {
       try {
         const response = await axios.get("http://localhost:8080/api/posts", { withCredentials: true });
         if (response.data.success) {
-          console.log("Posts received:", response.data.data); // Log để kiểm tra posts
-          setPosts(response.data.data); // Lấy danh sách bài viết từ server
+          setPosts(response.data.data); // Dữ liệu đã được lọc ở backend
         }
       } catch (error) {
         console.log("Lỗi khi lấy bài viết:", error.response?.data || error.message);
@@ -42,17 +41,14 @@ function Feed() {
     fetchPosts();
   }, []);
 
-  // Hàm thêm bài viết mới
   const handleAddPost = (newPost) => {
-    setPosts([newPost, ...posts]); // Thêm bài mới vào đầu danh sách
+    setPosts([newPost, ...posts]);
   };
 
-  // Hàm cập nhật bài viết
   const handleUpdatePost = (updatedPost) => {
     setPosts(posts.map((post) => (post._id === updatedPost._id ? updatedPost : post)));
   };
 
-  // Hàm xóa bài viết
   const handleDeletePost = (postId) => {
     setPosts(posts.filter((post) => post._id !== postId));
   };
@@ -70,9 +66,10 @@ function Feed() {
           username={`${post.user?.firstName || "Guest"} ${post.user?.lastName || ""}`}
           time={new Date(post.createdAt).toLocaleTimeString()}
           message={post.content || ""}
+          comments={post.comments}
           onUpdate={handleUpdatePost}
           onDelete={handleDeletePost}
-      />
+        />
       ))}
     </div>
   );

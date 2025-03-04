@@ -1,23 +1,57 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import styles from "./SuggestedFriends.module.scss";
 import FriendAddCard from "./FriendAddCard";
+import axios from "axios";
+import { toast } from "react-toastify";
 
 const SuggestedFriends = () => {
-  const suggestedFriends = [
-    { id: 1, name: "User", avatar: "https://i.pravatar.cc/154" },
-    { id: 2, name: "User", avatar: "https://i.pravatar.cc/155" },
-    { id: 3, name: "User", avatar: "https://i.pravatar.cc/156" },
-    { id: 4, name: "User", avatar: "https://i.pravatar.cc/157", mutualFriends: 2 },
-    { id: 5, name: "User", avatar: "https://i.pravatar.cc/158" },
-    { id: 6, name: "User", avatar: "https://i.pravatar.cc/159" }
-  ];
+  const [suggestedFriends, setSuggestedFriends] = useState([]);
+
+  useEffect(() => {
+    const fetchSuggestedFriends = async () => {
+      try {
+        const response = await axios.get("http://localhost:8080/api/suggested-friends", {
+          withCredentials: true,
+        });
+        setSuggestedFriends(response.data.data);
+      } catch (error) {
+        console.error("Error fetching suggested friends:", error);
+      }
+    };
+    fetchSuggestedFriends();
+  }, []);
+
+  const handleAddFriend = async (friendId) => {
+    try {
+      const response = await axios.post(
+        "http://localhost:8080/api/send-friend-request",
+        { friendId },
+        { withCredentials: true }
+      );
+      if (response.data.success) {
+        toast.success("Đã gửi lời mời kết bạn!");
+        setSuggestedFriends(suggestedFriends.filter((f) => f._id !== friendId));
+      }
+    } catch (error) {
+      toast.error("Lỗi khi gửi lời mời!");
+    }
+  };
 
   return (
     <div className={styles["suggested-friends"]}>
       <h2>Những người bạn có thể biết</h2>
       <div className={styles["suggested-list"]}>
         {suggestedFriends.map((friend) => (
-          <FriendAddCard key={friend.id} friend={friend} />
+          <FriendAddCard
+            key={friend._id}
+            friend={{
+              id: friend._id,
+              name: `${friend.firstName} ${friend.lastName}`,
+              avatar: friend.avatarImage || "https://via.placeholder.com/150",
+              mutualFriends: friend.mutualFriends,
+            }}
+            onAddFriend={() => handleAddFriend(friend._id)}
+          />
         ))}
       </div>
     </div>

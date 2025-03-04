@@ -1,7 +1,7 @@
 import React from "react";
 import styles from "./FriendAddCard.module.scss";
 
-const FriendAddCard = ({ friend }) => {
+const FriendAddCard = ({ friend, onAddFriend }) => {
   return (
     <div className={styles["friend-card"]}>
       <img src={friend.avatar} alt={friend.name} className={styles.avatar} />
@@ -10,7 +10,9 @@ const FriendAddCard = ({ friend }) => {
         {friend.mutualFriends && <p>{friend.mutualFriends} bạn chung</p>}
       </div>
       <div className={styles["friend-actions"]}>
-        <button className={styles.confirm}>Thêm bạn bè</button>
+        <button className={styles.confirm} onClick={onAddFriend}>
+          Thêm bạn bè
+        </button>
         <button className={styles.remove}>Xóa</button>
       </div>
     </div>

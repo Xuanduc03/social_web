@@ -58,7 +58,6 @@ function UpPost() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-  
     if (!user) {
       toast.error("Vui lòng đăng nhập để đăng bài!");
       return;
@@ -77,13 +76,13 @@ function UpPost() {
     for (let pair of formData.entries()) {
       console.log(pair[0] + ': ' + pair[1]);
     }
-  
+
     try {
       const response = await axios.post("http://localhost:8080/api/posts", formData, {
         withCredentials: true,
         headers: { "Content-Type": "multipart/form-data" },
       });
-  
+
       if (response.data.success) {
         toast.success("Đăng bài viết thành công!");
         handleClose();
@@ -92,6 +91,7 @@ function UpPost() {
       }
     } catch (error) {
       toast.error(error.response?.data?.message || "Lỗi khi đăng bài!");
+
       console.log("Lỗi chi tiết:", error.response?.data || error.message);
     }
   };

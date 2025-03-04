@@ -5,6 +5,7 @@ import ProfileSidebar from "~/components/Profile/ProfileSidebar";
 import Post from "~/components/Post/Post";
 
 const Profile = () => {
+  
   return (
     <div className={styles.profile}>
       {/* Ảnh đại diện & ảnh bìa */}

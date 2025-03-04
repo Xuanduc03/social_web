@@ -149,6 +149,14 @@
         background: rgba(255, 255, 255, 0.2);
       }
     }
+    .chat {
+      line-height: 10px;
+      .chat-icon {
+        color: #fff;
+        align-items: center;
+      }
+    } 
+    
 
     .MuiIconButton-root {
       color: rgba(255, 255, 255, 0.8);
