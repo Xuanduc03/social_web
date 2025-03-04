@@ -23,9 +23,6 @@ const authProtect = async (req, res, next) => {
 
         // Verify token
         const decoded = jwt.verify(token, process.env.TOKEN_SECRET_KEY);
-        
-        // Debug log (remove in production)
-        console.log("Decoded token:", decoded);
 
         // Find user by ID from decoded token
         const user = await User.findById(decoded._id || decoded.id).select("-password");

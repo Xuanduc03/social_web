@@ -20,9 +20,22 @@ const fileFilter = (req, file, cb) => {
   }
 };
 
+// Khởi tạo multer với cấu hình
+const upload = multer({
+  storage: storage,
+  fileFilter: fileFilter,
+  limits: { fileSize: 1024 * 1024 * 5 } // Giới hạn kích thước file: 5MB
+}).fields([{ name: 'content' }, { name: 'images', maxCount: 4 }]); // Parse cả content (text) và images (file)
 
-
-const upload = multer({ storage, fileFilter });
-
-module.exports = upload;
-
+module.exports = (req, res, next) => {
+  upload(req, res, (err) => {
+    if (err) {
+      return res.status(400).json({
+        message: err.message || "Lỗi khi upload file",
+        success: false,
+        error: true,
+      });
+    }
+    next();
+  });
+};

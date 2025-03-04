@@ -1,4 +1,5 @@
 const Post = require('../models/post');
+const User = require('../models/user')
 const mongoose = require('mongoose');
 const path = require('path'); // Thêm path để xử lý đường dẫn
 
@@ -60,7 +61,25 @@ module.exports.createPost = async (req, res) => {
 // Lấy tất cả bài viết
 module.exports.getAllPosts = async (req, res) => {
   try {
-    const posts = await Post.find()
+    const userId = req.user?.id; // Lấy ID của người dùng hiện tại từ middleware authProtect
+
+    if (!userId) {
+      return res.status(401).json({
+        message: "Bạn chưa đăng nhập",
+        success: false,
+        error: true,
+      });
+    }
+
+    // Lấy thông tin user hiện tại để lấy danh sách bạn bè
+    const currentUser = await User.findById(userId).select("friends");
+    const friendIds = currentUser.friends.map(friend => friend.toString());
+
+    // Thêm userId vào danh sách để bao gồm cả bài viết của chính mình
+    const visibleUserIds = [userId, ...friendIds];
+
+    // Lấy bài viết chỉ từ chính user và bạn bè
+    const posts = await Post.find({ user: { $in: visibleUserIds } })
       .populate('user', 'firstName lastName avatarImage')
       .populate('comments.user', 'firstName lastName avatar')
       .sort({ createdAt: -1 }); // Sắp xếp mới nhất trước
