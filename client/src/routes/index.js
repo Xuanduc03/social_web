@@ -1,3 +1,5 @@
+import UpComment from "~/components/Popper/UpComment/UpComment";
+import Friend from "~/pages/Friend/Friend";
 import Login from "~/pages/Login/Login";
 import Profile from "~/pages/Profile/Profile";
 import Register from "~/pages/Register/Register";
@@ -12,6 +14,9 @@ const publicRoute = [
     {path: "/profile", component: Profile},
     {path: "/register", component: Register},
     {path: "/login", component: Login},
+    {path: "/friend", component: Friend},
+    {path: "/post/:postId/comments", component: UpComment}
 ];
 
 export default publicRoute;
+

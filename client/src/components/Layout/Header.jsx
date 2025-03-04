@@ -61,21 +61,21 @@ function Header() {
             </div>
 
             <div className="headerMid">
-                <div className="headerOptions headerOptions-active">
+                <Link to={'/'} className="headerOptions headerOptions-active">
                     <HomeIcon fontSize="large" />
-                </div>
-                <div className="headerOptions">
+                </Link>
+                <Link to={'/Friend'} className="headerOptions">
                     <PeopleIcon fontSize="large" />
-                </div>
+                </Link>
             </div>
 
             <div className="headerRight">
-                <Link to={'/profile'} className="headerInfo">
+                <Link to={`/profile`} className="headerInfo">
                     <img src={loading ? "loading..." : (user? user.avatarImage : "anh")} alt="" className='avatar' />
                     <h5>{loading ? "Loading..." : (user ? user.lastName : "Guest")}</h5>
                 </Link>
-                <IconButton>
-                    <Link to="/chat">
+                <IconButton className='chat'>
+                    <Link to="/chat" className='chat-icon'>
                         <ChatIcon />
                     </Link>
                 </IconButton>

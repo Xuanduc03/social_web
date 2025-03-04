@@ -1,41 +1,82 @@
-import React, { useEffect, useState } from 'react'
-import "./Feed.scss"
-import Story from "../Story/Story"
-import Post from '../Post/Post'
-import UpPost from '../Popper/UpPost/UpPost'
-import axios from 'axios'
+import React, { useEffect, useState } from 'react';
+import "./Feed.scss";
+import Story from "../Story/Story";
+import Post from '../Post/Post';
+import UpPost from '../Popper/UpPost/UpPost';
+import axios from 'axios';
+
 
 function Feed() {
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);
+  const [posts, setPosts] = useState([]); // State để lưu danh sách bài viết
 
   useEffect(() => {
-      const fetchUser = async () => {
-          try {
-              const response = await axios.get("http://localhost:8080/api/me", { withCredentials: true });
-              if (response.data.success) {
-                  setUser(response.data.data);
-              } else {
-                  console.log("Không lấy được thông tin user:", response.data.message);
-              }
-          } catch (error) {
-              console.log("Lỗi khi lấy thông tin:", error.response?.data || error.message);
-          } finally {
-              setLoading(false); // Đặt loading thành false khi hoàn tất
-          }
-      };
-      fetchUser();
+    const fetchUser = async () => {
+      try {
+        const response = await axios.get("http://localhost:8080/api/me", { withCredentials: true });
+        if (response.data.success) {
+          setUser(response.data.data);
+        } else {
+          console.log("Không lấy được thông tin user:", response.data.message);
+        }
+      } catch (error) {
+        console.log("Lỗi khi lấy thông tin:", error.response?.data || error.message);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    const fetchPosts = async () => {
+      try {
+        const response = await axios.get("http://localhost:8080/api/posts", { withCredentials: true });
+        if (response.data.success) {
+          setPosts(response.data.data); // Lấy danh sách bài viết từ server
+        }
+      } catch (error) {
+        console.log("Lỗi khi lấy bài viết:", error.response?.data || error.message);
+      }
+    };
+
+    fetchUser();
+    fetchPosts();
   }, []);
-  
+
+  // Hàm thêm bài viết mới
+  const handleAddPost = (newPost) => {
+    setPosts([newPost, ...posts]); // Thêm bài mới vào đầu danh sách
+  };
+
+  // Hàm cập nhật bài viết
+  const handleUpdatePost = (updatedPost) => {
+    setPosts(posts.map((post) => (post._id === updatedPost._id ? updatedPost : post)));
+  };
+
+  // Hàm xóa bài viết
+  const handleDeletePost = (postId) => {
+    setPosts(posts.filter((post) => post._id !== postId));
+  };
+
   return (
     <div className="feed">
-        <Story/>
-        <UpPost/>
-        <Post photoURL="" image="https://static.vecteezy.com/system/resources/previews/006/965/779/non_2x/empty-top-wooden-table-and-sakura-flower-with-fog-and-morning-light-background-photo.jpg" username="User 1" time="10:00 AM" message="Post 1"/>
-        <Post photoURL="" image="https://storyblok-cdn.photoroom.com/f/191576/768x432/0f78fe60a2/colors-backgrounds-cover.webp" username="User 2" time="1:00 PM" message="Post 2"/>
-        <Post photoURL="" image="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTs-Zs1jAhbmypFTiTem5s6YzJpLB4tyD2F_Q&s" username="User 3" time="7:00 PM" message="Post 3"/>
+      <Story />
+      <UpPost onAddPost={handleAddPost} />
+      {posts.map((post) => (
+        <Post
+          key={post._id}
+          id={post._id}
+          photoURL={post.user?.avatarImage || "https://via.placeholder.com/40"}
+          image={post.images?.[0]?.url || ""}
+          username={`${post.user?.firstName || "Guest"} ${post.user?.lastName || ""}`}
+          time={new Date(post.createdAt).toLocaleTimeString()}
+          message={post.content || ""}
+          comments={post.comments}
+          onUpdate={handleUpdatePost}
+          onDelete={handleDeletePost}
+      />
+      ))}
     </div>
-  )
+  );
 }
 
 export default Feed;

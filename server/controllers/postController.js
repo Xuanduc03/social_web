@@ -1,13 +1,16 @@
 const Post = require('../models/post');
 const mongoose = require('mongoose');
+const path = require('path'); // Thêm path để xử lý đường dẫn
 
 // Tạo bài viết
 module.exports.createPost = async (req, res) => {
   try {
-    const { content, images } = req.body;
+    const { content } = req.body; // Lấy content từ req.body (đã parse bởi multer)
     const userId = req.user?.id; // Lấy từ middleware authProtect
-    console.log(content);
-console.log(req.files);
+    const files = req.files?.images || []; // Lấy danh sách file ảnh từ req.files
+
+    console.log("Content received:", content);
+    console.log("Files received:", files);
 
     if (!userId) {
       return res.status(401).json({
@@ -17,7 +20,7 @@ console.log(req.files);
       });
     }
 
-    if (!content) {
+    if (!content || !content.trim()) { // Kiểm tra content không rỗng hoặc chỉ chứa khoảng trắng
       return res.status(400).json({
         message: "Nội dung bài viết là bắt buộc",
         success: false,
@@ -25,10 +28,14 @@ console.log(req.files);
       });
     }
 
+    const images = files.map(file => ({
+      url: `http://localhost:8080/uploads/${path.basename(file.path)}` // Trả về URL đầy đủ
+    })); // Lưu dưới dạng object với trường url
+
     const newPost = new Post({
       user: userId,
-      content,
-      images: images || [], // Nếu không có ảnh thì để mảng rỗng
+      content: content.trim(),
+      images: images.length > 0 ? images : [], // Nếu có ảnh, lưu như mảng object
     });
 
     const savedPost = await newPost.save();
@@ -54,7 +61,7 @@ console.log(req.files);
 module.exports.getAllPosts = async (req, res) => {
   try {
     const posts = await Post.find()
-      .populate('user', 'firstName lastName avatar')
+      .populate('user', 'firstName lastName avatarImage')
       .populate('comments.user', 'firstName lastName avatar')
       .sort({ createdAt: -1 }); // Sắp xếp mới nhất trước
 

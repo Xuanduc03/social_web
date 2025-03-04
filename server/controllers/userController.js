@@ -184,7 +184,7 @@ module.exports.SetAvatar = async (req, res) => {
             });
         }
 
-        const avatarUrl = `/uploads/${req.file.filename}`; // Changed to relative path
+        const avatarUrl = `http://localhost:8080/uploads/${req.file.filename}`; // Changed to relative path
         const user = await User.findByIdAndUpdate(
             userId,
             {

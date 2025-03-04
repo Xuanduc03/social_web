@@ -58,22 +58,25 @@ function UpPost() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-
     if (!user) {
       toast.error("Vui lòng đăng nhập để đăng bài!");
       return;
     }
-
-    if (!content && selectedFiles.length === 0) {
+  
+    if (!content.trim() && selectedFiles.length === 0) { // Sử dụng trim() để kiểm tra khoảng trắng
       toast.error("Vui lòng nhập nội dung hoặc chọn ít nhất một ảnh!");
       return;
     }
-
+  
     const formData = new FormData();
-    formData.append("content", content);
+    formData.append("content", content.trim()); // Đảm bảo gửi content không rỗng
     selectedFiles.forEach((file) => formData.append("images", file)); // Gửi nhiều file nếu có
+  
+    // Log dữ liệu gửi lên để kiểm tra
+    for (let pair of formData.entries()) {
+      console.log(pair[0] + ': ' + pair[1]);
+    }
 
-    console.log("Dữ liệu gửi lên:", content, selectedFiles);
     try {
       const response = await axios.post("http://localhost:8080/api/posts", formData, {
         withCredentials: true,
@@ -88,6 +91,8 @@ function UpPost() {
       }
     } catch (error) {
       toast.error(error.response?.data?.message || "Lỗi khi đăng bài!");
+
+      console.log("Lỗi chi tiết:", error.response?.data || error.message);
     }
   };
 

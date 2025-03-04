@@ -2,41 +2,155 @@ import React, { useState } from "react";
 import cx from "classnames";
 import "./Post.scss";
 import ThumbUpIcon from '@mui/icons-material/ThumbUp';
+import axios from "axios";
+import { toast } from "react-toastify";
+import { IconButton, Menu, MenuItem } from "@mui/material";
+import MoreHorizIcon from '@mui/icons-material/MoreHoriz'; // Biểu tượng ba chấm
+import { useNavigate } from "react-router-dom";
 
-const Post = ({ photoURL, image, username, time, message }) => {
+const Post = ({ id, photoURL, image, comments, username, time, message, onUpdate, onDelete }) => {
+  const navigate = useNavigate();
   const [liked, setLiked] = useState(false);
+  const [editing, setEditing] = useState(false);
+  const [editContent, setEditContent] = useState(message);
+  const [anchorEl, setAnchorEl] = useState(null); // State cho menu ba chấm
+
+  // Navigate tới UpComment với postId
+  const handleOpenComments = (id) => {
+    navigate(`/post/${id}/comments`); // Chuyển hướng tới route chi tiết bình luận
+  };
+  // Xử lý mở/đóng menu ba chấm
+  const handleMenuOpen = (event) => {
+    setAnchorEl(event.currentTarget);
+  };
+
+  const handleMenuClose = () => {
+    setAnchorEl(null);
+  };
+
+  const handleLike = async () => {
+    try {
+      const response = await axios.put(
+        `http://localhost:8080/api/posts/${id}/like`,
+        { content: editContent },
+        { withCredentials: true }
+      );
+      if (response.data.success) {
+        toast.success("Cập nhật bài viết thành công!");
+        onUpdate({ ...response.data.data, _id: id });
+        setEditing(false);
+      } else {
+        toast.error(response.data.message || "Cập nhật thất bại!");
+      }
+    } catch (error) {
+      toast.error(error.response?.data?.message || "Lỗi khi cập nhật bài viết!");
+    }
+    handleMenuClose();
+  }
+  // Xử lý sửa bài viết
+  const handleEdit = async () => {
+    try {
+      const response = await axios.put(
+        `http://localhost:8080/api/posts/${id}`,
+        { content: editContent },
+        { withCredentials: true }
+      );
+      if (response.data.success) {
+        toast.success("Cập nhật bài viết thành công!");
+        onUpdate({ ...response.data.data, _id: id });
+        setEditing(false);
+      } else {
+        toast.error(response.data.message || "Cập nhật thất bại!");
+      }
+    } catch (error) {
+      toast.error(error.response?.data?.message || "Lỗi khi cập nhật bài viết!");
+    }
+    handleMenuClose();
+  };
+
+  // Xử lý xóa bài viết
+  const handleDelete = async () => {
+    if (window.confirm("Bạn có chắc muốn xóa bài viết này?")) {
+      try {
+        const response = await axios.delete(`http://localhost:8080/api/posts/${id}`, {
+          withCredentials: true,
+        });
+        if (response.data.success) {
+          toast.success("Xóa bài viết thành công!");
+          onDelete(id); // Xóa khỏi danh sách
+        } else {
+          toast.error(response.data.message || "Xóa thất bại!");
+        }
+      } catch (error) {
+        toast.error(error.response?.data?.message || "Lỗi khi xóa bài viết!");
+      }
+    }
+    handleMenuClose(); // Đóng menu sau khi xóa
+  };
 
   return (
     <div className="post">
       {/* Header */}
       <div className="post-header">
-        <img src={photoURL} alt="avatar" className="avatar" />
+        <img
+          src={photoURL || "https://via.placeholder.com/40"}
+          alt="avatar"
+          className="avatar"
+        />
         <div>
           <h4>{username}</h4>
           <p className="post-time">{time}</p>
         </div>
+        {/* Nút ba chấm */}
+        <IconButton
+          onClick={handleMenuOpen}
+          style={{ marginLeft: "auto" }}
+        >
+          <MoreHorizIcon />
+        </IconButton>
+        <Menu
+          anchorEl={anchorEl}
+          open={Boolean(anchorEl)}
+          onClose={handleMenuClose}
+        >
+          <MenuItem onClick={() => { setEditing(true); handleMenuClose(); }}>Sửa</MenuItem>
+          <MenuItem onClick={handleDelete}>Xóa</MenuItem>
+        </Menu>
       </div>
 
       {/* Nội dung bài viết */}
       <div className="post-content">
-        <p>{message}</p>
+
+        {editing ? (
+          <textarea
+            value={editContent}
+            onChange={(e) => setEditContent(e.target.value)}
+            rows="3"
+          />
+        ) : (
+          <p>{message}</p>
+        )}
       </div>
 
       {/* Ảnh đính kèm (nếu có) */}
       {image && (
         <div className="post-image">
-          <img src={image} alt="Post" />
+          <img
+            src={image}
+            alt="Post"
+          />
+
         </div>
       )}
 
       {/* Thống kê cảm xúc */}
       <div className="post-actions">
         <div className="reaction-count">
-          <span role="img" aria-label="like">👍❤️😆</span> 
+          <span role="img" aria-label="like">👍❤️😆</span>
           <span className="likes">{liked ? "Bạn và 123 người khác" : "123 người thích"}</span>
         </div>
         <div className="action-buttons">
-          <span>Bình luận</span>
+          <span><strong>{comments.length}</strong>  Bình luận</span>
           <span>Chia sẻ</span>
         </div>
       </div>
@@ -46,8 +160,14 @@ const Post = ({ photoURL, image, username, time, message }) => {
         <button className={cx("btn", { liked })} onClick={() => setLiked(!liked)}>
           <ThumbUpIcon /> {liked ? "Đã thích" : "Thích"}
         </button>
-        <button className="btn">💬 Bình luận</button>
+        <button className="btn" onClick={() => handleOpenComments(id)} key={id}>💬 Bình luận</button>
         <button className="btn">🔗 Chia sẻ</button>
+        {editing && (
+          <div style={{ marginTop: "10px" }}>
+            <button className="btn" onClick={handleEdit}>Lưu</button>
+            <button className="btn" onClick={() => setEditing(false)}>Hủy</button>
+          </div>
+        )}
       </div>
     </div>
   );

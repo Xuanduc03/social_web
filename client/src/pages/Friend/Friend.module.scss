@@ -1,0 +1,32 @@
+.container {
+    flex-grow: 1;
+    overflow-y: auto;
+  }
+  
+  .friendContainer {
+    display: flex;
+    justify-content: center;
+    width: 100%;
+    height: 100vh;
+  }
+  
+  .mainContent {
+    display: flex;
+    width: 80%;
+    max-width: 1200px;
+    margin-top: 20px;
+  }
+  
+  .sidebar {
+    flex: 1;
+    min-width: 250px;
+  }
+  
+  .friendLists {
+    flex: 3;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    overflow-y: auto;
+    padding: 10px;
+  }
