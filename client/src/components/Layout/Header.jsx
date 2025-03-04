@@ -71,7 +71,7 @@ function Header() {
 
             <div className="headerRight">
                 <Link to={`/profile`} className="headerInfo">
-                    <img src={loading ? "loading..." : (user? user.avatarImage : "anh")} alt="" className='avatar' />
+                    <img src={loading ? "loading..." : (user? user.avatarImage : "anh") || 'https://static.vecteezy.com/system/resources/thumbnails/009/292/244/small_2x/default-avatar-icon-of-social-media-user-vector.jpg'} alt="" className='avatar' />
                     <h5>{loading ? "Loading..." : (user ? user.lastName : "Guest")}</h5>
                 </Link>
                 <IconButton className='chat'>

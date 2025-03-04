@@ -46,11 +46,36 @@
   // Nội dung
   .post-content {
     margin-bottom: 15px;
+
     p {
       margin: 0;
       font-size: 15px;
       line-height: 1.5;
       color: #333;
+    }
+
+    textarea {
+      width: 100%;
+      min-height: 80px;
+      padding: 10px;
+      font-size: 15px;
+      line-height: 1.5;
+      color: #333; 
+      border: 1px solid #ddd;
+      border-radius: 8px; 
+      background: #f9f9f9; 
+      resize: vertical; 
+      outline: none;
+
+      &:focus {
+        border-color: #007bff; // Viền xanh khi focus
+        box-shadow: 0 0 5px rgba(0, 123, 255, 0.3); // Hiệu ứng sáng khi focus
+      }
+
+      &::placeholder {
+        color: #888; // Màu chữ placeholder
+        font-style: italic;
+      }
     }
   }
 
@@ -160,6 +185,13 @@
 
       h4 {
         font-size: 14px;
+      }
+    }
+
+    .post-content {
+      textarea {
+        font-size: 14px; // Giảm cỡ chữ trên mobile
+        min-height: 60px; // Giảm chiều cao tối thiểu
       }
     }
 

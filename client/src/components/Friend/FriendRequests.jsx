@@ -63,7 +63,7 @@ const FriendRequests = () => {
             friend={{
               id: request.user._id,
               name: `${request.user.firstName} ${request.user.lastName}`,
-              avatar: request.user.avatarImage || "https://via.placeholder.com/150",
+              avatar: request.user.avatarImage || "https://static.vecteezy.com/system/resources/thumbnails/009/292/244/small_2x/default-avatar-icon-of-social-media-user-vector.jpg",
               mutualFriends: request.mutualFriends,
             }}
             onConfirm={() => handleConfirm(request.user._id)}

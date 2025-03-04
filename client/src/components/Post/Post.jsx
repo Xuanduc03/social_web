@@ -16,7 +16,7 @@ const Post = ({ id, photoURL, image, comments = [], username, time, message, onU
   const [anchorEl, setAnchorEl] = useState(null);
 
   const handleOpenComments = (id) => {
-    navigate(`/post/${id}/comments`);
+    navigate(`/post/${id}/comments`); // Chuyển hướng tới route chi tiết bình luận
   };
 
   const handleMenuOpen = (event) => {
@@ -90,7 +90,7 @@ const Post = ({ id, photoURL, image, comments = [], username, time, message, onU
   return (
     <div className="post">
       <div className="post-header">
-        <img src={photoURL || "https://via.placeholder.com/40"} alt="avatar" className="avatar" />
+        <img src={photoURL || "https://static.vecteezy.com/system/resources/thumbnails/009/292/244/small_2x/default-avatar-icon-of-social-media-user-vector.jpg"} alt="avatar" className="avatar" />
         <div>
           <h4>{username}</h4>
           <p className="post-time">{time}</p>
@@ -130,12 +130,10 @@ const Post = ({ id, photoURL, image, comments = [], username, time, message, onU
       </div>
 
       <div className="post-buttons">
-        <button className={cx("btn", { liked })} onClick={handleLike}>
+        <button className={cx("btn", { liked })} onClick={() => setLiked(!liked)}>
           <ThumbUpIcon /> {liked ? "Đã thích" : "Thích"}
         </button>
-        <button className="btn" onClick={() => handleOpenComments(id)}>
-          💬 Bình luận
-        </button>
+        <button className="btn" onClick={() => handleOpenComments(id)} key={id}>💬 Bình luận</button>
         <button className="btn">🔗 Chia sẻ</button>
         {editing && (
           <div style={{ marginTop: "10px" }}>

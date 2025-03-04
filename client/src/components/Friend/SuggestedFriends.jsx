@@ -47,7 +47,7 @@ const SuggestedFriends = () => {
             friend={{
               id: friend._id,
               name: `${friend.firstName} ${friend.lastName}`,
-              avatar: friend.avatarImage || "https://via.placeholder.com/150",
+              avatar: friend.avatarImage || "https://static.vecteezy.com/system/resources/thumbnails/009/292/244/small_2x/default-avatar-icon-of-social-media-user-vector.jpg",
               mutualFriends: friend.mutualFriends,
             }}
             onAddFriend={() => handleAddFriend(friend._id)}
