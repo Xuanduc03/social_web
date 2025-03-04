@@ -15,6 +15,7 @@ function Header() {
     const [profileDropdownOpen, setProfileDropdownOpen] = useState(false);
     const [notiDropdownOpen, setNotiDropdownOpen] = useState(false);
     const [user, setUser] = useState(null);
+    const [userId , setuserId ] = useState(""); //id ngườu dùng
     const [loading, setLoading] = useState(true);
 
     useEffect(() => {
@@ -23,6 +24,7 @@ function Header() {
                 const response = await axios.get("http://localhost:8080/api/me", { withCredentials: true });
                 if (response.data.success) {
                     setUser(response.data.data);
+                    setuserId(response.data.data);
                 } else {
                     console.log("Không lấy được thông tin user:", response.data.message);
                 }
@@ -34,6 +36,9 @@ function Header() {
         };
         fetchUser();
     }, []);
+
+        // console.log(userId._id);
+
 
     const handleLogout = async () => {
         try {
@@ -70,7 +75,7 @@ function Header() {
             </div>
 
             <div className="headerRight">
-                <Link to={`/profile`} className="headerInfo">
+                <Link to={`/profile/${userId._id}`} className="headerInfo">
                     <img src={loading ? "loading..." : (user? user.avatarImage : "anh")} alt="" className='avatar' />
                     <h5>{loading ? "Loading..." : (user ? user.lastName : "Guest")}</h5>
                 </Link>
@@ -98,7 +103,7 @@ function Header() {
                     </IconButton>
                     {profileDropdownOpen && (
                         <div className="dropdown-menu">
-                            <Link to="/profile"><i class="fa-solid fa-user"></i> Trang cá nhân</Link>
+                            <Link to={`/profile/${userId._id}`}><i class="fa-solid fa-user"></i> Trang cá nhân</Link>
                             {!user && <Link to="/login"><i class="fa-solid fa-user-plus"></i> Đăng nhập</Link>}
                             
                             <Link to="/settings"><i class="fa-solid fa-gear"></i> Cài đặt</Link>
