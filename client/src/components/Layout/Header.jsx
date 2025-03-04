@@ -3,10 +3,13 @@ import "./Header.scss";
 import SearchIcon from '@mui/icons-material/Search';
 import HomeIcon from '@mui/icons-material/Home';
 import PeopleIcon from '@mui/icons-material/People';
-import { Avatar, IconButton } from '@mui/material';
+import { IconButton } from '@mui/material';
 import ChatIcon from '@mui/icons-material/Chat';
 import NotificationsIcon from '@mui/icons-material/Notifications';
 import ArrowDropDownIcon from '@mui/icons-material/ArrowDropDown';
+import GroupsIcon from '@mui/icons-material/Groups';
+import VideoLibraryIcon from '@mui/icons-material/VideoLibrary';
+import StorefrontIcon from '@mui/icons-material/Storefront';
 import { Link } from 'react-router-dom';
 import axios from 'axios';
 import { toast } from 'react-toastify';
@@ -66,6 +69,15 @@ function Header() {
                 </Link>
                 <Link to={'/Friend'} className="headerOptions">
                     <PeopleIcon fontSize="large" />
+                </Link>
+                <Link to={'/'} className='headerOptions'>
+                    <GroupsIcon fontSize="large" />
+                </Link>
+                <Link to={'/'} className='headerOptions'>
+                    <VideoLibraryIcon fontSize="large" />
+                </Link>
+                <Link to={'/'} className='headerOptions'>
+                    <StorefrontIcon fontSize="large" />
                 </Link>
             </div>
 
