@@ -1,3 +1,296 @@
+// // Header.scss
+// .header {
+//   display: flex;
+//   justify-content: space-between;
+//   align-items: center;
+//   padding: 10px 20px;
+//   background: linear-gradient(90deg, #007bff 0%, #00c4cc 100%);
+//   box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+//   position: sticky;
+//   top: 0;
+//   z-index: 1000;
+//   height: 60px;
+//   transition: all 0.3s ease;
+
+//   a {
+//     cursor: pointer;
+//   }
+//   &:hover {
+//     box-shadow: 0 6px 20px rgba(0, 0, 0, 0.25);
+//   }
+
+//   // Header Left
+//   .headerLeft {
+//     display: flex;
+//     align-items: center;
+//     gap: 15px;
+
+//     .headerLogo {
+//       img {
+//         height: 40px;
+//         transition: transform 0.3s ease;
+
+//         &:hover {
+//           transform: scale(1.1);
+//         }
+//       }
+//     }
+
+//     .headerSearch {
+//       display: flex;
+//       align-items: center;
+//       background: rgba(255, 255, 255, 0.2);
+//       border-radius: 25px;
+//       padding: 8px 15px;
+//       transition: all 0.3s ease;
+
+//       &:hover {
+//         background: rgba(255, 255, 255, 0.3);
+//       }
+
+//       .MuiSvgIcon-root {
+//         color: #fff;
+//         font-size: 22px;
+//       }
+
+//       input {
+//         border: none;
+//         background: transparent;
+//         outline: none;
+//         color: #fff;
+//         font-size: 14px;
+//         margin-left: 8px;
+//         width: 150px;
+
+//         &::placeholder {
+//           color: rgba(255, 255, 255, 0.8);
+//         }
+//       }
+//     }
+//   }
+
+//   // Header Mid
+//   .headerMid {
+//     display: flex;
+//     gap: 20px;
+
+//     .headerOptions {
+//       padding: 10px 20px;
+//       cursor: pointer;
+//       border-radius: 10px;
+//       transition: all 0.3s ease;
+
+//       .MuiSvgIcon-root {
+//         color: rgba(255, 255, 255, 0.8);
+//         font-size: 28px;
+//       }
+
+//       &:hover {
+//         background: rgba(255, 255, 255, 0.2);
+//         .MuiSvgIcon-root {
+//           color: #fff;
+//         }
+//       }
+
+//       &.headerOptions-active {
+//         background: rgba(255, 255, 255, 0.3);
+//         position: relative;
+
+//         &::after {
+//           content: '';
+//           position: absolute;
+//           bottom: -5px;
+//           left: 50%;
+//           transform: translateX(-50%);
+//           width: 50%;
+//           height: 3px;
+//           background: #fff;
+//           border-radius: 2px;
+//         }
+
+//         .MuiSvgIcon-root {
+//           color: #fff;
+//         }
+//       }
+//     }
+//   }
+
+//   // Header Right
+//   .headerRight {
+//     display: flex;
+//     align-items: center;
+//     gap: 10px;
+
+//     .headerInfo {
+//       display: flex;
+//       align-items: center;
+//       gap: 8px;
+//       padding: 5px 10px;
+//       border-radius: 20px;
+//       transition: all 0.3s ease;
+
+//       .MuiAvatar-root {
+//         width: 32px;
+//         height: 32px;
+//         border: 2px solid #fff;
+//       }
+//       .avatar {
+//         width: 40px;
+//         height: 40px;
+//         border-radius: 50%;
+//         object-fit: cover;
+//       }
+
+//       h5 {
+//         color: #fff;
+//         font-size: 14px;
+//         margin: 0;
+//         font-weight: 600;
+//       }
+
+//       &:hover {
+//         background: rgba(255, 255, 255, 0.2);
+//       }
+//     }
+//     .chat {
+//       line-height: 10px;
+//       .chat-icon {
+//         color: #fff;
+//         align-items: center;
+//       }
+//     } 
+    
+
+//     .MuiIconButton-root {
+//       color: rgba(255, 255, 255, 0.8);
+//       padding: 8px;
+//       transition: all 0.3s ease;
+
+//       &:hover {
+//         background: rgba(255, 255, 255, 0.2);
+//         color: #fff;
+//       }
+
+//       .MuiSvgIcon-root {
+//         font-size: 24px;
+//       }
+//     }
+
+//     .dropdown {
+//       position: relative;
+
+//       &.profile {
+//         .dropdown-menu {
+//           right: 0;
+//           width: 200px;
+//         }
+//       }
+
+//       &.notifications {
+//         .dropdown-menu {
+//           right: 0;
+//           width: 250px;
+//           padding: 10px 0;
+
+//           a {
+//             padding: 10px 15px;
+//             display: flex;
+//             align-items: center;
+//             gap: 10px;
+//             font-size: 14px;
+
+//             &:hover {
+//               background: #f0f2f5;
+//             }
+//           }
+//         }
+//       }
+
+//       .dropdown-menu {
+//         position: absolute;
+//         top: calc(100% + 5px);
+//         background: #fff;
+//         border-radius: 12px;
+//         box-shadow: 0 6px 20px rgba(0, 0, 0, 0.15);
+//         overflow: hidden;
+//         animation: slideDown 0.3s ease;
+//         z-index: 100;
+
+//         a {
+//           display: block;
+//           padding: 12px 20px;
+//           color: #2c3e50;
+//           text-decoration: none;
+//           font-size: 15px;
+//           font-weight: 500;
+//           transition: all 0.3s ease;
+
+//           &:hover {
+//             background: #e6f0ff;
+//             color: #007bff;
+//           }
+//         }
+//       }
+//     }
+//   }
+// }
+
+// @keyframes slideDown {
+//   from {
+//     opacity: 0;
+//     transform: translateY(-10px);
+//   }
+//   to {
+//     opacity: 1;
+//     transform: translateY(0);
+//   }
+// }
+
+// // Responsive
+// @media (max-width: 768px) {
+//   .header {
+//     padding: 10px;
+//     height: 50px;
+
+//     .headerLeft {
+//       .headerSearch {
+//         input {
+//           width: 100px;
+//         }
+//       }
+//     }
+
+//     .headerMid {
+//       gap: 10px;
+
+//       .headerOptions {
+//         padding: 8px 15px;
+//       }
+//     }
+
+//     .headerRight {
+//       .headerInfo {
+//         h5 {
+//           display: none;
+//         }
+//       }
+
+//       .dropdown {
+//         &.profile {
+//           .dropdown-menu {
+//             width: 180px;
+//           }
+//         }
+
+//         &.notifications {
+//           .dropdown-menu {
+//             width: 220px;
+//           }
+//         }
+//       }
+//     }
+//   }
+// }
 // Header.scss
 .header {
   display: flex;
@@ -37,22 +330,24 @@
     }
 
     .headerSearch {
+      position: relative; // Đảm bảo phần tử cha có vị trí tương đối
       display: flex;
       align-items: center;
       background: rgba(255, 255, 255, 0.2);
       border-radius: 25px;
       padding: 8px 15px;
       transition: all 0.3s ease;
-
+      width: 250px;
+    
       &:hover {
         background: rgba(255, 255, 255, 0.3);
       }
-
+    
       .MuiSvgIcon-root {
         color: #fff;
         font-size: 22px;
       }
-
+    
       input {
         border: none;
         background: transparent;
@@ -60,13 +355,48 @@
         color: #fff;
         font-size: 14px;
         margin-left: 8px;
-        width: 150px;
-
+        width: 100%;
+    
         &::placeholder {
           color: rgba(255, 255, 255, 0.8);
         }
       }
+    
+      // Popup tìm kiếm
+      .search-results {
+        position: absolute;
+        top: 40px; // Đẩy popup xuống dưới input
+        left: 0;
+        width: 100%;
+        background: white;
+        border-radius: 10px;
+        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+        z-index: 1000;
+        max-height: 300px;
+        overflow-y: auto;
+        transition: all 0.3s ease;
+    
+        .MuiListItem-root {
+          padding: 10px;
+          cursor: pointer;
+          transition:  0.2s ease;
+    
+          &:hover {
+            background: #f0f2f5;
+          }
+    
+          .MuiListItemAvatar-root {
+            min-width: 40px;
+          }
+    
+          .MuiAvatar-root {
+            width: 35px;
+            height: 35px;
+          }
+        }
+      }
     }
+    
   }
 
   // Header Mid

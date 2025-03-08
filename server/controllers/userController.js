@@ -435,3 +435,194 @@ module.exports.getSuggestedFriends = async (req, res) => {
       res.status(500).json({ message: "Lỗi server khi lấy danh sách gợi ý", success: false });
     }
   };
+
+  //   Gợi ý bạn bè theo tên (dành cho popup gợi ý)
+  exports.searchFriends = async (req, res) => {
+    try {
+        const { query, userId } = req.query;
+
+        if (!query || !userId) {
+            return res.status(400).json({ success: false, message: "Thiếu dữ liệu tìm kiếm" });
+        }
+
+        // Lấy danh sách bạn bè của userId
+        const user = await User.findById(userId).populate("friends");
+
+        if (!user) {
+            return res.status(404).json({ success: false, message: "Người dùng không tồn tại" });
+        }
+
+        // Lọc danh sách bạn bè có tên khớp với query
+        const matchedFriends = user.friends.filter(friend =>
+            (`${friend.firstName} ${friend.lastName}`).toLowerCase().includes(query.toLowerCase())
+        );
+
+        res.json({ success: true, data: matchedFriends });
+    } catch (error) {
+        console.error("Lỗi tìm kiếm bạn bè:", error);
+        res.status(500).json({ success: false, message: "Lỗi server" });
+    }
+};
+
+//   Tìm kiếm toàn bộ người dùng khi nhấn Enter
+// exports.searchUsers = async (req, res) => {
+//     try {
+//         const { query, userId } = req.query;
+
+//         // Kiểm tra nếu không có userId (để tránh lỗi)
+//         if (!userId) {
+//             return res.status(400).json({ success: false, message: "Thiếu userId" });
+//         }
+
+//         // Lấy thông tin user hiện tại và populate danh sách bạn bè
+//         const user = await User.findById(userId)
+//             .populate("friends")
+//             .populate("friendRequests.user");
+
+//         if (!user) {
+//             return res.status(404).json({ success: false, message: "User không tồn tại" });
+//         }
+
+//         // Tạo Set để kiểm tra nhanh trạng thái bạn bè và lời mời kết bạn
+//         const friendsSet = new Set(user.friends.map(f => f._id.toString()));
+//         const pendingRequestsSet = new Set(
+//             user.friendRequests
+//                 .filter(r => r.status === "pending")
+//                 .map(r => r.user._id.toString())
+//         );
+
+//         // Điều kiện tìm kiếm (nếu có query thì tìm theo tên, không có thì lấy tất cả)
+//         const searchCondition = query
+//             ? {
+//                   _id: { $ne: userId }, // Không lấy user hiện tại
+//                   $or: [
+//                       { firstName: { $regex: query, $options: "i" } },
+//                       { lastName: { $regex: query, $options: "i" } }
+//                   ]
+//               }
+//             : { _id: { $ne: userId } }; // Nếu không có query, lấy tất cả người dùng trừ chính mình
+
+//         // Tìm kiếm người dùng phù hợp với điều kiện
+//         const users = await User.find(searchCondition).select("firstName lastName avatarImage");
+
+//         // Định dạng dữ liệu trả về
+//         const formattedUsers = users.map((u) => {
+//             const userIdStr = u._id.toString();
+//             let status = "none"; // Mặc định chưa kết bạn
+
+//             if (friendsSet.has(userIdStr)) {
+//                 status = "friend"; // Đã là bạn bè
+//             } else if (pendingRequestsSet.has(userIdStr)) {
+//                 status = "pending"; // Đã gửi lời mời kết bạn
+//             }
+
+//             return {
+//                 _id: u._id,
+//                 firstName: u.firstName,
+//                 lastName: u.lastName,
+//                 avatarImage: u.avatarImage,
+//                 status
+//             };
+//         });
+
+//         // Trả về danh sách người dùng với trạng thái chính xác
+//         res.status(200).json({ success: true, data: formattedUsers });
+//     } catch (error) {
+//         console.error("Lỗi tìm kiếm người dùng:", error);
+//         res.status(500).json({ success: false, message: "Lỗi server khi tìm kiếm người dùng" });
+//     }
+// };
+
+exports.searchUsers = async (req, res) => {
+    try {
+        const { query, userId } = req.query;
+        if (!userId) {
+            return res.status(400).json({ success: false, message: "Thiếu userId" });
+        }
+
+        // Lấy thông tin user hiện tại để kiểm tra bạn bè
+        const user = await User.findById(userId).populate("friends");
+
+        if (!user) {
+            return res.status(404).json({ success: false, message: "User không tồn tại" });
+        }
+
+        const friendsSet = new Set(user.friends.map(f => f._id.toString()));
+
+        // Điều kiện tìm kiếm
+        const searchCondition = query
+            ? {
+                _id: { $ne: userId }, 
+                $or: [
+                    { firstName: { $regex: query, $options: "i" } },
+                    { lastName: { $regex: query, $options: "i" } }
+                ]
+            }
+            : { _id: { $ne: userId } };
+
+        // Tìm người dùng
+        const users = await User.find(searchCondition)
+            .select("firstName lastName avatarImage friendRequests");
+
+        // Kiểm tra trạng thái kết bạn
+        const formattedUsers = users.map((u) => {
+            const userIdStr = u._id.toString();
+            let status = "none";
+
+            if (friendsSet.has(userIdStr)) {
+                status = "friend";
+            } else {
+                // Kiểm tra trong friendRequests
+                const request = u.friendRequests.find(req => req.user.toString() === userId);
+                if (request && request.status === "pending") {
+                    status = "pending"; // Đã gửi lời mời
+                }
+            }
+
+            return {
+                _id: u._id,
+                firstName: u.firstName,
+                lastName: u.lastName,
+                avatarImage: u.avatarImage,
+                status
+            };
+        });
+
+        res.status(200).json({ success: true, data: formattedUsers });
+    } catch (error) {
+        console.error("Lỗi tìm kiếm người dùng:", error);
+        res.status(500).json({ success: false, message: "Lỗi server khi tìm kiếm người dùng" });
+    }
+};
+//hủy lời mời ở search
+exports.cancelFriendRequest = async (req, res) => {
+    try {
+        const { userId, friendId } = req.body;
+        if (!userId || !friendId) {
+            return res.status(400).json({ success: false, message: "Thiếu userId hoặc friendId" });
+        }
+
+        // Tìm user nhận lời mời
+        const friend = await User.findById(friendId);
+        if (!friend) {
+            return res.status(404).json({ success: false, message: "Người dùng không tồn tại" });
+        }
+
+        // Xóa lời mời kết bạn của userId trong danh sách friendRequests của friendId
+        const updatedRequests = friend.friendRequests.filter(req => req.user.toString() !== userId);
+
+        // Kiểm tra xem có lời mời nào được xóa hay không
+        if (updatedRequests.length === friend.friendRequests.length) {
+            return res.status(400).json({ success: false, message: "Không tìm thấy lời mời kết bạn để hủy" });
+        }
+
+        // Cập nhật danh sách lời mời kết bạn
+        friend.friendRequests = updatedRequests;
+        await friend.save();
+
+        res.status(200).json({ success: true, message: "Đã hủy lời mời kết bạn" });
+    } catch (error) {
+        console.error("Lỗi khi hủy lời mời kết bạn:", error);
+        res.status(500).json({ success: false, message: "Lỗi server" });
+    }
+};

@@ -1,5 +1,5 @@
 const express = require("express");
-const { Login, Register, Logout, GetUser, SetAvatar, GetUserById, GetFriends } = require("../controllers/userController");
+const { Login, Register, Logout, GetUser, SetAvatar, GetUserById, GetFriends, searchFriends, searchUsers, cancelFriendRequest } = require("../controllers/userController");
 const {
   getAllPosts,
   getPostById,
@@ -41,6 +41,16 @@ router.put('/posts/:id', authProtect, updatePost); // Cập nhật bài viết (
 router.delete('/posts/:id', authProtect, deletePost); // Xóa bài viết (yêu cầu đăng nhập)
 router.post('/posts/:id/like', authProtect, toggleLikePost); // Thích/bỏ thích bài viết
 router.post('/posts/:id/comment', authProtect, commentPost); // Bình luận bài viết
+
+//  Gợi ý bạn bè (popup)
+router.get("/search-friends", searchFriends);
+//  Tìm kiếm toàn bộ người dùng (Enter)
+router.get("/search-users", searchUsers);
+
+//hủy lời mòi
+router.post("/cancel-friend-request", cancelFriendRequest);
+
+
 
 // Routes chức năng kết bạn
 router.get("/all-friends", authProtect, GetFriends);
