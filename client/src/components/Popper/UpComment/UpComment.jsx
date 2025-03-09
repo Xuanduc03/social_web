@@ -3,7 +3,7 @@ import style from "./UpComment.module.scss";
 import { TextField, Button, Avatar, Modal } from '@mui/material';
 import axios from "axios";
 import { toast } from "react-toastify";
-import { format ,formatDistanceToNow } from "date-fns";
+import { format, formatDistanceToNow } from "date-fns";
 import { useNavigate, useParams } from "react-router-dom";
 
 const UpComment = () => {
@@ -51,34 +51,42 @@ const UpComment = () => {
     }
 
     try {
+      
       const response = await axios.post(
         `http://localhost:8080/api/posts/${postId}/comment`,
         { text: commentContent },
-        { withCredentials: true ,
+        {
+          withCredentials: true,
           headers: { "Content-Type": "application/json" }
         }
       );
- 
+
       if (response.data.success) {
         toast.success("Bình luận thành công!");
-        setComments([...comments, {
-          id: response.data.data._id,
-          content: commentContent,
-          username: "Current User", // Có thể thay bằng username từ API
-          time: new Date().toLocaleString()
-        }]);
-        navigate("/");
+
+        // Gọi lại API để cập nhật danh sách bình luận
+        const res = await axios.get(`http://localhost:8080/api/posts/${postId}`, { withCredentials: true });
+        setComments(res.data.data.comments || []);
+
+        setCommentContent(""); // Xóa nội dung input sau khi gửi
+        // setComments([...comments, {
+        //   id: response.data.data._id,
+        //   content: commentContent,
+        //   username: "Current User", // Có thể thay bằng username từ API
+        //   time: new Date().toLocaleString()
+        // }]);
+        // navigate("/");
       }
     } catch (error) {
       toast.error(error.response?.data?.message || "Lỗi khi gửi bình luận!");
     }
   };
 
-   const formatDate = (dateString) => {
-      const date = new Date(dateString);
-      return `${format(date, 'dd/MM/yyyy')} (${formatDistanceToNow(date, {addSuffix: true})})`
-    }
-  
+  const formatDate = (dateString) => {
+    const date = new Date(dateString);
+    return `${format(date, 'dd/MM/yyyy')} (${formatDistanceToNow(date, { addSuffix: true })})`
+  }
+
 
   // Hiển thị loading khi chưa có dữ liệu
   if (!postData) return <div>Loading...</div>;
@@ -93,7 +101,7 @@ const UpComment = () => {
         {/* Chi tiết bài post */}
         <div className={style.postDetail}>
           <div className={style.postHeader}>
-            <Avatar 
+            <Avatar
               src={user.avatarImage || "https://via.placeholder.com/40"} // Dùng photoURL nếu có
               alt="avatar"
               className={style.avatar}
@@ -106,9 +114,9 @@ const UpComment = () => {
           <div className={style.postContent}>
             <p>{postData.content}</p>
             {postData.images && postData.images.length > 0 && (
-              <img 
-                src={postData.images[0].url} 
-                alt="Post" 
+              <img
+                src={postData.images[0].url}
+                alt="Post"
                 className={style.postImage}
                 onError={() => console.log(`Failed to load image: ${postData.images[0].url}`)}
               />
@@ -123,8 +131,8 @@ const UpComment = () => {
             comments.map((comment) => (
               <div key={comment._id} className={style.comment}>
                 <div className={style.commentHeader}>
-                <strong>{loading ? "Loading..." : comment ? `${comment.user.firstName} ${comment.user.lastName}` : "User Name"}</strong>
-                <span>{formatDate(comment.createdAt)}</span>
+                  <strong>{loading ? "Loading..." : comment ? `${comment.user.firstName} ${comment.user.lastName}` : "User Name"}</strong>
+                  <span>{formatDate(comment.createdAt)}</span>
                 </div>
                 <p>{comment.text}</p>
               </div>
@@ -145,7 +153,7 @@ const UpComment = () => {
               className={style.commentInput}
             />
             <Button
-            type='submit'
+              type='submit'
               variant="contained"
               color="primary"
               onClick={handleAddComment}
