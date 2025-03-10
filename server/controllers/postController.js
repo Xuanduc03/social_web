@@ -2,6 +2,7 @@ const Post = require('../models/post');
 const User = require('../models/user')
 const mongoose = require('mongoose');
 const path = require('path'); // Thêm path để xử lý đường dẫn
+const { getIo } = require('../socket/socket');
 
 // Tạo bài viết
 module.exports.createPost = async (req, res) => {
@@ -295,9 +296,12 @@ module.exports.toggleLikePost = async (req, res) => {
     } else {
       post.likes.push(userId);
     }
+    post.likes = Array.isArray(post.likes) ? post.likes : [];
 
     const updatedPost = await post.save();
     await updatedPost.populate('user', 'firstName lastName avatar');
+
+    getIo().emit(`updateLikes:${postId}`, {postId , likes : post.likes});
 
     res.status(200).json({
       data: updatedPost,
@@ -315,6 +319,21 @@ module.exports.toggleLikePost = async (req, res) => {
   }
 };
 
+// Lấy danh sách like bài viết theo id bài viết 
+module.exports.GetLikePostById = async (req, res) => {
+  try {
+    const postId = req.params.id;
+    const post = await Post.findById(postId).select('likes'); // Chỉ lấy trường likes
+    if (!post) {
+      return res.status(404).json({ success: false, message: 'Bài viết không tồn tại' });
+    }
+    res.json({ success: true, likes: post.likes });
+  } catch (error) {
+    console.error('Lỗi khi lấy lượt thích:', error);
+    res.status(500).json({ success: false, message: 'Lỗi server' });
+  }
+};
+
 // Bình luận bài viết
 module.exports.commentPost = async (req, res) => {
   try {
@@ -322,9 +341,6 @@ module.exports.commentPost = async (req, res) => {
     const { text } = req.body;
     const userId = req.user?.id;
 
-    console.log("post id", req.params.id);
-    console.log("text", text);
-    console.log("userid", req.user.id)
     if (!userId) {
       return res.status(401).json({
         message: "Bạn chưa đăng nhập",
@@ -363,6 +379,8 @@ module.exports.commentPost = async (req, res) => {
     await updatedPost.populate('user', 'firstName lastName avatar');
     await updatedPost.populate('comments.user', 'firstName lastName avatar');
 
+    getIo().emit(`updateComment:${postId}`, {postId , text : post.comments})
+
     res.status(200).json({
       data: updatedPost,
       message: "Bình luận bài viết thành công",
@@ -378,7 +396,6 @@ module.exports.commentPost = async (req, res) => {
     });
   }
 };
-
 
 
 //lấy id bài viết theo người dùng

@@ -69,6 +69,7 @@ function Feed() {
           time={post.createdAt}
           message={post.content || ""}
           likes={post.likes}
+          checkLiked={loading ? "" : user._id}
           comments={post.comments}
           onUpdate={handleUpdatePost}
           onDelete={handleDeletePost}

@@ -9,13 +9,17 @@ function Rightsidebar() {
   const [modalOpen, setModalOpen] = useState(false);
 
   useEffect(() => {
-    const fetchFriends = async () => {
-      const res = await axios.get("http://localhost:8080/api/all-friends", {
-        withCredentials: true
-      });
-      setFriends(res.data);
-    };
-    fetchFriends();
+    try {
+      const fetchFriends = async () => {
+        const res = await axios.get("http://localhost:8080/api/all-friends", {
+          withCredentials: true
+        });
+        setFriends(res.data);
+      };
+      fetchFriends();
+    } catch (error) {
+      console.log(error);
+    }
   }, []);
 
   return (

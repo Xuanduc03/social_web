@@ -9,6 +9,7 @@ const {
   toggleLikePost,
   commentPost,
   getPostsByUserId,
+  GetLikePostById,
 } = require('../controllers/postController');
 
 const {
@@ -41,6 +42,7 @@ router.put('/posts/:id', authProtect, updatePost); // Cập nhật bài viết (
 router.delete('/posts/:id', authProtect, deletePost); // Xóa bài viết (yêu cầu đăng nhập)
 router.post('/posts/:id/like', authProtect, toggleLikePost); // Thích/bỏ thích bài viết
 router.post('/posts/:id/comment', authProtect, commentPost); // Bình luận bài viết
+router.get("/posts/:id/likes", authProtect, GetLikePostById); //lấy danh sách like theo id bài viết
 
 // Routes chức năng kết bạn
 router.get("/all-friends", authProtect, GetFriends);
