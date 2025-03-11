@@ -3,8 +3,10 @@ import styles from "./ProfileHeader.module.scss"; // Sửa import thành module
 import axios from "axios";
 import { toast } from "react-toastify";
 import { Modal } from "@mui/material";
+import { useParams } from "react-router-dom";
 
 const ProfileHeader = () => {
+  const {userId} = useParams();
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);
   const [modalOpen, setModalOpen] = useState(false);
@@ -14,10 +16,9 @@ const ProfileHeader = () => {
   useEffect(() => {
     const fetchUser = async () => {
       try {
-        const response = await axios.get("http://localhost:8080/api/me", { withCredentials: true });
+        const response = await axios.get(`http://localhost:8080/api/user/${userId}`, { withCredentials: true });
         if (response.data.success) {
           setUser(response.data.data);
-          console.log("Thông tin user:", response.data.data);
         } else {
           console.log("Không lấy được thông tin user:", response.data.message);
         }
@@ -101,7 +102,7 @@ const handleUpload = async () => {
             {loading ? "Loading..." : user ? `${user.firstName} ${user.lastName}` : "User Name"}
           </h1>
           <p className={styles.friendsCount}>
-            {loading ? "..." : user?.friendsCount || "Friend"}
+            {loading ? "..." : user?.friends.length || "Friend"} Người bạn
           </p>
         </div>
         <div className={styles.actions}>

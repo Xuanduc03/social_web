@@ -7,7 +7,7 @@ import { Avatar, IconButton } from '@mui/material';
 import ChatIcon from '@mui/icons-material/Chat';
 import NotificationsIcon from '@mui/icons-material/Notifications';
 import ArrowDropDownIcon from '@mui/icons-material/ArrowDropDown';
-import { Link } from 'react-router-dom';
+import { Link, Navigate } from 'react-router-dom';
 import axios from 'axios';
 import { toast } from 'react-toastify';
 
@@ -15,6 +15,7 @@ function Header() {
     const [profileDropdownOpen, setProfileDropdownOpen] = useState(false);
     const [notiDropdownOpen, setNotiDropdownOpen] = useState(false);
     const [user, setUser] = useState(null);
+    const [userId , setuserId ] = useState(""); //id ngườu dùng
     const [loading, setLoading] = useState(true);
 
     useEffect(() => {
@@ -23,6 +24,7 @@ function Header() {
                 const response = await axios.get("http://localhost:8080/api/me", { withCredentials: true });
                 if (response.data.success) {
                     setUser(response.data.data);
+                    setuserId(response.data.data);
                 } else {
                     console.log("Không lấy được thông tin user:", response.data.message);
                 }
@@ -35,12 +37,14 @@ function Header() {
         fetchUser();
     }, []);
 
+
+
     const handleLogout = async () => {
         try {
             const response = await axios.get("http://localhost:8080/api/logout", { withCredentials: true });
             if(response.data.success){
                 toast.success("Đăng xuất thành công");
-                window.location.reload();
+                Navigate("/login")
             }else {
                 toast.error(response.data.message);
             }
@@ -70,8 +74,8 @@ function Header() {
             </div>
 
             <div className="headerRight">
-                <Link to={`/profile`} className="headerInfo">
-                    <img src={loading ? "loading..." : (user? user.avatarImage : "anh") || 'https://static.vecteezy.com/system/resources/thumbnails/009/292/244/small_2x/default-avatar-icon-of-social-media-user-vector.jpg'} alt="" className='avatar' />
+                <Link to={`/profile/${userId._id}`} className="headerInfo">
+                    <img src={loading ? "loading..." : (user? user.avatarImage : "anh")} alt="" className='avatar' />
                     <h5>{loading ? "Loading..." : (user ? user.lastName : "Guest")}</h5>
                 </Link>
                 <IconButton className='chat'>
@@ -98,7 +102,7 @@ function Header() {
                     </IconButton>
                     {profileDropdownOpen && (
                         <div className="dropdown-menu">
-                            <Link to="/profile"><i class="fa-solid fa-user"></i> Trang cá nhân</Link>
+                            <Link to={`/profile/${userId._id}`}><i class="fa-solid fa-user"></i> Trang cá nhân</Link>
                             {!user && <Link to="/login"><i class="fa-solid fa-user-plus"></i> Đăng nhập</Link>}
                             
                             <Link to="/settings"><i class="fa-solid fa-gear"></i> Cài đặt</Link>

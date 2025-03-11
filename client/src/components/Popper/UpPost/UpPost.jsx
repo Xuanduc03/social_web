@@ -62,7 +62,6 @@ function UpPost() {
       toast.error("Vui lòng đăng nhập để đăng bài!");
       return;
     }
-  
     if (!content.trim() && selectedFiles.length === 0) { // Sử dụng trim() để kiểm tra khoảng trắng
       toast.error("Vui lòng nhập nội dung hoặc chọn ít nhất một ảnh!");
       return;
@@ -109,7 +108,7 @@ function UpPost() {
             </div>
 
             <div className="modalHeaderTop">
-              <Link to="/profile" className="uploadinfo">
+              <Link to="/profile" className="uploadinfo">                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        
                 <Avatar
                   src={loading ? "" : user?.avatarImage || ""}
                   alt={user ? `${user.firstName} ${user.lastName}` : "Guest"}

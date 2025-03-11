@@ -5,6 +5,7 @@ import Post from '../Post/Post';
 import UpPost from '../Popper/UpPost/UpPost';
 import axios from 'axios';
 
+
 function Feed() {
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);
@@ -30,7 +31,7 @@ function Feed() {
       try {
         const response = await axios.get("http://localhost:8080/api/posts", { withCredentials: true });
         if (response.data.success) {
-          setPosts(response.data.data); // Dữ liệu đã được lọc ở backend
+          setPosts(response.data.data); // Lấy danh sách bài viết từ server
         }
       } catch (error) {
         console.log("Lỗi khi lấy bài viết:", error.response?.data || error.message);
@@ -61,11 +62,13 @@ function Feed() {
         <Post
           key={post._id}
           id={post._id}
+          userId={post.user._id}
           photoURL={post.user?.avatarImage || "https://static.vecteezy.com/system/resources/thumbnails/009/292/244/small_2x/default-avatar-icon-of-social-media-user-vector.jpg"}
           image={post.images?.[0]?.url || ""}
           username={`${post.user?.firstName || "Guest"} ${post.user?.lastName || ""}`}
-          time={new Date(post.createdAt).toLocaleTimeString()}
+          time={post.createdAt}
           message={post.content || ""}
+          likes={post.likes}
           comments={post.comments}
           onUpdate={handleUpdatePost}
           onDelete={handleDeletePost}
