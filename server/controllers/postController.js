@@ -1,14 +1,14 @@
 const Post = require('../models/post');
 const User = require('../models/user')
 const mongoose = require('mongoose');
-const path = require('path'); // Thêm path để xử lý đường dẫn
+const path = require('path'); 
 
 // Tạo bài viết
 module.exports.createPost = async (req, res) => {
   try {
-    const { content } = req.body; // Lấy content từ req.body (đã parse bởi multer)
-    const userId = req.user?.id; // Lấy từ middleware authProtect
-    const files = req.files?.images || []; // Lấy danh sách file ảnh từ req.files
+    const { content } = req.body; 
+    const userId = req.user?.id; 
+    const files = req.files?.images || []; 
 
     console.log("Content received:", content);
     console.log("Files received:", files);
@@ -21,7 +21,7 @@ module.exports.createPost = async (req, res) => {
       });
     }
 
-    if (!content || !content.trim()) { // Kiểm tra content không rỗng hoặc chỉ chứa khoảng trắng
+    if (!content || !content.trim()) { 
       return res.status(400).json({
         message: "Nội dung bài viết là bắt buộc",
         success: false,
@@ -30,17 +30,17 @@ module.exports.createPost = async (req, res) => {
     }
 
     const images = files.map(file => ({
-      url: `http://localhost:8080/uploads/${path.basename(file.path)}` // Trả về URL đầy đủ
-    })); // Lưu dưới dạng object với trường url
+      url: `http://localhost:8080/uploads/${path.basename(file.path)}`
+    })); 
 
     const newPost = new Post({
       user: userId,
       content: content.trim(),
-      images: images.length > 0 ? images : [], // Nếu có ảnh, lưu như mảng object
+      images: images.length > 0 ? images : [], 
     });
 
     const savedPost = await newPost.save();
-    await savedPost.populate('user', 'firstName lastName avatar'); // Populate thông tin user
+    await savedPost.populate('user', 'firstName lastName avatar'); 
 
     res.status(201).json({
       data: savedPost,
@@ -61,7 +61,7 @@ module.exports.createPost = async (req, res) => {
 // Lấy tất cả bài viết
 module.exports.getAllPosts = async (req, res) => {
   try {
-    const userId = req.user?.id; // Lấy ID của người dùng hiện tại từ middleware authProtect
+    const userId = req.user?.id; 
 
     if (!userId) {
       return res.status(401).json({
@@ -322,6 +322,9 @@ module.exports.commentPost = async (req, res) => {
     const { text } = req.body;
     const userId = req.user?.id;
 
+    console.log("post id", req.params.id);
+    console.log("text", text);
+    console.log("userid", req.user.id)
     if (!userId) {
       return res.status(401).json({
         message: "Bạn chưa đăng nhập",
@@ -370,6 +373,44 @@ module.exports.commentPost = async (req, res) => {
     console.error("Comment Post Error:", error);
     res.status(500).json({
       message: error.message || "Lỗi server khi bình luận bài viết",
+      success: false,
+      error: true,
+    });
+  }
+};
+
+
+
+//lấy id bài viết theo người dùng
+module.exports.getPostsByUserId = async (req, res) => {
+  try {
+    const userId = req.params.userId;
+
+    // Kiểm tra xem userId có hợp lệ không
+    if (!mongoose.Types.ObjectId.isValid(userId)) {
+      return res.status(400).json({
+        message: "ID người dùng không hợp lệ",
+        success: false,
+        error: true,
+      });
+    }
+
+    // Tìm tất cả bài viết của user theo userId, sắp xếp theo thời gian mới nhất
+    const posts = await Post.find({ user: userId })
+      .populate("user", "firstName lastName avatarImage") // Lấy thông tin người tạo bài viết
+      .populate("comments.user", "firstName lastName avatarImage") // Lấy thông tin người bình luận
+      .sort({ createdAt: -1 }); // Sắp xếp bài viết mới nhất trước
+
+    res.status(200).json({
+      data: posts,
+      message: "Lấy danh sách bài viết của người dùng thành công",
+      success: true,
+      error: false,
+    });
+  } catch (error) {
+    console.error("Get User Posts Error:", error);
+    res.status(500).json({
+      message: error.message || "Lỗi server khi lấy bài viết",
       success: false,
       error: true,
     });

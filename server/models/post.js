@@ -6,21 +6,21 @@ const PostSchema = new mongoose.Schema(
       type: mongoose.Schema.Types.ObjectId,
       ref: "User",
       required: true,
-      index: true, // Thêm index để tối ưu truy vấn theo user
+      index: true,
     },
     content: {
       type: String,
       required: true,
-      trim: true, // Loại bỏ khoảng trắng thừa
-      minlength: 1, // Đảm bảo không rỗng
-      maxlength: 5000, // Giới hạn độ dài nội dung
+      trim: true, 
+      minlength: 1, 
+      maxlength: 5000,
     },
     images: [
       {
         url: {
           type: String,
           trim: true,
-          // match: /^https?:\/\/.+/i, // Kiểm tra định dạng URL
+         
         },
       },
     ],
@@ -42,14 +42,14 @@ const PostSchema = new mongoose.Schema(
           required: true,
           trim: true,
           minlength: 1,
-          maxlength: 1000, // Giới hạn độ dài bình luận
+          maxlength: 1000, 
         },
         createdAt: {
           type: Date,
           default: Date.now,
         },
         updatedAt: {
-          type: Date, // Thêm để theo dõi chỉnh sửa bình luận
+          type: Date, 
         },
       },
     ],
@@ -62,7 +62,7 @@ const PostSchema = new mongoose.Schema(
         },
         sharedAt: {
           type: Date,
-          default: Date.now, // Thời điểm chia sẻ
+          default: Date.now,
         },
       },
     ],
@@ -70,7 +70,7 @@ const PostSchema = new mongoose.Schema(
   { timestamps: true }
 );
 
-// Thêm index compound nếu cần truy vấn theo thời gian và user
+
 PostSchema.index({ user: 1, createdAt: -1 });
 
 module.exports = mongoose.model("Post", PostSchema);

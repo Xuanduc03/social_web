@@ -268,8 +268,45 @@ module.exports.GetUser = async (req, res) => {
         });
     }
 };
+module.exports.GetUserById = async (req, res) => {
+    try {
+        const userId = req.params.id;
 
+        const userExisting = await User.findById(userId);
+
+        if(!userExisting) {
+            return res.status(400).json({
+                message: "Người dùng ko tồn tại", success: false, error: true
+            });
+        }
+
+        return res.status(200).json({
+            data: userExisting,
+            error: false,
+            success: true,
+            message: "User details retrieved successfully"
+        });
+
+    } catch (error) {
+        console.error("GetUser error:", error);
+        return res.status(500).json({
+            message: error.message || "Error fetching user",
+            success: false,
+            error: true
+        });
+    }
+}
 //Friend
+module.exports.GetFriends = async (req, res) => {
+    try {
+      const user = await User.findById(req.user._id).populate("friends", "firstName lastName avatarImage");
+      if (!user) return res.status(404).json({ message: "User not found" });
+  
+      res.json(user.friends);
+    } catch (error) {
+      res.status(500).json({ message: "Server error" });
+    }
+  };
 module.exports.sendFriendRequest = async (req, res) => {
     try {
       const { friendId } = req.body;
