@@ -2,6 +2,7 @@ const Post = require('../models/post');
 const User = require('../models/user')
 const mongoose = require('mongoose');
 const path = require('path'); 
+const { getIo } = require('../socket/socket');
 
 // Tạo bài viết
 module.exports.createPost = async (req, res) => {
@@ -21,7 +22,7 @@ module.exports.createPost = async (req, res) => {
       });
     }
 
-    if (!content || !content.trim()) { 
+    if (!content || !content.trim()) { // Kiểm tra content không rỗng hoặc chỉ chứa khoảng trắng
       return res.status(400).json({
         message: "Nội dung bài viết là bắt buộc",
         success: false,
@@ -30,17 +31,17 @@ module.exports.createPost = async (req, res) => {
     }
 
     const images = files.map(file => ({
-      url: `http://localhost:8080/uploads/${path.basename(file.path)}`
-    })); 
+      url: `http://localhost:8080/uploads/${path.basename(file.path)}` // Trả về URL đầy đủ
+    })); // Lưu dưới dạng object với trường url
 
     const newPost = new Post({
       user: userId,
       content: content.trim(),
-      images: images.length > 0 ? images : [], 
+      images: images.length > 0 ? images : [], // Nếu có ảnh, lưu như mảng object
     });
 
     const savedPost = await newPost.save();
-    await savedPost.populate('user', 'firstName lastName avatar'); 
+    await savedPost.populate('user', 'firstName lastName avatar'); // Populate thông tin user
 
     res.status(201).json({
       data: savedPost,
@@ -61,7 +62,7 @@ module.exports.createPost = async (req, res) => {
 // Lấy tất cả bài viết
 module.exports.getAllPosts = async (req, res) => {
   try {
-    const userId = req.user?.id; 
+    const userId = req.user?.id; // Lấy ID của người dùng hiện tại từ middleware authProtect
 
     if (!userId) {
       return res.status(401).json({
@@ -295,9 +296,12 @@ module.exports.toggleLikePost = async (req, res) => {
     } else {
       post.likes.push(userId);
     }
+    post.likes = Array.isArray(post.likes) ? post.likes : [];
 
     const updatedPost = await post.save();
     await updatedPost.populate('user', 'firstName lastName avatar');
+
+    getIo().emit(`updateLikes:${postId}`, {postId , likes : post.likes});
 
     res.status(200).json({
       data: updatedPost,
@@ -315,6 +319,21 @@ module.exports.toggleLikePost = async (req, res) => {
   }
 };
 
+// Lấy danh sách like bài viết theo id bài viết 
+module.exports.GetLikePostById = async (req, res) => {
+  try {
+    const postId = req.params.id;
+    const post = await Post.findById(postId).select('likes'); // Chỉ lấy trường likes
+    if (!post) {
+      return res.status(404).json({ success: false, message: 'Bài viết không tồn tại' });
+    }
+    res.json({ success: true, likes: post.likes });
+  } catch (error) {
+    console.error('Lỗi khi lấy lượt thích:', error);
+    res.status(500).json({ success: false, message: 'Lỗi server' });
+  }
+};
+
 // Bình luận bài viết
 module.exports.commentPost = async (req, res) => {
   try {
@@ -322,9 +341,6 @@ module.exports.commentPost = async (req, res) => {
     const { text } = req.body;
     const userId = req.user?.id;
 
-    console.log("post id", req.params.id);
-    console.log("text", text);
-    console.log("userid", req.user.id)
     if (!userId) {
       return res.status(401).json({
         message: "Bạn chưa đăng nhập",
@@ -363,6 +379,8 @@ module.exports.commentPost = async (req, res) => {
     await updatedPost.populate('user', 'firstName lastName avatar');
     await updatedPost.populate('comments.user', 'firstName lastName avatar');
 
+    getIo().emit(`updateComment:${postId}`, {postId , text : post.comments})
+
     res.status(200).json({
       data: updatedPost,
       message: "Bình luận bài viết thành công",
@@ -378,7 +396,6 @@ module.exports.commentPost = async (req, res) => {
     });
   }
 };
-
 
 
 //lấy id bài viết theo người dùng
