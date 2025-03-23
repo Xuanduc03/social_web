@@ -1,8 +1,9 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import ThumbUpIcon from "@mui/icons-material/ThumbUp";
 import MoreHorizIcon from "@mui/icons-material/MoreHoriz";
 import axios from "axios";
-import { format ,formatDistanceToNow } from "date-fns";
+import io from "socket.io-client";
+import { format, formatDistanceToNow } from "date-fns";
 import { toast } from "react-toastify";
 import { IconButton, Menu, MenuItem } from "@mui/material";
 import { useNavigate } from "react-router-dom";
@@ -10,11 +11,14 @@ import classNames from "classnames/bind";
 import styles from "./Post.module.scss";
 
 const cx = classNames.bind(styles);
+const socket = io("http://localhost:8080", { withCredentials: true, transports: ["websocket"], });
 
-const Post = ({userId, id, photoURL, image, likes, comments, username, time, message, onUpdate, onDelete }) => {
+const Post = ({ userId, id, checkLiked, photoURL, image, likes, comments, username, time, message, onUpdate, onDelete }) => {
 
   const navigate = useNavigate();
-  const [liked, setLiked] = useState(false);
+  const [like, setLike] = useState(likes || []);
+  const [liked, setLiked] = useState(() => likes?.includes(checkLiked) || false);
+  const [comment, setComment] = useState(comments || []);
   const [editing, setEditing] = useState(false);
   const [editContent, setEditContent] = useState(message);
   const [anchorEl, setAnchorEl] = useState(null);
@@ -26,13 +30,48 @@ const Post = ({userId, id, photoURL, image, likes, comments, username, time, mes
     navigate(`/profile/${id}`);
   }
 
+  useEffect(() => {
+    socket.on(`updateLikes:${id}`, ({ likes }) => {
+      setLike(likes);
+      setLiked(likes.includes(checkLiked));
+    });
+
+    socket.on(`updateComments:${id}`, ({comments}) => {
+      setComment(comments);
+    });
+
+    return () => {
+      socket.off(`updateLikes:${id}`);
+      socket.off(`updateComments:${id}`);
+    };
+  }, [id, checkLiked]);
+
+  useEffect(() => {
+    const fetchInitialLikes = async () => {
+      try {
+        const response = await axios.get(`http://localhost:8080/api/posts/${id}/likes`, {
+          withCredentials: true,
+        });
+        if (response.data.success) {
+          const updatedLikes = response.data.likes || [];
+          setLike(updatedLikes);
+          setLiked(updatedLikes.includes(checkLiked));
+        }
+      } catch (error) {
+        console.error("Lỗi khi lấy dữ liệu lượt thích:", error);
+      }
+    };
+  
+    fetchInitialLikes();
+  }, [id, checkLiked]);
+
   const handleMenuOpen = (event) => {
     setAnchorEl(event.currentTarget);
   };
 
   const formatDate = (dateString) => {
     const date = new Date(dateString);
-    return `${format(date, 'dd/MM/yyyy')} (${formatDistanceToNow(date, {addSuffix: true})})`
+    return `${format(date, 'dd/MM/yyyy')} (${formatDistanceToNow(date, { addSuffix: true })})`
   }
 
   const handleMenuClose = () => {
@@ -47,8 +86,11 @@ const Post = ({userId, id, photoURL, image, likes, comments, username, time, mes
         { withCredentials: true }
       );
       if (response.data.success) {
-        setLiked(!liked);
-        toast.success(liked ? "Đã bỏ thích bài viết!" : "Đã thích bài viết!");
+        if (liked) {
+          toast.success(liked ? "Đã bỏ thích bài viết" : "Đã thích bài viết");
+        } else {
+          toast.success("Đã thích bài viết");
+        }
       } else {
         toast.error(response.data.message || "Thích bài thất bại!");
       }
@@ -102,7 +144,7 @@ const Post = ({userId, id, photoURL, image, likes, comments, username, time, mes
       {/* Header */}
       <div className={cx("postHeader")}>
         <img
-        onClick={() => handleProfile(userId)}
+          onClick={() => handleProfile(userId)}
           src={photoURL || "https://via.placeholder.com/40"}
           alt="avatar"
           className={cx("avatar")}
@@ -165,13 +207,12 @@ const Post = ({userId, id, photoURL, image, likes, comments, username, time, mes
       {/* Thống kê cảm xúc */}
       <div className={cx("postActions")}>
         <div className={cx("reactionCount")}>
-
           <span role="img" aria-label="like">👍</span>
-          <span className={cx("likes")}>{liked ? "Bạn đã thích" : likes.length}</span>
+          <span className={cx("likes")} onClick={handleLike}>{liked ? `Bạn và ${like.length - 1} đã thích` : `${like.length} đã thích`}</span>
         </div>
         <div className={cx("actionButtons")}>
           <span>
-            <strong>{comments ? comments.length : 0}</strong> Bình luận
+            <strong>{comment ? comment.length : 0}</strong> Bình luận
           </span>
           <span>Chia sẻ</span>
         </div>

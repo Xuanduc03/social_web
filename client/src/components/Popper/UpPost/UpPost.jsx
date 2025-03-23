@@ -37,17 +37,28 @@ function UpPost() {
 
   const handleOpen = () => setOpen(true);
   const handleClose = () => {
-    setOpen(false);
-    setContent("");
-    setSelectedFiles([]);
-    setPreviewUrls([]);
+    if (content.trim() !== "" || selectedFiles.length > 0) {
+      const closeUpPost = window.confirm("Bạn muốn đóng cửa sổ này chứ?");
+      if (closeUpPost) {
+        setOpen(false);
+        setContent("");
+        setSelectedFiles([]);
+        setPreviewUrls([]);
+      }
+    } else {
+      setOpen(false);
+      setContent("");
+      setSelectedFiles([]);
+      setPreviewUrls([]);
+    }
+    
   };
 
   const handleContentChange = (e) => setContent(e.target.value);
 
   const handleFileChange = (e) => {
     const files = Array.from(e.target.files);
-    if (files.length > 4) { // Giới hạn tối đa 4 ảnh
+    if (files.length > 4) { 
       toast.error("Bạn chỉ có thể chọn tối đa 4 ảnh!");
       return;
     }
@@ -62,16 +73,16 @@ function UpPost() {
       toast.error("Vui lòng đăng nhập để đăng bài!");
       return;
     }
-    if (!content.trim() && selectedFiles.length === 0) { // Sử dụng trim() để kiểm tra khoảng trắng
+  
+    if (!content.trim() && selectedFiles.length === 0) { 
       toast.error("Vui lòng nhập nội dung hoặc chọn ít nhất một ảnh!");
       return;
     }
   
     const formData = new FormData();
-    formData.append("content", content.trim()); // Đảm bảo gửi content không rỗng
-    selectedFiles.forEach((file) => formData.append("images", file)); // Gửi nhiều file nếu có
+    formData.append("content", content.trim()); 
+    selectedFiles.forEach((file) => formData.append("images", file)); 
   
-    // Log dữ liệu gửi lên để kiểm tra
     for (let pair of formData.entries()) {
       console.log(pair[0] + ': ' + pair[1]);
     }
@@ -84,7 +95,10 @@ function UpPost() {
 
       if (response.data.success) {
         toast.success("Đăng bài viết thành công!");
-        handleClose();
+        setOpen(false);
+        setContent("");
+        setSelectedFiles([]);
+        setPreviewUrls([]);
       } else {
         toast.error(response.data.message || "Đăng bài thất bại!");
       }

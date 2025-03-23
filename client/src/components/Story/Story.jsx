@@ -26,7 +26,7 @@ const stories = [
     name: "Lê Thị D",
     avatar: "https://i.pravatar.cc/150?img=4",
     background: "https://source.unsplash.com/random/300x500?forest"
-  }
+  },
 ];
 
 function Story() {

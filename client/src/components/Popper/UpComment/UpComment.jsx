@@ -60,11 +60,13 @@ const UpComment = () => {
       );
  
       if (response.data.success) {
-        const response = await axios.get(`http://localhost:8080/api/posts/${postId}`, {
-          withCredentials: true,});
         toast.success("Bình luận thành công!");
-        setComments(response.data.data.comments || [])
-        setCommentContent("")
+
+        const response = await axios.get(`http://localhost:8080/api/posts/${postId}`, {
+          withCredentials: true,
+        });
+        setComments(response.data.data.comments || []);
+        setCommentContent("");
       }
     } catch (error) {
       toast.error(error.response?.data?.message || "Lỗi khi gửi bình luận!");
