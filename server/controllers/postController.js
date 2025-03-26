@@ -3,16 +3,14 @@ const User = require('../models/user')
 const mongoose = require('mongoose');
 const path = require('path'); // Thêm path để xử lý đường dẫn
 const { getIo } = require('../socket/socket');
+const cloudinary = require("cloudinary").v2;
 
 // Tạo bài viết
 module.exports.createPost = async (req, res) => {
   try {
     const { content } = req.body; // Lấy content từ req.body (đã parse bởi multer)
     const userId = req.user?.id; // Lấy từ middleware authProtect
-    const files = req.files?.images || []; // Lấy danh sách file ảnh từ req.files
-
-    console.log("Content received:", content);
-    console.log("Files received:", files);
+    const files = req.files || []; // Lấy danh sách file ảnh từ req.files
 
     if (!userId) {
       return res.status(401).json({
@@ -30,18 +28,45 @@ module.exports.createPost = async (req, res) => {
       });
     }
 
-    const images = files.map(file => ({
-      url: `http://localhost:8080/uploads/${path.basename(file.path)}` // Trả về URL đầy đủ
-    })); // Lưu dưới dạng object với trường url
+    if (files.length > 4) {
+      return res.status(400).json({
+        message: "Chỉ được upload tối đa 4 ảnh",
+        success: false,
+        error: true,
+      });
+    }
+
+    let images = [];
+    if (files.length > 0) {
+      images = files.map(file => {
+        if (!file.path || !file.filename) {
+          throw new Error("File upload failed: Missing path or filename");
+        }
+        return {
+          url: file.path,
+          public_id: file.filename,
+        };
+      });
+    }
 
     const newPost = new Post({
       user: userId,
       content: content.trim(),
-      images: images.length > 0 ? images : [], // Nếu có ảnh, lưu như mảng object
+      images: images
     });
+
 
     const savedPost = await newPost.save();
     await savedPost.populate('user', 'firstName lastName avatar'); // Populate thông tin user
+
+    // emit create post on socket io
+    const io = getIo();
+    io.emit("newPost", savedPost); // Gửi bài viết mới đến tất cả client
+    io.to(userId).emit("notification", {
+      message: "Bạn đã đăng bài viết thành công!",
+      postId: savedPost._id,
+      createdAt: savedPost.createdAt,
+    });
 
     res.status(201).json({
       data: savedPost,
@@ -242,6 +267,18 @@ module.exports.deletePost = async (req, res) => {
       });
     }
 
+     // 📌 Lấy danh sách public_id từ post.images[]
+     const publicIds = post.images.map((image) => image.public_id);
+
+     // 📌 Xóa tất cả ảnh trên Cloudinary nếu có ảnh
+     if (publicIds.length > 0) {
+       await cloudinary.api.delete_resources(publicIds, {
+         type: "upload",
+         resource_type: "image",
+       });
+       console.log("🗑️ Đã xóa ảnh trên Cloudinary:", publicIds);
+     }
+
     await Post.deleteOne({ _id: postId });
 
     res.status(200).json({
@@ -301,7 +338,18 @@ module.exports.toggleLikePost = async (req, res) => {
     const updatedPost = await post.save();
     await updatedPost.populate('user', 'firstName lastName avatar');
 
-    getIo().emit(`updateLikes:${postId}`, {postId , likes : post.likes});
+    // Emit sự kiện updateLikes
+    const io = getIo();
+    io.emit(`updateLikes:${postId}`, { likes: post.likes });
+
+    // Emit sự kiện newLike (nếu user vừa like)
+    if (!liked) {
+      const liker = await User.findById(userId).select("firstName lastName avatarImage");
+      io.to(post.user.toString()).emit("newLike", {
+        postId: postId,
+        liker,
+      });
+    }
 
     res.status(200).json({
       data: updatedPost,
@@ -328,6 +376,21 @@ module.exports.GetLikePostById = async (req, res) => {
       return res.status(404).json({ success: false, message: 'Bài viết không tồn tại' });
     }
     res.json({ success: true, likes: post.likes });
+  } catch (error) {
+    console.error('Lỗi khi lấy lượt thích:', error);
+    res.status(500).json({ success: false, message: 'Lỗi server' });
+  }
+};
+
+// Lấy danh sách like bài viết theo id bài viết 
+module.exports.GetCommentPostById = async (req, res) => {
+  try {
+    const postId = req.params.id;
+    const post = await Post.findById(postId).select('comments'); // Chỉ lấy trường likes
+    if (!post) {
+      return res.status(404).json({ success: false, message: 'Bài viết không tồn tại' });
+    }
+    res.json({ success: true, comments: post.comments });
   } catch (error) {
     console.error('Lỗi khi lấy lượt thích:', error);
     res.status(500).json({ success: false, message: 'Lỗi server' });
@@ -379,7 +442,17 @@ module.exports.commentPost = async (req, res) => {
     await updatedPost.populate('user', 'firstName lastName avatar');
     await updatedPost.populate('comments.user', 'firstName lastName avatar');
 
-    getIo().emit(`updateComment:${postId}`, {postId , text : post.comments})
+    // Emit sự kiện updateComments
+    const io = getIo();
+    io.emit(`updateComments:${postId}`, { comments: post.comments });
+
+    // Emit sự kiện newComment
+    const commenter = await User.findById(userId).select("firstName lastName avatarImage");
+    io.to(post.user.toString()).emit("newComment", {
+      postId: postId,
+      commenter,
+      commentText: text,
+    });
 
     res.status(200).json({
       data: updatedPost,

@@ -13,11 +13,12 @@ import styles from "./Post.module.scss";
 const cx = classNames.bind(styles);
 const socket = io("http://localhost:8080", { withCredentials: true, transports: ["websocket"], });
 
-const Post = ({ userId, id, checkLiked, photoURL, image, likes, comments, username, time, message, onUpdate, onDelete }) => {
+const Post = ({ userId, id, checkLiked, photoURL, images, likes, comments, username, time, message, onUpdate, onDelete }) => {
 
   const navigate = useNavigate();
   const [like, setLike] = useState(likes || []);
   const [liked, setLiked] = useState(() => likes?.includes(checkLiked) || false);
+  const [commented, setCommented] = useState(() => comments?.includes(checkLiked) || false);
   const [comment, setComment] = useState(comments || []);
   const [editing, setEditing] = useState(false);
   const [editContent, setEditContent] = useState(message);
@@ -38,6 +39,7 @@ const Post = ({ userId, id, checkLiked, photoURL, image, likes, comments, userna
 
     socket.on(`updateComments:${id}`, ({comments}) => {
       setComment(comments);
+      setCommented(comments.includes(checkLiked));
     });
 
     return () => {
@@ -87,6 +89,7 @@ const Post = ({ userId, id, checkLiked, photoURL, image, likes, comments, userna
       );
       if (response.data.success) {
         if (liked) {
+          socket.emit("likePost", {postId: id, userId: checkLiked})
           toast.success(liked ? "Đã bỏ thích bài viết" : "Đã thích bài viết");
         } else {
           toast.success("Đã thích bài viết");
@@ -198,12 +201,19 @@ const Post = ({ userId, id, checkLiked, photoURL, image, likes, comments, userna
           <p>{message}</p>
         )}
       </div>
-      {/* Ảnh đính kèm */}
-      {image && (
-        <div className={cx("postImage")}>
-          <img src={image} alt="Post" />
+      {/* Ảnh của bài viết  */}
+      {images && images.length > 0 ?(
+        <div className={cx("postImage" , images.length > 1 ? "multiImage" : "singleImage")}>
+          {images.map((image, index) => (
+            <img
+              key={index}
+              src={image.url}
+              alt={`Post image ${index}`}
+              className={cx("image")}
+            />
+          ))}
         </div>
-      )}
+      ) : null}
       {/* Thống kê cảm xúc */}
       <div className={cx("postActions")}>
         <div className={cx("reactionCount")}>

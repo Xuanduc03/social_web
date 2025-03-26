@@ -4,12 +4,15 @@ import Story from "../Story/Story";
 import Post from '../Post/Post';
 import UpPost from '../Popper/UpPost/UpPost';
 import axios from 'axios';
+import { io } from 'socket.io-client';
 
+const socket = io("http://localhost:8080", { withCredentials: true, transports: ["websocket"], });
 
 function Feed() {
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);
   const [posts, setPosts] = useState([]);
+  const [notifications, setNotifications] = useState([]); 
 
   useEffect(() => {
     const fetchUser = async () => {
@@ -40,7 +43,34 @@ function Feed() {
 
     fetchUser();
     fetchPosts();
+
+    // Nhận bài viết mới
+    socket.on("newPost", (newPost) => {
+      setPosts((prevPosts) => [newPost, ...prevPosts]);
+    });
+
+    // Nhận thông báo khi có like mới
+    socket.on("newLike", ({ postId, liker }) => {
+      console.log("Received newLike:", { postId, liker });
+      setNotifications((prev) => [
+          {
+              message: `${liker.firstName} ${liker.lastName} đã thích bài viết của bạn`,
+              postId,
+              createdAt: new Date(),
+              type: "like",
+              user: liker,
+          },
+          ...prev,
+      ]);
+  });
+
+    return () => {
+      socket.off("newPost");
+      socket.off("newLike")
+    };
   }, []);
+
+
 
   const handleAddPost = (newPost) => {
     setPosts([newPost, ...posts]);
@@ -64,7 +94,7 @@ function Feed() {
           id={post._id}
           userId={post.user._id}
           photoURL={post.user?.avatarImage || "https://static.vecteezy.com/system/resources/thumbnails/009/292/244/small_2x/default-avatar-icon-of-social-media-user-vector.jpg"}
-          image={post.images?.[0]?.url || ""}
+          images={post.images || []}
           username={`${post.user?.firstName || "Guest"} ${post.user?.lastName || ""}`}
           time={post.createdAt}
           message={post.content || ""}

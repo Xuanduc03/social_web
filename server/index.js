@@ -5,7 +5,7 @@ const cors = require("cors");
 const cookieParser = require("cookie-parser");
 const connectDB = require("./config/db");
 const router = require("./router/route");
-const { initSocket } = require("./socket/socket"); // 🟢 Import đúng
+const { initSocket } = require("./socket/socket");
 
 require("dotenv").config();
 

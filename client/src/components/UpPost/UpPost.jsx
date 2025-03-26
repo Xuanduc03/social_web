@@ -76,6 +76,7 @@ function UpPost() {
             <p>Cảm xúc/Hoạt động</p>
           </div>
         </div>
+        
       </div>
     </>
   );
