@@ -11,6 +11,7 @@ const {
   getPostsByUserId,
   GetLikePostById,
   GetCommentPostById,
+  sharePost,
 } = require('../controllers/postController');
 
 const {
@@ -54,6 +55,18 @@ router.get("/search-users", searchUsers);
 
 //hủy lời mòi
 router.post("/cancel-friend-request", cancelFriendRequest);
+
+//  Gợi ý bạn bè (popup)
+router.get("/search-friends", searchFriends);
+//  Tìm kiếm toàn bộ người dùng (Enter)
+router.get("/search-users", searchUsers);
+
+//hủy lời mòi
+router.post("/cancel-friend-request", cancelFriendRequest);
+
+// API chia sẻ bài viết
+router.get("/posts/share/:postId", getPostById);
+router.post("/posts/:postId/share",authProtect, sharePost);
 
 // Routes chức năng kết bạn
 router.get("/all-friends", authProtect, GetFriends);

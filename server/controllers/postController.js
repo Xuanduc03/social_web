@@ -267,17 +267,17 @@ module.exports.deletePost = async (req, res) => {
       });
     }
 
-     // 📌 Lấy danh sách public_id từ post.images[]
-     const publicIds = post.images.map((image) => image.public_id);
+    // 📌 Lấy danh sách public_id từ post.images[]
+    const publicIds = post.images.map((image) => image.public_id);
 
-     // 📌 Xóa tất cả ảnh trên Cloudinary nếu có ảnh
-     if (publicIds.length > 0) {
-       await cloudinary.api.delete_resources(publicIds, {
-         type: "upload",
-         resource_type: "image",
-       });
-       console.log("🗑️ Đã xóa ảnh trên Cloudinary:", publicIds);
-     }
+    // 📌 Xóa tất cả ảnh trên Cloudinary nếu có ảnh
+    if (publicIds.length > 0) {
+      await cloudinary.api.delete_resources(publicIds, {
+        type: "upload",
+        resource_type: "image",
+      });
+      console.log("🗑️ Đã xóa ảnh trên Cloudinary:", publicIds);
+    }
 
     await Post.deleteOne({ _id: postId });
 
@@ -293,6 +293,61 @@ module.exports.deletePost = async (req, res) => {
       success: false,
       error: true,
     });
+  }
+};
+
+module.exports.sharePost = async (req, res) => {
+  try {
+    const { postId } = req.params;
+    const { content } = req.body; // Nội dung người dùng nhập khi chia sẻ
+    const userId = req.user.id;
+
+
+    // Kiểm tra bài viết gốc có tồn tại không
+    const originalPost = await Post.findById(postId);
+    if (!originalPost) {
+      return res.status(404).json({ success: false, message: "Bài viết không tồn tại" });
+    }
+
+    // Tạo bài viết chia sẻ
+    const newPost = new Post({
+      user: userId,
+      content, // Nội dung của bài chia sẻ
+      sharedPost: originalPost._id, // Lưu ID bài viết gốc
+    });
+
+    await newPost.save();
+
+    // Cập nhật danh sách người chia sẻ trong bài viết gốc
+    await Post.findByIdAndUpdate(postId, {
+      $push: { shares: { user: userId } },
+    });
+
+    res.status(201).json({ success: true, message: "Đã chia sẻ bài viết!", newPost });
+  } catch (error) {
+    res.status(500).json({ success: false, message: "Lỗi server", error: error.message });
+  }
+};
+
+// Lấy thông tin bài viết, nếu có sharedPost thì lấy luôn bài gốc
+module.exports.getPostByIds = async (req, res) => {
+  try {
+    const { postId } = req.params;
+
+    const post = await Post.findById(postId)
+      .populate("user", "firstName lastName avatarImage") // Lấy thông tin người đăng
+      .populate({
+        path: "sharedPost",
+        populate: { path: "user", select: "firstName lastName avatarImage " }, // Lấy thông tin bài viết gốc
+      });
+
+    if (!post) {
+      return res.status(404).json({ success: false, message: "Bài viết không tồn tại" });
+    }
+
+    res.status(200).json({ success: true, post });
+  } catch (error) {
+    res.status(500).json({ success: false, message: "Lỗi server", error: error.message });
   }
 };
 

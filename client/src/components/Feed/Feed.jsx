@@ -101,6 +101,7 @@ function Feed() {
           likes={post.likes}
           checkLiked={loading ? "" : user._id}
           comments={post.comments}
+          sharedPost={post.sharedPost}
           onUpdate={handleUpdatePost}
           onDelete={handleDeletePost}
         />
