@@ -16,8 +16,8 @@ module.exports.createGroup = async (req, res) => {
     }
 
     let coverImage = "https://via.placeholder.com/300x150";
-    if (file) {
-      coverImage = file.path; // URL từ Cloudinary
+    if (req.file) { 
+      coverImage = req.file.path;
     }
 
     const newGroup = new Group({
@@ -25,7 +25,7 @@ module.exports.createGroup = async (req, res) => {
       description,
       creator: userId,
       members: [{ user: userId }],
-      coverImage,
+      coverImage: coverImage,
     });
 
     const savedGroup = await newGroup.save();
@@ -113,30 +113,35 @@ module.exports.joinGroup = async (req, res) => {
 
 // Rời nhóm
 module.exports.leaveGroup = async (req, res) => {
-  try {
-    const { groupId } = req.params;
-    const userId = req.user?.id;
+  const { groupId } = req.params;
+  const userId = req.user.id; // Lấy từ middleware authProtect
 
+  try {
     const group = await Group.findById(groupId);
     if (!group) {
-      return res.status(404).json({ message: "Không tìm thấy nhóm", success: false });
+      return res.status(404).json({ success: false, message: "Nhóm không tồn tại!" });
     }
 
-    const memberIndex = group.members.findIndex((member) => member.user.toString() === userId);
+    // Kiểm tra xem người dùng có phải là thành viên không
+    const memberIndex = group.members.findIndex(
+      (member) => member.user.toString() === userId
+    );
     if (memberIndex === -1) {
-      return res.status(400).json({ message: "Bạn không phải thành viên", success: false });
+      return res.status(400).json({ success: false, message: "Bạn không phải thành viên của nhóm này!" });
     }
 
+    // Không cho phép người tạo nhóm rời khỏi
     if (group.creator.toString() === userId) {
-      return res.status(400).json({ message: "Người tạo nhóm không thể rời", success: false });
+      return res.status(403).json({ success: false, message: "Người tạo nhóm không thể rời nhóm!" });
     }
 
+    // Xóa người dùng khỏi danh sách thành viên
     group.members.splice(memberIndex, 1);
     await group.save();
 
-    res.status(200).json({ message: "Rời nhóm thành công", success: true });
+    return res.status(200).json({ success: true, message: "Bạn đã rời nhóm thành công!" });
   } catch (error) {
-    res.status(500).json({ message: "Lỗi server", success: false, error: error.message });
+    return res.status(500).json({ success: false, message: error.message });
   }
 };
 

@@ -25,7 +25,7 @@ const upload = multer({
   storage: storage,
   fileFilter: fileFilter,
   limits: { fileSize: 1024 * 1024 * 5 } // Giới hạn kích thước file: 5MB
-}).fields([{ name: 'content' }, { name: 'images', maxCount: 4 }]); // Parse cả content (text) và images (file)
+}).fields([{ name: 'content' }, { name: 'images', maxCount: 4 }]),single("coverImage"); // Parse cả content (text) và images (file)
 
 module.exports = (req, res, next) => {
   upload(req, res, (err) => {

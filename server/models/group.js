@@ -16,7 +16,7 @@ const GroupSchema = new mongoose.Schema(
     },
     coverImage: {
       type: String,
-      default: "https://via.placeholder.com/300x150",
+      default: "",
     },
     creator: {
       type: mongoose.Schema.Types.ObjectId,
@@ -42,6 +42,14 @@ const GroupSchema = new mongoose.Schema(
         ref: "Post",
       },
     ],
+
+    members: [
+      {
+        user: { type: mongoose.Schema.Types.ObjectId, ref: "User", required: true },
+        joinedAt: { type: Date, default: Date.now },
+      },
+    ],
+    creator: { type: mongoose.Schema.Types.ObjectId, ref: "User", required: true },
   },
   { timestamps: true }
 );

@@ -36,6 +36,7 @@ const { authProtect } = require("../middleware/authProtect");
 const uploadAvatar = require("../middleware/uploadAvatar"); // Middleware upload avatar
 const uploadPost = require("../middleware/uploadPostMiddle"); // Middleware upload post (sau khi cập nhật)
 const upload = require("../middleware/uploadCloud");
+const uploadGroup = require("../middleware/uploadGroup");
 
 const router = express.Router();
 
@@ -87,8 +88,8 @@ router.get("/friend-requests", authProtect, getFriendRequests);
 router.get("/suggested-friends", authProtect, getSuggestedFriends);
 
 
-router.post("/groups", authProtect, upload, createGroup);
-router.get("/groups", getAllGroups); // Công khai
+router.post("/groups", authProtect, uploadGroup, createGroup);
+router.get("/groups", getAllGroups); 
 router.get("/groups/:groupId", getGroupById);
 router.post("/groups/:groupId/join", authProtect, joinGroup);
 router.post("/groups/:groupId/leave", authProtect, leaveGroup);
