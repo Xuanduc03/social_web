@@ -259,3 +259,61 @@
     }
   }
 }
+.membersSection {
+  padding: 20px;
+  background: #fff;
+  border-radius: 10px;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+
+  h2 {
+    font-size: 20px;
+    font-weight: 600;
+    margin-bottom: 15px;
+    color: #2c3e50;
+  }
+
+  .memberList {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+    max-height: 500px; // Giới hạn chiều cao để cuộn nếu nhiều thành viên
+    overflow-y: auto;
+
+    .memberItem {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 10px;
+      border-bottom: 1px solid #eee;
+
+      .memberAvatar {
+        width: 40px;
+        height: 40px;
+        border-radius: 50%;
+      }
+
+      .memberInfo {
+        flex: 1;
+
+        .memberName {
+          margin: 0;
+          font-size: 15px;
+          font-weight: 500;
+          color: #333;
+
+          span {
+            font-size: 12px;
+            color: #007bff;
+            margin-left: 5px;
+          }
+        }
+
+        .memberJoined {
+          margin: 2px 0 0;
+          font-size: 12px;
+          color: #777;
+        }
+      }
+    }
+  }
+}

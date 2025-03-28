@@ -170,7 +170,7 @@ const GroupPost = ({
         </div>
       ) : null}
 
-<div className={cx("postActions")}>
+      <div className={cx("postActions")}>
         <div className={cx("reactionCount")}>
           <span role="img" aria-label="like">👍</span>
           <span className={cx("likes")} onClick={handleLike}>{liked ? `Bạn và ${like.length - 1} đã thích` : `${like.length} đã thích`}</span>

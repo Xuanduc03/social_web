@@ -44,7 +44,7 @@ const GroupsList = () => {
       formData.append("name", name);
       formData.append("description", description);
       if (coverImage) {
-        formData.append("images", coverImage);
+        formData.append("coverImage", coverImage);
       }
   
       const response = await axios.post("http://localhost:8080/api/groups", formData, {
