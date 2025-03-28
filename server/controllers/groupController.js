@@ -147,38 +147,36 @@ module.exports.createGroupPost = async (req, res) => {
     const { groupId } = req.params;
     const { content } = req.body;
     const userId = req.user?.id;
-    const files = req.files || [];
 
+    if (!content) {
+      return res.status(400).json({ message: "Nội dung bài viết là bắt buộc", success: false });
+    }
+
+    // Tìm nhóm
     const group = await Group.findById(groupId);
     if (!group) {
       return res.status(404).json({ message: "Không tìm thấy nhóm", success: false });
     }
 
+    // Kiểm tra xem user có trong nhóm không
     const isMember = group.members.some((member) => member.user.toString() === userId);
     if (!isMember) {
-      return res.status(403).json({ message: "Bạn không phải thành viên", success: false });
+      return res.status(403).json({ message: "Bạn không phải thành viên của nhóm này", success: false });
     }
 
-    const images = files.map((file) => ({
-      url: file.path,
-      public_id: file.filename,
-    }));
-
+    // Tạo bài viết mới
     const newPost = new Post({
       user: userId,
-      content: content.trim(),
-      images,
+      content,
       group: groupId, // Liên kết bài viết với nhóm
     });
 
     const savedPost = await newPost.save();
     await savedPost.populate("user", "firstName lastName avatarImage");
 
+    // Thêm bài viết vào danh sách posts của nhóm
     group.posts.push(savedPost._id);
     await group.save();
-
-    const io = getIo();
-    io.to(`group:${groupId}`).emit("newGroupPost", savedPost);
 
     res.status(201).json({
       data: savedPost,
@@ -186,6 +184,7 @@ module.exports.createGroupPost = async (req, res) => {
       success: true,
     });
   } catch (error) {
+    console.error("Create Group Post Error:", error);
     res.status(500).json({ message: "Lỗi server", success: false, error: error.message });
   }
 };
