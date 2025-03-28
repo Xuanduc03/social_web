@@ -92,6 +92,7 @@ router.get("/groups", getAllGroups); // Công khai
 router.get("/groups/:groupId", getGroupById);
 router.post("/groups/:groupId/join", authProtect, joinGroup);
 router.post("/groups/:groupId/leave", authProtect, leaveGroup);
-router.post("/groups/:groupId/posts", authProtect, uploadPost, createGroupPost);
+router.post("/groups/:groupId/posts", authProtect, upload, createGroupPost);
 router.delete("/groups/:groupId", authProtect, deleteGroup);
+
 module.exports = router;

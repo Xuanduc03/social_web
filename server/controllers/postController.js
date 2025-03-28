@@ -8,10 +8,9 @@ const cloudinary = require("cloudinary").v2;
 // Tạo bài viết
 module.exports.createPost = async (req, res) => {
   try {
-    const { content } = req.body; // Lấy content từ req.body (đã parse bởi multer)
-    const userId = req.user?.id; // Lấy từ middleware authProtect
-    const files = req.files || []; // Lấy danh sách file ảnh từ req.files
-
+    const { content } = req.body; 
+    const userId = req.user?.id;
+    const files = req.files || [];
     if (!userId) {
       return res.status(401).json({
         message: "Bạn chưa đăng nhập",
@@ -20,7 +19,7 @@ module.exports.createPost = async (req, res) => {
       });
     }
 
-    if (!content || !content.trim()) { // Kiểm tra content không rỗng hoặc chỉ chứa khoảng trắng
+    if (!content || !content.trim()) { 
       return res.status(400).json({
         message: "Nội dung bài viết là bắt buộc",
         success: false,
@@ -57,11 +56,11 @@ module.exports.createPost = async (req, res) => {
 
 
     const savedPost = await newPost.save();
-    await savedPost.populate('user', 'firstName lastName avatar'); // Populate thông tin user
+    await savedPost.populate('user', 'firstName lastName avatar'); 
 
     // emit create post on socket io
     const io = getIo();
-    io.emit("newPost", savedPost); // Gửi bài viết mới đến tất cả client
+    io.emit("newPost", savedPost);
     io.to(userId).emit("notification", {
       message: "Bạn đã đăng bài viết thành công!",
       postId: savedPost._id,
@@ -87,7 +86,7 @@ module.exports.createPost = async (req, res) => {
 // Lấy tất cả bài viết
 module.exports.getAllPosts = async (req, res) => {
   try {
-    const userId = req.user?.id; // Lấy ID của người dùng hiện tại từ middleware authProtect
+    const userId = req.user?.id; 
 
     if (!userId) {
       return res.status(401).json({
