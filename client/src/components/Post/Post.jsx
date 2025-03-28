@@ -31,7 +31,6 @@ const Post = ({ userId, id, checkLiked, photoURL, images, likes, comments, usern
   const [sharedPostData, setSharedPostData] = useState(null);
   const [loadingSharedPost, setLoadingSharedPost] = useState(true);
 
-
   const handleOpenComments = (id) => {
     navigate(`/post/${id}/comments`);
   };
@@ -64,7 +63,6 @@ const Post = ({ userId, id, checkLiked, photoURL, images, likes, comments, usern
         const response = await axios.get("http://localhost:8080/api/me", { withCredentials: true });
         if (response.data.success) {
           setUser(response.data.data);
-
         } else {
           console.log("Không lấy được thông tin user:", response.data.message);
         }

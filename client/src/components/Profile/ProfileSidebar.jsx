@@ -3,7 +3,7 @@ import React, { useEffect, useState } from "react";
 import "./ProfileSidebar.scss";
 import { Link, useParams } from "react-router-dom";
 import axios from "axios";
-import { Modal, Box, TextField, Button } from "@mui/material";
+import { Modal, Box, TextField, Button, FormControl, MenuItem, InputLabel, Select } from "@mui/material";
 import { toast } from "react-toastify";
 
 const ProfileSidebar = () => {
@@ -19,23 +19,27 @@ const ProfileSidebar = () => {
     address: "",
     phone: "",
     email: "",
+    birthday: "",
+    bio: "",
+    social: "",
+    maritalStatus: "single",
   });
-
+  
   useEffect(() => {
     const fetchUser = async () => {
-        try {
-            const response = await axios.get("http://localhost:8080/api/me", { withCredentials: true });
-            if (response.data.success) {
-                setCurrentUser(response.data.data._id); 
-            } else {
-                console.log("Không lấy được thông tin user:", response.data.message);
-            }
-        } catch (error) {
-            console.log("Lỗi khi lấy thông tin:", error.response?.data || error.message);
+      try {
+        const response = await axios.get("http://localhost:8080/api/me", { withCredentials: true });
+        if (response.data.success) {
+          setCurrentUser(response.data.data._id);
+        } else {
+          console.log("Không lấy được thông tin user:", response.data.message);
         }
+      } catch (error) {
+        console.log("Lỗi khi lấy thông tin:", error.response?.data || error.message);
+      }
     };
     fetchUser();
-}, []);
+  }, []);
 
 
   // Gọi API lấy thông tin bài viết của người dùng
@@ -61,12 +65,17 @@ const ProfileSidebar = () => {
       try {
         const response = await axios.get(`http://localhost:8080/api/user/${userId}`, { withCredentials: true });
         if (response.data.success) {
-          setUser(response.data.data);
+          const userData = response.data.data;
+          setUser(userData);
           setFormData({
-            job: response.data.data.job || "",
-            address: response.data.data.address || "",
-            phone: response.data.data.phone || "",
-            email: response.data.data.email || "",
+            job: userData.job || "",
+            address: userData.address || "",
+            phone: userData.phone || "",
+            email: userData.email || "",
+            birthday: userData.birthday || "",
+            bio: userData.bio || "",
+            social: userData.social || "",
+            maritalStatus: userData.maritalStatus || "single",
           });
         } else {
           console.log("Không lấy được thông tin user:", response.data.message);
@@ -79,6 +88,7 @@ const ProfileSidebar = () => {
     };
     fetchUser();
   }, [userId]);
+  
 
 
   const handleOpenModal = () => {
@@ -102,23 +112,15 @@ const ProfileSidebar = () => {
 
   const handleSaveInfo = async () => {
     console.log(" Data gửi đi:", formData);
-  //  try {
-  //   const response = await axios.put(`http://localhost:8080/api/user/${userId}/info`, formData, {
-  //     withCredentials: true,
-  //   });
-
-  //   if (response.data.success) {
-  //     setUser({ ...user, ...formData }); 
-  //     toast.success("Cập nhật thông tin thành công!");
-  //     setIsEditModalOpen(false); 
-  //   } else {
-  //     toast.error("Cập nhật thất bại!");
-  //   }
-  // } catch (error) {
-  //   console.error("Lỗi khi cập nhật:", error);
-  //   toast.error("Lỗi khi cập nhật thông tin!");
-  // }
-
+    try {
+      const response = await axios.put("http://localhost:8080/api/user/update-info", formData,  { withCredentials: true });
+      if (response.data.success) {
+        toast.success("Cập nhật thành công!");
+        setUser(response.data.data);
+      }
+    } catch (error) {
+      console.error("Lỗi cập nhật thông tin:", error);
+    }
 
   };
 
@@ -161,45 +163,99 @@ const ProfileSidebar = () => {
       {/* Modal chỉnh sửa thông tin */}
       <Modal open={isEditModalOpen} onClose={handleCloseModal}>
         <Box className="modal-container">
-          <h3>Chỉnh sửa thông tin</h3>
-          <TextField
-            label="Công việc"
-            fullWidth
-            name="job"
-            value={formData.job}
-            onChange={handleInputChange}
-            margin="dense"
-          />
-          <TextField
-            label="Địa chỉ"
-            fullWidth
-            name="address"
-            value={formData.address}
-            onChange={handleInputChange}
-            margin="dense"
-          />
-          <TextField
-            label="Số điện thoại"
-            fullWidth
-            name="phone"
-            value={formData.phone}
-            onChange={handleInputChange}
-            margin="dense"
-          />
-          <TextField
-            label="Email"
-            fullWidth
-            name="email"
-            value={formData.email}
-            onChange={handleInputChange}
-            margin="dense"
-          />
+          <h3>Chỉnh sửa thông tin cá nhân</h3>
+
+          <div className="modal-content">
+            {/* Cột 1 */}
+            <div className="modal-column">
+              <TextField
+                label="Công việc"
+                fullWidth
+                name="job"
+                value={formData.job}
+                onChange={handleInputChange}
+                margin="dense"
+              />
+              <TextField
+                label="Địa chỉ"
+                fullWidth
+                name="address"
+                value={formData.address}
+                onChange={handleInputChange}
+                margin="dense"
+              />
+              <TextField
+                label="Số điện thoại"
+                fullWidth
+                name="phone"
+                value={formData.phone}
+                onChange={handleInputChange}
+                margin="dense"
+              />
+              <TextField
+                label="Email"
+                fullWidth
+                name="email"
+                value={formData.email}
+                onChange={handleInputChange}
+                margin="dense"
+              />
+            </div>
+
+            {/* Cột 2 */}
+            <div className="modal-column">
+              <TextField
+                label="Ngày sinh"
+                type="date"
+                fullWidth
+                name="birthday"
+                value={formData.birthday}
+                onChange={handleInputChange}
+                margin="dense"
+                InputLabelProps={{ shrink: true }}
+              />
+              <TextField
+                label="Giới thiệu bản thân"
+                fullWidth
+                multiline
+                rows={3}
+                name="bio"
+                value={formData.bio}
+                onChange={handleInputChange}
+                margin="dense"
+              />
+              <TextField
+                label="Link Mạng Xã Hội (Facebook, LinkedIn, ...)"
+                fullWidth
+                name="social"
+                value={formData.social}
+                onChange={handleInputChange}
+                margin="dense"
+              />
+              {/* Tình trạng hôn nhân */}
+              <FormControl fullWidth margin="dense">
+                <InputLabel>Tình trạng hôn nhân</InputLabel>
+                <Select
+                  name="maritalStatus"
+                  value={formData.maritalStatus}
+                  onChange={handleInputChange}
+                >
+                  <MenuItem value="single">Độc thân</MenuItem>
+                  <MenuItem value="married">Đã kết hôn</MenuItem>
+                  <MenuItem value="divorced">Ly hôn</MenuItem>
+                </Select>
+              </FormControl>
+            </div>
+          </div>
+
           <div className="modal-actions">
-            <Button onClick={handleCloseModal} variant="outlined">Hủy</Button>
-            <Button onClick={handleSaveInfo} variant="contained" color="primary">Lưu</Button>
+            <Button onClick={handleCloseModal} className="btn-cancel">Hủy</Button>
+            <Button onClick={handleSaveInfo} className="btn-save">Lưu</Button>
           </div>
         </Box>
       </Modal>
+
+
     </>
   );
 };

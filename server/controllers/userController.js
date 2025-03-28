@@ -155,6 +155,90 @@ module.exports.Logout = async (req, res) => {
     }
 };
 
+module.exports.SetCoverPhoto = async (req, res) => {
+    try {
+      const userId = req.user?._id;
+  
+      if (!userId || !mongoose.Types.ObjectId.isValid(userId)) {
+        return res.status(400).json({
+          message: "Invalid user ID",
+          success: false,
+          error: true,
+        });
+      }
+  
+      if (!req.file) {
+        return res.status(400).json({
+          message: "Vui lòng upload file ảnh!",
+          success: false,
+          error: true,
+        });
+      }
+  
+      const allowedMimeTypes = ["image/jpeg", "image/png", "image/webp"];
+      if (!allowedMimeTypes.includes(req.file.mimetype)) {
+        return res.status(400).json({
+          message: "Định dạng ảnh không hợp lệ. Chỉ chấp nhận JPG, PNG, WEBP!",
+          success: false,
+          error: true,
+        });
+      }
+  
+      const coverPhotoUrl = `http://localhost:8080/uploads/${req.file.filename}`;
+      const user = await User.findByIdAndUpdate(
+        userId,
+        { coverPhoto: coverPhotoUrl },
+        { new: true, runValidators: true }
+      );
+  
+      if (!user) {
+        return res.status(404).json({
+          message: "Không tìm thấy người dùng!",
+          success: false,
+          error: true,
+        });
+      }
+  
+      return res.status(200).json({
+        data: { coverPhoto: user.coverPhoto },
+        message: "Upload ảnh bìa thành công",
+        success: true,
+        error: false,
+      });
+    } catch (error) {
+      console.error("SetCoverPhoto error:", error);
+      return res.status(500).json({
+        message: error.message || "Lỗi khi upload ảnh bìa",
+        success: false,
+        error: true,
+      });
+    }
+  };
+
+  // 📌 Cập nhật thông tin người dùng
+module.exports.updateUserProfile = async (req, res) => {
+    try {
+        const userId = req.user?._id;
+        const {job, firstName, lastName, phone, address, bio, maritalStatus, socialLinks } = req.body;
+
+        // Cập nhật thông tin
+        const updatedUser = await User.findByIdAndUpdate(
+            userId,
+            {job, firstName, lastName, phone, address, bio, maritalStatus, socialLinks },
+            { new: true, runValidators: true }
+        );
+
+        if (!updatedUser) {
+            return res.status(404).json({ success: false, message: "Không tìm thấy người dùng" });
+        }
+
+        res.status(200).json({ success: true, message: "Cập nhật thành công", data: updatedUser });
+    } catch (error) {
+        console.error("Lỗi cập nhật thông tin user:", error);
+        res.status(500).json({ success: false, message: "Lỗi máy chủ" });
+    }
+};
+
 module.exports.SetAvatar = async (req, res) => {
     try {
         const userId = req.user?._id;
@@ -307,6 +391,9 @@ module.exports.GetFriends = async (req, res) => {
       res.status(500).json({ message: "Server error" });
     }
   };
+
+
+
 module.exports.sendFriendRequest = async (req, res) => {
     try {
       const { friendId } = req.body;
@@ -463,75 +550,6 @@ module.exports.getSuggestedFriends = async (req, res) => {
         res.status(500).json({ success: false, message: "Lỗi server" });
     }
 };
-
-//   Tìm kiếm toàn bộ người dùng khi nhấn Enter
-// exports.searchUsers = async (req, res) => {
-//     try {
-//         const { query, userId } = req.query;
-
-//         // Kiểm tra nếu không có userId (để tránh lỗi)
-//         if (!userId) {
-//             return res.status(400).json({ success: false, message: "Thiếu userId" });
-//         }
-
-//         // Lấy thông tin user hiện tại và populate danh sách bạn bè
-//         const user = await User.findById(userId)
-//             .populate("friends")
-//             .populate("friendRequests.user");
-
-//         if (!user) {
-//             return res.status(404).json({ success: false, message: "User không tồn tại" });
-//         }
-
-//         // Tạo Set để kiểm tra nhanh trạng thái bạn bè và lời mời kết bạn
-//         const friendsSet = new Set(user.friends.map(f => f._id.toString()));
-//         const pendingRequestsSet = new Set(
-//             user.friendRequests
-//                 .filter(r => r.status === "pending")
-//                 .map(r => r.user._id.toString())
-//         );
-
-//         // Điều kiện tìm kiếm (nếu có query thì tìm theo tên, không có thì lấy tất cả)
-//         const searchCondition = query
-//             ? {
-//                   _id: { $ne: userId }, // Không lấy user hiện tại
-//                   $or: [
-//                       { firstName: { $regex: query, $options: "i" } },
-//                       { lastName: { $regex: query, $options: "i" } }
-//                   ]
-//               }
-//             : { _id: { $ne: userId } }; // Nếu không có query, lấy tất cả người dùng trừ chính mình
-
-//         // Tìm kiếm người dùng phù hợp với điều kiện
-//         const users = await User.find(searchCondition).select("firstName lastName avatarImage");
-
-//         // Định dạng dữ liệu trả về
-//         const formattedUsers = users.map((u) => {
-//             const userIdStr = u._id.toString();
-//             let status = "none"; // Mặc định chưa kết bạn
-
-//             if (friendsSet.has(userIdStr)) {
-//                 status = "friend"; // Đã là bạn bè
-//             } else if (pendingRequestsSet.has(userIdStr)) {
-//                 status = "pending"; // Đã gửi lời mời kết bạn
-//             }
-
-//             return {
-//                 _id: u._id,
-//                 firstName: u.firstName,
-//                 lastName: u.lastName,
-//                 avatarImage: u.avatarImage,
-//                 status
-//             };
-//         });
-
-//         // Trả về danh sách người dùng với trạng thái chính xác
-//         res.status(200).json({ success: true, data: formattedUsers });
-//     } catch (error) {
-//         console.error("Lỗi tìm kiếm người dùng:", error);
-//         res.status(500).json({ success: false, message: "Lỗi server khi tìm kiếm người dùng" });
-//     }
-// };
 
 exports.searchUsers = async (req, res) => {
     try {

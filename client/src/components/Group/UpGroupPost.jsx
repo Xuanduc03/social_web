@@ -1,34 +1,29 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
 import { toast } from "react-toastify";
-import { Link } from "react-router-dom";
 import { Avatar, IconButton, Modal } from "@mui/material";
 import AddPhotoAlternateIcon from "@mui/icons-material/AddPhotoAlternate";
 import EmojiEmotionsIcon from "@mui/icons-material/EmojiEmotions";
 import CloseIcon from "@mui/icons-material/Close";
-import "./UpPost.scss";
+import "./UpPost.scss"; // Tái sử dụng SCSS từ UpPost
 
-function UpPost() {
+function UpGroupPost({ groupId, onPostCreated, isMember }) {
   const [open, setOpen] = useState(false);
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null);
   const [content, setContent] = useState("");
   const [selectedFiles, setSelectedFiles] = useState([]);
   const [previewUrls, setPreviewUrls] = useState([]);
 
-  // Lấy thông tin người dùng
   useEffect(() => {
     const fetchUser = async () => {
       try {
         const response = await axios.get("http://localhost:8080/api/me", { withCredentials: true });
         if (response.data.success) {
           setUser(response.data.data);
-        } else {
-          setError("Lỗi khi lấy thông tin user. Vui lòng thử lại."); // Xử lý lỗi
         }
       } catch (error) {
-        setError("Lỗi khi lấy thông tin user. Vui lòng thử lại."); // Xử lý lỗi
+        console.error("Lỗi khi lấy thông tin user:", error);
       } finally {
         setLoading(false);
       }
@@ -48,7 +43,7 @@ function UpPost() {
 
   const handleFileChange = (e) => {
     const files = Array.from(e.target.files);
-    if (files.length > 4) { // Giới hạn tối đa 4 ảnh
+    if (files.length > 4) {
       toast.error("Bạn chỉ có thể chọn tối đa 4 ảnh!");
       return;
     }
@@ -63,71 +58,62 @@ function UpPost() {
       toast.error("Vui lòng đăng nhập để đăng bài!");
       return;
     }
-  
-    if (!content.trim() && selectedFiles.length === 0) { // Sử dụng trim() để kiểm tra khoảng trắng
+    if (!content.trim() && selectedFiles.length === 0) {
       toast.error("Vui lòng nhập nội dung hoặc chọn ít nhất một ảnh!");
       return;
     }
-  
+
     const formData = new FormData();
-    formData.append("content", content.trim()); // Đảm bảo gửi content không rỗng
-    selectedFiles.forEach((file) => formData.append("images", file)); // Gửi nhiều file nếu có
-  
-    // Log dữ liệu gửi lên để kiểm tra
-    for (let pair of formData.entries()) {
-      console.log(pair[0] + ': ' + pair[1]);
-    }
+    formData.append("content", content.trim());
+    selectedFiles.forEach((file, index) => {
+      formData.append("images", file); // Đảm bảo key là "images" khớp với backend
+    });
 
     try {
-      const response = await axios.post("http://localhost:8080/api/posts", formData, {
-        withCredentials: true,
-        headers: { "Content-Type": "multipart/form-data" },
-      });
+      const response = await axios.post(
+        `http://localhost:8080/api/groups/${groupId}/posts`,
+        formData,
+        {
+          withCredentials: true,
+          headers: { "Content-Type": "multipart/form-data" },
+        }
+      );
 
       if (response.data.success) {
-        toast.success("Đăng bài viết thành công!");
+        toast.success("Đăng bài trong nhóm thành công!");
         handleClose();
-      } else {
-        toast.error(response.data.message || "Đăng bài thất bại!");
+        onPostCreated(response.data.data);
       }
     } catch (error) {
       toast.error(error.response?.data?.message || "Lỗi khi đăng bài!");
-
-      console.log("Lỗi chi tiết:", error.response?.data || error.message);
     }
   };
+
+  if (!isMember) return null; // Chỉ thành viên mới thấy ô đăng bài
 
   return (
     <>
       <Modal open={open} onClose={handleClose}>
         <div className="modalPop">
-          <form onSubmit={handleSubmit} method="post" encType="multipart/form-data">
+          <form onSubmit={handleSubmit}>
             <div className="modalHeading">
-              <h3>Tạo bài viết</h3>
+              <h3>Tạo bài viết trong nhóm</h3>
               <IconButton onClick={handleClose}>
                 <CloseIcon />
               </IconButton>
             </div>
-
             <div className="modalHeaderTop">
-              <Link to="/profile" className="uploadinfo">                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        
-                <Avatar
-                  src={loading ? "" : user?.avatarImage || ""}
-                  alt={user ? `${user.firstName} ${user.lastName}` : "Guest"}
-                />
-                <h5>{loading ? "Loading..." : user ? `${user.firstName} ${user.lastName}` : "Guest"}</h5>
-              </Link>
+              <Avatar src={loading ? "" : user?.avatarImage || ""} />
+              <h5>{loading ? "Loading..." : user ? `${user.firstName} ${user.lastName}` : "Guest"}</h5>
             </div>
-
             <div className="modalBody">
               <textarea
-                name="content"  // 🔥 Thêm name để FormData tự động nhận
+                name="content"
                 rows="5"
-                placeholder="Bạn đang nghĩ gì?"
+                placeholder="Bạn đang nghĩ gì trong nhóm này?"
                 value={content}
                 onChange={handleContentChange}
               />
-
               {previewUrls.length > 0 && (
                 <div className="previewImages">
                   {previewUrls.map((url, index) => (
@@ -136,7 +122,6 @@ function UpPost() {
                 </div>
               )}
             </div>
-
             <div className="modalFooter">
               <div className="modalOptions">
                 <div className="modalOption">
@@ -146,7 +131,7 @@ function UpPost() {
                   </label>
                   <input
                     id="fileInput"
-                    name="images[]" // 🔥 Đặt name để FormData tự động lấy files
+                    name="images"
                     type="file"
                     accept="image/*"
                     multiple
@@ -160,7 +145,6 @@ function UpPost() {
                 </div>
               </div>
             </div>
-
             <input type="submit" className="postSubmit" value="Đăng" />
           </form>
         </div>
@@ -168,17 +152,13 @@ function UpPost() {
 
       <div className="upPost">
         <div className="upPostTop">
-          <Avatar
-            src={loading ? "" : user?.avatarImage || ""}
-            alt={user ? `${user.firstName} ${user.lastName}` : "Guest"}
-          />
+          <Avatar src={loading ? "" : user?.avatarImage || ""} />
           <input
             type="text"
-            placeholder={`${loading ? "Loading..." : user ? user.lastName : "Guest"} ơi, bạn nghĩ gì vậy?`}
+            placeholder="Bạn đang nghĩ gì trong nhóm này?"
             onClick={handleOpen}
           />
         </div>
-
         <div className="upPostBottom">
           <div className="upPostOption">
             <AddPhotoAlternateIcon style={{ color: "green" }} />
@@ -194,4 +174,4 @@ function UpPost() {
   );
 }
 
-export default UpPost;
+export default UpGroupPost;

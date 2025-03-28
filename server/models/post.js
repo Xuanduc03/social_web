@@ -71,6 +71,11 @@ const PostSchema = new mongoose.Schema(
         },
       },
     ],
+    group: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "Group",
+      default: null,
+    },
   },
   { timestamps: true }
 );

@@ -1,39 +1,73 @@
-import React, { useState } from "react";
+import React, { use, useEffect, useRef, useState } from "react";
 import styles from "./ChatBox.module.scss";
 import classNames from "classnames/bind";
 import { Avatar, IconButton } from "@mui/material";
 import SendIcon from "@mui/icons-material/Send";
 import CloseIcon from "@mui/icons-material/Close";
 import MoreVertIcon from "@mui/icons-material/MoreVert";
+import { io } from "socket.io-client";
 
 const cx = classNames.bind(styles);
+const socket = io("http://localhost:8080", { withCredentials: true, transports: ["websocket"], });
 
-const ChatBox = ({ onClose }) => {
-  const [messages, setMessages] = useState([
-    { id: 1, text: "Xin chào! Bạn khỏe không?", sender: "received" },
-    { id: 2, text: "Mình ổn lắm! Còn bạn thì sao?", sender: "sent" },
-    { id: 3, text: "Mình cũng tốt! Cảm ơn đã hỏi.", sender: "received" },
-  ]);
+const ChatBox = ({ userId, friendId, friendName, friendAvatar, onClose }) => {
+  const [messages, setMessages] = useState([]);
   const [newMessage, setNewMessage] = useState("");
+  const messagesEndRef = useRef(null);
+
+
+  useEffect(() => {
+    // Lấy tin nhắn cũ
+    const fetchMessages = async () => {
+      try {
+        const res = await fetch(
+          `http://localhost:8080/api/messages?senderId=${userId}&receiverId=${friendId}`,
+          { credentials: "include" }
+        );
+        const data = await res.json();
+        setMessages(data);
+      } catch (err) {
+        console.error("Error fetching messages:", err);
+      }
+    };
+    fetchMessages();
+
+    // Tham gia room chat
+    socket.emit("joinChat", { userId, friendId });
+
+    // Nhận tin nhắn real-time
+    socket.on("receiveMessage", (message) => {
+      setMessages((prev) => [...prev, message]);
+    });
+
+    return () => {
+      socket.off("receiveMessage");
+    };
+  }, [userId, friendId]);
+
+  useEffect(() => {
+    // Tự động cuộn xuống tin nhắn mới nhất
+    messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
+  }, [messages]);
 
   const sendMessage = () => {
     if (newMessage.trim() !== "") {
-      setMessages([...messages, { id: messages.length + 1, text: newMessage, sender: "sent" }]);
+      socket.emit("sendMessage", {
+        sender: userId,
+        receiver: friendId,
+        content: newMessage,
+      });
       setNewMessage("");
     }
   };
 
   return (
     <div className={cx("chatBox")}>
-      {/* Header */}
       <div className={cx("chatHeader")}>
         <div className={cx("userInfo")}>
-          <Avatar
-            src="https://via.placeholder.com/40"
-            className={cx("headerAvatar")}
-          />
+          <Avatar src={friendAvatar} className={cx("headerAvatar")} />
           <div>
-            <h4>John Doe</h4>
+            <h4>{friendName}</h4>
             <p>Đang hoạt động</p>
           </div>
         </div>
@@ -47,18 +81,29 @@ const ChatBox = ({ onClose }) => {
         </div>
       </div>
 
-      {/* Message Area */}
       <div className={cx("chatBody")}>
-        {messages.map((msg) => (
-          <div key={msg.id} className={cx("messageWrapper", { [msg.sender]: true })}>
+        {messages.map((msg, index) => (
+          <div
+            key={index}
+            className={cx("messageWrapper", {
+              sent: msg.sender._id === userId,
+              received: msg.sender._id !== userId,
+            })}
+          >
             <div className={cx("message")}>
-              <p>{msg.text}</p>
+              <p>{msg.content}</p>
+              <span className={cx("timestamp")}>
+                {new Date(msg.timestamp).toLocaleTimeString("vi-VN", {
+                  hour: "2-digit",
+                  minute: "2-digit",
+                })}
+              </span>
             </div>
           </div>
         ))}
+        <div ref={messagesEndRef} />
       </div>
 
-      {/* Input Area */}
       <div className={cx("chatFooter")}>
         <input
           type="text"

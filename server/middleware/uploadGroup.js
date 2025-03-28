@@ -36,10 +36,9 @@ const fileFilter = (req, file, cb) => {
 
 // Khởi tạo multer với cấu hình
 const upload = multer({
-  storage: storage,
-  fileFilter: fileFilter,
-  limits: { fileSize: 1024 * 1024 * 5 }, // Giới hạn kích thước file: 5MB
-}).array("images", 4); // Chấp nhận tối đa 4 file với field name là "images"
+    storage: storage,
+    limits: { fileSize: 5 * 1024 * 1024, files: 1 }, 
+  }).single("coverImage"); 
 
 // Middleware upload
 module.exports = (req, res, next) => {

@@ -6,12 +6,12 @@ module.exports.getMessages = async (senderId, receiverId) => {
         const messages = await Message.find({
             $or: [
                 { sender: senderId, receiver: receiverId },
-                { sender: receiverId, receiver: receiverId },
+                { sender: receiverId, receiver: senderId },
             ],
         })
             .sort("timestamp")
-            .populate("sender", "username")
-            .populate("receiver", "username");
+            .populate("sender", "username avatarImage")
+            .populate("receiver", "username avatarImage");
 
         return messages;
     } catch (err) {
@@ -33,6 +33,24 @@ module.exports.saveMessage = async ({ sender, receiver, content }) => {
         await message.populate("sender", "username");
         await message.populate("receiver", "username");
 
+        let conversation = await Conversation.findOne({
+            participants: { $all: [sender, receiver] },
+        });
+
+        if (!conversation) {
+            conversation = new Conversation({
+                participants: [sender, receiver],
+                messages: [message._id],
+                lastMessage: content,
+                lastMessageTime: message.timestamp,
+            });
+        } else {
+            conversation.messages.push(message._id);
+            conversation.lastMessage = content;
+            conversation.lastMessageTime = message.timestamp;
+        }
+        await conversation.save();
+        
         return message;
     } catch (err) {
         throw new Error("Failed to save message: " + err.message);

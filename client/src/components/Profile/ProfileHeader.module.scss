@@ -16,22 +16,50 @@
   .coverPhoto {
     position: relative;
     height: 300px;
+    width: 100%;
     background: linear-gradient(135deg, #007bff 0%, #00c4cc 100%);
     border-radius: 15px 15px 0 0;
-
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+  
+    // Hiển thị ảnh bìa nếu có
+    &::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background-image: url("https://via.placeholder.com/1200x400"); // Ảnh mặc định
+      background-size: cover;
+      background-position: center;
+      filter: blur(10px); // Làm mờ nền nếu không có ảnh bìa
+      z-index: 0;
+    }
+  
+    .coverImage {
+      position: absolute;
+      inset: 0;
+      background-size: contain;
+      background-position: center;
+      background-repeat: no-repeat;
+      z-index: 1;
+      transition: transform 0.3s ease-in-out;
+    }
+  
     .editCover {
       position: absolute;
       bottom: 15px;
       right: 15px;
       padding: 8px 15px;
-      background: #fff;
+      background: rgba(255, 255, 255, 0.8);
       color: #007bff;
       font-weight: 600;
       border: none;
       border-radius: 20px;
       cursor: pointer;
       transition: all 0.3s ease;
-
+      z-index: 2;
+  
       &:hover {
         background: #007bff;
         color: #fff;
@@ -40,7 +68,7 @@
       }
     }
   }
-
+  
   .profileInfo {
     display: flex;
     align-items: flex-end;
@@ -112,7 +140,23 @@
     .actions {
       display: flex;
       gap: 10px;
+      .editCover{
+        padding: 10px 20px;
+        border: none;
+        border-radius: 25px;
+        font-size: 14px;
+        font-weight: 600;
+        cursor: pointer;
+        background: #007bff;
+        color: #fff;
+        transition: all 0.3s ease;
 
+        &:hover {
+          background: #0066cc;
+          transform: translateY(-2px);
+          box-shadow: 0 4px 10px rgba(0, 123, 255, 0.3);
+        }
+      }
       .addStory {
         padding: 10px 20px;
         border: none;
@@ -291,4 +335,13 @@
       }
     }
   }
+}
+
+.coverPhoto {
+  position: relative;
+  height: 300px;
+  background: linear-gradient(135deg, #007bff 0%, #00c4cc 100%);
+  border-radius: 15px 15px 0 0;
+  background-size: cover; /* Đảm bảo ảnh bìa phủ toàn bộ */
+  background-position: center; /* Căn giữa ảnh bìa */
 }

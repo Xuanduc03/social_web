@@ -20,7 +20,7 @@ module.exports.createPost = async (req, res) => {
       });
     }
 
-    if (!content || !content.trim()) { // Kiểm tra content không rỗng hoặc chỉ chứa khoảng trắng
+    if (!content || !content.trim()) { 
       return res.status(400).json({
         message: "Nội dung bài viết là bắt buộc",
         success: false,
@@ -57,7 +57,7 @@ module.exports.createPost = async (req, res) => {
 
 
     const savedPost = await newPost.save();
-    await savedPost.populate('user', 'firstName lastName avatar'); // Populate thông tin user
+    await savedPost.populate('user', 'firstName lastName avatar'); 
 
     // emit create post on socket io
     const io = getIo();
@@ -87,7 +87,7 @@ module.exports.createPost = async (req, res) => {
 // Lấy tất cả bài viết
 module.exports.getAllPosts = async (req, res) => {
   try {
-    const userId = req.user?.id; // Lấy ID của người dùng hiện tại từ middleware authProtect
+    const userId = req.user?.id; 
 
     if (!userId) {
       return res.status(401).json({
@@ -104,8 +104,11 @@ module.exports.getAllPosts = async (req, res) => {
     // Thêm userId vào danh sách để bao gồm cả bài viết của chính mình
     const visibleUserIds = [userId, ...friendIds];
 
-    // Lấy bài viết chỉ từ chính user và bạn bè
-    const posts = await Post.find({ user: { $in: visibleUserIds } })
+    // Lấy bài viết chỉ từ chính user và bạn bè, không bao gồm bài viết trong nhóm
+    const posts = await Post.find({ 
+      user: { $in: visibleUserIds },
+      group: null // Chỉ lấy bài viết không thuộc nhóm
+    })
       .populate('user', 'firstName lastName avatarImage')
       .populate('comments.user', 'firstName lastName avatar')
       .sort({ createdAt: -1 }); // Sắp xếp mới nhất trước
@@ -559,5 +562,43 @@ module.exports.getPostsByUserId = async (req, res) => {
       success: false,
       error: true,
     });
+  }
+};
+
+module.exports.addComment = async (req, res) => {
+  try {
+    const { postId } = req.params;
+    const { text } = req.body;
+    const userId = req.user?.id;
+
+    const post = await Post.findById(postId).populate("group");
+    if (!post) {
+      return res.status(404).json({ message: "Không tìm thấy bài viết", success: false });
+    }
+
+    // Nếu bài viết thuộc nhóm, kiểm tra thành viên
+    if (post.group) {
+      const group = await Group.findById(post.group);
+      const isMember = group.members.some((member) => member.user.toString() === userId);
+      if (!isMember) {
+        return res.status(403).json({ message: "Bạn không phải thành viên của nhóm này", success: false });
+      }
+    }
+
+    const newComment = { user: userId, text };
+    post.comments.push(newComment);
+    await post.save();
+
+    const populatedPost = await Post.findById(postId).populate("comments.user", "firstName lastName avatarImage");
+    const addedComment = populatedPost.comments[populatedPost.comments.length - 1];
+
+    res.status(201).json({
+      data: addedComment,
+      message: "Bình luận thành công",
+      success: true,
+    });
+  } catch (error) {
+    console.error("Add Comment Error:", error);
+    res.status(500).json({ message: "Lỗi server", success: false, error: error.message });
   }
 };

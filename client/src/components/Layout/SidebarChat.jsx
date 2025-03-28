@@ -5,23 +5,24 @@ import axios from "axios";
 
 const cx = classNames.bind(styles);
 
-const SidebarChat = () => {
-  const [friends, setFriends] = useState(null);
+const SidebarChat = ({ onSelectFriend }) => {
+  const [friends, setFriends] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [modalOpen, setModalOpen] = useState(false);
 
   useEffect(() => {
-    try {
-      const fetchFriends = async () => {
+    const fetchFriends = async () => {
+      try {
         const res = await axios.get("http://localhost:8080/api/all-friends", {
-          withCredentials: true
+          withCredentials: true,
         });
         setFriends(res.data);
-      };
-      fetchFriends();
-    } catch (error) {
-      console.log(error);
-    }
+      } catch (error) {
+        console.log("Error fetching friends:", error);
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetchFriends();
   }, []);
 
   return (
@@ -37,24 +38,32 @@ const SidebarChat = () => {
         <input type="text" placeholder="Tìm kiếm..." />
       </div>
       <div className={cx("chatList")}>
-
-        {Array.isArray(friends) && friends.length > 0 ? (
+        {loading ? (
+          <p className={cx("loading")}>Đang tải...</p>
+        ) : friends.length > 0 ? (
           friends.map((user) => (
-            <div key={user._id} className={cx("chatItem")}>
+            <div
+              key={user._id}
+              className={cx("chatItem")}
+              onClick={() => onSelectFriend(user)}
+            >
               <div className={cx("avatar")}>
-                <img src={user.avatarImage} alt="Avatar" />
-                <span className={cx("statusDot")}></span>
+                <img
+                  src={user.avatarImage || "https://via.placeholder.com/40"}
+                  alt={`${user.firstName} ${user.lastName}`}
+                  onError={(e) => (e.target.src = "https://via.placeholder.com/40")}
+                />
+                <span className={cx("statusDot", { active: true })}></span>
               </div>
               <div className={cx("chatInfo")}>
                 <h4>{user.firstName} {user.lastName}</h4>
-                <p>Last message...</p>
+                <p>Last message...</p> {/* Thay bằng lastMessage từ Conversation nếu có */}
               </div>
             </div>
           ))
         ) : (
-          <p>Không có liên hệ nào</p>
+          <p className={cx("empty")}>Không có liên hệ nào</p>
         )}
-
       </div>
       <div className={cx("footer")}>
         <button>Chat mới</button>
@@ -62,6 +71,5 @@ const SidebarChat = () => {
     </div>
   );
 };
-
 
 export default SidebarChat;

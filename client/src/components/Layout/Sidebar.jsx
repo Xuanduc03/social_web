@@ -13,6 +13,8 @@ const Sidebar = () => {
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);
 
+  const [error, setError] = useState(null);
+
   useEffect(() => {
     const fetchUser = async () => {
       try {
@@ -21,14 +23,9 @@ const Sidebar = () => {
         });
         if (response.data.success) {
           setUser(response.data.data);
-        } else {
-          console.log("Không lấy được thông tin user:", response.data.message);
         }
       } catch (error) {
-        console.log(
-          "Lỗi khi lấy thông tin:",
-          error.response?.data || error.message
-        );
+        setError("Không thể lấy thông tin user. Vui lòng thử lại.");
       } finally {
         setLoading(false);
       }
@@ -43,7 +40,7 @@ const Sidebar = () => {
       link: `/profile/`,
     },
     { Icon: PeopleIcon, title: "Bạn bè", link: "/friend" },
-    { Icon: GroupsIcon, title: "Nhóm", link: "/group" },
+    { Icon: GroupsIcon, title: "Nhóm", link: "/groups" },
     { Icon: VideoLibraryIcon, title: "Video", link: "/videos" },
     { Icon: BookmarkIcon, title: "Đã lưu", link: "/saved" },
     { Icon: StorefrontIcon, title: "Marketplace", link: "/marketplace" },

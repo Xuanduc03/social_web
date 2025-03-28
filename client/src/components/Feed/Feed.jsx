@@ -11,6 +11,7 @@ const socket = io("http://localhost:8080", { withCredentials: true, transports: 
 function Feed() {
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
   const [posts, setPosts] = useState([]);
   const [notifications, setNotifications] = useState([]); 
 
@@ -21,10 +22,10 @@ function Feed() {
         if (response.data.success) {
           setUser(response.data.data);
         } else {
-          console.log("Không lấy được thông tin user:", response.data.message);
+          setError("Không lấy được thông tin user."); // Lưu lỗi vào state
         }
       } catch (error) {
-        console.log("Lỗi khi lấy thông tin:", error.response?.data || error.message);
+        setError("Lỗi khi lấy thông tin user. Vui lòng thử lại."); // Xử lý lỗi
       } finally {
         setLoading(false);
       }
@@ -37,7 +38,7 @@ function Feed() {
           setPosts(response.data.data); // Lấy danh sách bài viết từ server
         }
       } catch (error) {
-        console.log("Lỗi khi lấy bài viết:", error.response?.data || error.message);
+        setError("Lỗi khi lấy thông tin user. Vui lòng thử lại."); // Xử lý lỗi
       }
     };
 

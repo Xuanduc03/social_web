@@ -11,8 +11,9 @@ class SocketController {
             console.log("User connected:", socket.id);
 
             // Người dùng tham gia room của chính họ
-            socket.on("join", (userId) => {
-                socket.join(userId);
+            socket.on("joinChat", ({userId, friendId}) => {
+                const room = [userId, friendId].sort().join("-"); // Tạo room từ userId và friendId
+                socket.join(room);
                 console.log(`User ${userId} joined room ${userId}`);
             });
 
@@ -28,16 +29,9 @@ class SocketController {
                         content,
                     });
 
+                    const room = [sender, receiver].sort().join("-"); // Tạo room từ sender và receiver 
                     // Gửi tin nhắn đến người nhận
-                    this.io.to(receiver).emit("receiveMessage", {
-                        sender: message.sender,
-                        receiver: message.receiver,
-                        content: message.content,
-                        timestamp: message.timestamp,
-                    });
-
-                    // Gửi lại cho người gửi để cập nhật giao diện
-                    socket.emit("receiveMessage", {
+                    this.io.to(room).emit("receiveMessage", {
                         sender: message.sender,
                         receiver: message.receiver,
                         content: message.content,

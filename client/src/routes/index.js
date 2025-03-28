@@ -1,4 +1,5 @@
-import Group from "~/components/Group/Group";
+import GroupsList from "~/pages/GroupsList/GroupsList"; // Trang danh sách nhóm
+import Group from "~/pages/Group/Group"; // Trang chi tiết nhóm
 import UpComment from "~/components/Popper/UpComment/UpComment";
 import Friend from "~/pages/Friend/Friend";
 import Login from "~/pages/Login/Login";
@@ -10,15 +11,16 @@ const { default: Chat } = require("~/pages/Chat/Chat");
 const { default: Home } = require("~/pages/Home/Home");
 
 const publicRoute = [
-    {path: "/", component: Home},
-    {path: "/chat", component: Chat},
-    {path: "/profile/:userId", component: Profile},
-    {path: "/register", component: Register},
-    {path: "/login", component: Login},
-    {path: "/friend", component: Friend},
-    {path: "/post/:postId/comments", component: UpComment},
-    {path: "/group", component: Group},
-    {path: "/search", component: SearchResult}
+  { path: "/", component: Home },
+  { path: "/chat", component: Chat },
+  { path: "/profile/:userId", component: Profile },
+  { path: "/register", component: Register },
+  { path: "/login", component: Login },
+  { path: "/friend", component: Friend },
+  { path: "/post/:postId/comments", component: UpComment },
+  { path: "/groups", component: GroupsList }, // Trang danh sách nhóm
+  { path: "/groups/:groupId", component: Group }, // Trang chi tiết nhóm
+  { path: "/search", component: SearchResult },
 ];
 
 export default publicRoute;

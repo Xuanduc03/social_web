@@ -129,7 +129,203 @@
       }
     }
     
+
+    // about tab scss
+    .aboutContent {
+      max-width: 800px; // Tăng độ rộng từ 600px lên 800px
+      margin: 20px auto;
+      padding: 25px; // Tăng padding để thoáng hơn
+      background: #ffffff;
+      border-radius: 12px;
+      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+      font-family: 'Arial', sans-serif;
+    }
+    
+    .infoList {
+      list-style: none;
+      padding: 0;
+      margin: 0;
+    
+      li {
+        display: flex;
+        align-items: center;
+        padding: 15px 0; // Tăng padding mỗi mục
+        border-bottom: 1px solid #f0f0f0;
+        font-size: 16px;
+        color: #333;
+        transition: all 0.3s ease;
+    
+        &:last-child {
+          border-bottom: none;
+        }
+    
+        &:hover {
+          background: #f8f9fa;
+          padding-left: 10px;
+          color: #007bff;
+        }
+    
+        i {
+          width: 30px; // Tăng kích thước vùng icon
+          height: 30px;
+          line-height: 30px;
+          text-align: center;
+          margin-right: 20px; // Tăng khoảng cách với nội dung
+          color: #007bff;
+          font-size: 20px; // Tăng kích thước icon
+          transition: transform 0.3s ease;
+    
+          &.fa-user { color: #28a745; }
+          &.fa-briefcase { color: #dc3545; }
+          &.fa-home { color: #17a2b8; }
+          &.fa-heart { color: #e83e8c; }
+          &.fa-phone { color: #6f42c1; }
+          &.fa-birthday-cake { color: #fd7e14; }
+          &.fa-info-circle { color: #20c997; }
+          &.fa-link { color: #007bff; }
+        }
+    
+        strong {
+          font-weight: 700; // Tăng độ đậm
+          color: #1a1a1a; // Màu đậm hơn
+          background: #e9f5ff; // Thêm nền nhạt để nổi bật
+          padding: 2px 8px; // Thêm padding để tạo khối
+          border-radius: 4px; // Bo góc nhẹ
+          transition: background 0.3s ease, color 0.3s ease;
+    
+          &:hover {
+            background: #cce5ff; // Hiệu ứng hover sáng hơn
+            color: #0056b3; // Đổi màu chữ khi hover
+          }
+        }
+    
+        a {
+          text-decoration: none;
+          color: #007bff;
+          font-weight: 500;
+    
+          &:hover {
+            text-decoration: underline;
+            color: #0056b3;
+          }
+        }
+      }
+    
+      li:hover i {
+        transform: scale(1.2);
+      }
+    }
+    
+
+    // friend tab scss
+    .friendsTab {
+      max-width: 900px;
+      margin: 20px auto;
+      padding: 20px;
+      background: #ffffff;
+      border-radius: 12px;
+      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+    }
+    
+    .friendsList {
+      display: flex; // Chuyển sang flex để hiển thị ngang
+      flex-wrap: wrap; // Tự động wrap khi hết chiều rộng
+      gap: 20px; // Khoảng cách giữa các item
+      padding: 10px 0;
+      justify-content: flex-start; // Căn trái
+    }
+    
+    .friendItem {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      text-align: center;
+      width: 120px;
+      padding: 10px;
+      border-radius: 8px;
+      transition: all 0.3s ease;
+      position: relative; // Để nút xóa có thể định vị
+    
+      &:hover {
+        background: #f8f9fa;
+        transform: translateY(-5px);
+        box-shadow: 0 6px 12px rgba(0, 0, 0, 0.1);
+      }
+    }
+    
+    .friendAvatar {
+      width: 80px; // Giảm kích thước để phù hợp bố cục ngang
+      height: 80px;
+      border-radius: 50%;
+      object-fit: cover;
+      border: 2px solid #007bff;
+      margin-bottom: 8px;
+      transition: border-color 0.3s ease;
+    
+      .friendItem:hover & {
+        border-color: #0056b3;
+      }
+    }
+    
+    .friendName {
+      font-size: 14px;
+      font-weight: 500;
+      color: #333;
+      word-break: break-word;
+      max-width: 100%;
+      line-height: 1.2;
+      margin-bottom: 8px; // Thêm khoảng cách với nút xóa
+    }
+    
+    .deleteButton {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 4px 8px;
+      font-size: 12px;
+      color: #fff;
+      background: #dc3545; // Màu đỏ cho nút xóa
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+      transition: background 0.3s ease;
+    
+      i {
+        margin-right: 4px; // Khoảng cách giữa icon và chữ
+      }
+    
+      &:hover {
+        background: #c82333; // Đậm hơn khi hover
+      }
+    }
+    
+    .loading {
+      text-align: center;
+      font-size: 18px;
+      color: #666;
+      padding: 20px;
+    }
+    
+    .error {
+      text-align: center;
+      font-size: 16px;
+      color: #dc3545;
+      padding: 20px;
+    }
+    
+    .empty {
+      text-align: center;
+      font-size: 16px;
+      color: #666;
+      padding: 20px;
+    }
+    
+
+    
+  
   }
+
+  //
 }
 
 // Responsive
