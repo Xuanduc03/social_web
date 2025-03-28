@@ -43,7 +43,7 @@ const Sidebar = () => {
       link: `/profile/`,
     },
     { Icon: PeopleIcon, title: "Bạn bè", link: "/friend" },
-    { Icon: GroupsIcon, title: "Nhóm", link: "/group" },
+    { Icon: GroupsIcon, title: "Nhóm", link: "/groups" },
     { Icon: VideoLibraryIcon, title: "Video", link: "/videos" },
     { Icon: BookmarkIcon, title: "Đã lưu", link: "/saved" },
     { Icon: StorefrontIcon, title: "Marketplace", link: "/marketplace" },

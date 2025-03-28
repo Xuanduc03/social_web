@@ -3,8 +3,11 @@ import style from "./UpComment.module.scss";
 import { TextField, Button, Avatar, Modal } from '@mui/material';
 import axios from "axios";
 import { toast } from "react-toastify";
-import { format ,formatDistanceToNow } from "date-fns";
+import { format, formatDistanceToNow } from "date-fns";
 import { useNavigate, useParams } from "react-router-dom";
+import { io } from 'socket.io-client';
+
+const socket = io("http://localhost:8080", { withCredentials: true, transports: ["websocket"], });
 
 const UpComment = () => {
   const { postId } = useParams(); // Lấy postId từ URL
@@ -15,7 +18,40 @@ const UpComment = () => {
   const [open, setOpen] = useState(true);
   const [user, setUser] = useState("");
   const [loading, setLoading] = useState("");
+  const [actionMenuOpen, setActionMenuOpen] = useState(null);
+  const [editingCommentId, setEditingCommentId] = useState(null);
+  const [editContent, setEditContent] = useState("");
 
+  const handleEditComment = (comment) => {
+    setEditingCommentId(comment._id);
+    setEditContent(comment.text);
+    setActionMenuOpen(null); 
+  };
+
+  const handleCancelEdit = () => {
+    setEditingCommentId(null);
+    setEditContent("");
+  };
+
+  const handleSaveEdit = async (commentId) => {
+    if (!editContent.trim()) return;
+
+    try {
+    } catch (error) {
+      console.error("Lỗi khi cập nhật bình luận:", error);
+    }
+  };
+
+  const handleDeleteComment = async (commentId) => {
+    try {
+    } catch (error) {
+      console.error("Lỗi khi xóa bình luận:", error);
+    }
+  };
+
+  const toggleActionMenu = (commentId) => {
+    setActionMenuOpen(actionMenuOpen === commentId ? null : commentId);
+  };
   // Đóng popup và quay lại trang trước
   const handleClose = () => {
     setOpen(false);
@@ -42,6 +78,7 @@ const UpComment = () => {
     };
     fetchPostData();
   }, [postId]);
+ 
 
   // Xử lý gửi bình luận
   const handleAddComment = async () => {
@@ -51,17 +88,18 @@ const UpComment = () => {
     }
 
     try {
+
       const response = await axios.post(
         `http://localhost:8080/api/posts/${postId}/comment`,
         { text: commentContent },
-        { withCredentials: true ,
+        {
+          withCredentials: true,
           headers: { "Content-Type": "application/json" }
         }
       );
- 
+
       if (response.data.success) {
         toast.success("Bình luận thành công!");
-
         const response = await axios.get(`http://localhost:8080/api/posts/${postId}`, {
           withCredentials: true,
         });
@@ -73,11 +111,11 @@ const UpComment = () => {
     }
   };
 
-   const formatDate = (dateString) => {
-      const date = new Date(dateString);
-      return `${format(date, 'dd/MM/yyyy')} (${formatDistanceToNow(date, {addSuffix: true})})`
-    }
-  
+  const formatDate = (dateString) => {
+    const date = new Date(dateString);
+    return `${format(date, 'dd/MM/yyyy')} (${formatDistanceToNow(date, { addSuffix: true })})`
+  }
+
 
   // Hiển thị loading khi chưa có dữ liệu
   if (!postData) return <div>Loading...</div>;
@@ -92,7 +130,7 @@ const UpComment = () => {
         {/* Chi tiết bài post */}
         <div className={style.postDetail}>
           <div className={style.postHeader}>
-            <Avatar 
+            <Avatar
               src={user.avatarImage || "https://via.placeholder.com/40"} // Dùng photoURL nếu có
               alt="avatar"
               className={style.avatar}
@@ -105,9 +143,9 @@ const UpComment = () => {
           <div className={style.postContent}>
             <p>{postData.content}</p>
             {postData.images && postData.images.length > 0 && (
-              <img 
-                src={postData.images[0].url} 
-                alt="Post" 
+              <img
+                src={postData.images[0].url}
+                alt="Post"
                 className={style.postImage}
                 onError={() => console.log(`Failed to load image: ${postData.images[0].url}`)}
               />
@@ -122,20 +160,54 @@ const UpComment = () => {
             comments.map((comment) => (
               <div key={comment._id} className={style.comment}>
                 <div className={style.commentHeader}>
-                <strong>{loading ? "Loading..." : comment ? `${comment.user.firstName} ${comment.user.lastName}` : "User Name"}</strong>
-                <span>{formatDate(comment.createdAt)}</span>
+                  <div>
+                    <strong>{loading ? "Loading..." : comment ? `${comment.user.firstName} ${comment.user.lastName}` : "User Name"}</strong>
+                    <span>{formatDate(comment.createdAt)}</span>
+                  </div>
+
+                  {/* Menu Actions */}
+                  <div className={style.actionMenu}>
+                    <button onClick={() => toggleActionMenu(comment._id)}>⋮</button>
+                    {actionMenuOpen === comment._id && (
+                      <div className={style.dropdownMenu}>
+                        <button onClick={() => handleEditComment(comment)}>Sửa</button>
+                        <button onClick={() => handleDeleteComment(comment._id)}>Xóa</button>
+                      </div>
+                    )}
+                  </div>
                 </div>
-                <p>{comment.text}</p>
+
+                {editingCommentId === comment._id ? (
+                  <textarea
+                    className={style.editCommentInput}
+                    value={editContent}
+                    onChange={(e) => setEditContent(e.target.value)}
+                  />
+                ) : (
+                  <p>{comment.text}</p>
+                )}
+
+                {editingCommentId === comment._id && (
+                  <div className={style.commentActions}>
+                    <button className={style.saveButton} onClick={() => handleSaveEdit(comment._id)}>Lưu</button>
+                    <button className={style.cancelButton} onClick={handleCancelEdit}>Hủy</button>
+                  </div>
+                )}
               </div>
             ))
           ) : (
             <p className={style.noComments}>Chưa có bình luận nào.</p>
           )}
 
+
+
           <div className={style.commentForm}>
+          <Avatar
+              src={user.avatarImage || "https://via.placeholder.com/40"} // Dùng photoURL nếu có
+              alt="avatar"
+              className={style.avatar}
+            />
             <TextField
-              fullWidth
-              multiline
               rows={2}
               value={commentContent}
               onChange={(e) => setCommentContent(e.target.value)}
@@ -144,7 +216,7 @@ const UpComment = () => {
               className={style.commentInput}
             />
             <Button
-            type='submit'
+              type='submit'
               variant="contained"
               color="primary"
               onClick={handleAddComment}

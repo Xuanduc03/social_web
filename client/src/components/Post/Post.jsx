@@ -5,7 +5,8 @@ import axios from "axios";
 import io from "socket.io-client";
 import { format, formatDistanceToNow } from "date-fns";
 import { toast } from "react-toastify";
-import { IconButton, Menu, MenuItem } from "@mui/material";
+import { Avatar, IconButton, Menu, MenuItem, Modal } from "@mui/material";
+import PeopleIcon from "@mui/icons-material/People";
 import { useNavigate } from "react-router-dom";
 import classNames from "classnames/bind";
 import styles from "./Post.module.scss";
@@ -13,16 +14,25 @@ import styles from "./Post.module.scss";
 const cx = classNames.bind(styles);
 const socket = io("http://localhost:8080", { withCredentials: true, transports: ["websocket"], });
 
-const Post = ({ userId, id, checkLiked, photoURL, image, likes, comments, username, time, message, onUpdate, onDelete }) => {
+const Post = ({ userId, id, checkLiked, photoURL, images, likes, comments, username, time, message, onUpdate, onDelete, sharedPost }) => {
 
   const navigate = useNavigate();
   const [like, setLike] = useState(likes || []);
   const [liked, setLiked] = useState(() => likes?.includes(checkLiked) || false);
+  const [commented, setCommented] = useState(() => comments?.includes(checkLiked) || false);
   const [comment, setComment] = useState(comments || []);
   const [editing, setEditing] = useState(false);
   const [editContent, setEditContent] = useState(message);
   const [anchorEl, setAnchorEl] = useState(null);
+  const [openShare, setOpenShare] = useState(false);
+  const [shareContent, setShareContent] = useState("");
+  const [loading, setLoading] = useState(false);
+  const [user, setUser] = useState(null);
+  const [sharedPostData, setSharedPostData] = useState(null);
+  const [loadingSharedPost, setLoadingSharedPost] = useState(true);
 
+
+  console.log("sharedPost", sharedPost);
   const handleOpenComments = (id) => {
     navigate(`/post/${id}/comments`);
   };
@@ -30,14 +40,16 @@ const Post = ({ userId, id, checkLiked, photoURL, image, likes, comments, userna
     navigate(`/profile/${id}`);
   }
 
+  // Lắng nghe sự kiện cập nhật số lượt thích
   useEffect(() => {
     socket.on(`updateLikes:${id}`, ({ likes }) => {
       setLike(likes);
       setLiked(likes.includes(checkLiked));
     });
 
-    socket.on(`updateComments:${id}`, ({comments}) => {
+    socket.on(`updateComments:${id}`, ({ comments }) => {
       setComment(comments);
+      setCommented(comments.includes(checkLiked));
     });
 
     return () => {
@@ -46,6 +58,27 @@ const Post = ({ userId, id, checkLiked, photoURL, image, likes, comments, userna
     };
   }, [id, checkLiked]);
 
+  //fetch user
+  useEffect(() => {
+    const fetchUser = async () => {
+      try {
+        const response = await axios.get("http://localhost:8080/api/me", { withCredentials: true });
+        if (response.data.success) {
+          setUser(response.data.data);
+
+        } else {
+          console.log("Không lấy được thông tin user:", response.data.message);
+        }
+      } catch (error) {
+        console.log("Lỗi khi lấy thông tin:", error.response?.data || error.message);
+      } finally {
+        setLoading(false); // Đặt loading thành false khi hoàn tất
+      }
+    };
+    fetchUser();
+  }, []);
+
+  // fetch like
   useEffect(() => {
     const fetchInitialLikes = async () => {
       try {
@@ -61,7 +94,7 @@ const Post = ({ userId, id, checkLiked, photoURL, image, likes, comments, userna
         console.error("Lỗi khi lấy dữ liệu lượt thích:", error);
       }
     };
-  
+
     fetchInitialLikes();
   }, [id, checkLiked]);
 
@@ -87,6 +120,7 @@ const Post = ({ userId, id, checkLiked, photoURL, image, likes, comments, userna
       );
       if (response.data.success) {
         if (liked) {
+          socket.emit("likePost", { postId: id, userId: checkLiked })
           toast.success(liked ? "Đã bỏ thích bài viết" : "Đã thích bài viết");
         } else {
           toast.success("Đã thích bài viết");
@@ -136,6 +170,66 @@ const Post = ({ userId, id, checkLiked, photoURL, image, likes, comments, userna
       }
     }
     handleMenuClose();
+  };
+
+  const handleShareOpen = () => {
+    setOpenShare(true);
+  };
+
+  const handleShareClose = () => {
+    setOpenShare(false);
+  };
+
+  // logic phan chia se
+  useEffect(() => {
+    // Nếu có sharedPost (tức là bài viết này là bài chia sẻ), lấy thông tin bài viết gốc
+    if (sharedPost) {
+      const fetchSharedPost = async () => {
+        try {
+          const response = await axios.get(`http://localhost:8080/api/posts/share/${sharedPost}`, { withCredentials: true });
+          if (response.data.success) {
+            setSharedPostData(response.data.post);
+          } else {
+            console.log("Không tìm thấy bài viết gốc:", response.data.message);
+          }
+        } catch (error) {
+          console.log("Lỗi khi lấy bài viết gốc:", error.response?.data || error.message);
+        } finally {
+          setLoadingSharedPost(false);
+        }
+      };
+      fetchSharedPost();
+    } else {
+      setLoadingSharedPost(false);
+    }
+  }, [sharedPost]);
+
+  const handleSharePost = async () => {
+    if (!shareContent.trim()) {
+      toast.error("Vui lòng nhập nội dung chia sẻ!");
+      return;
+    }
+
+    try {
+      const response = await axios.post(
+        `http://localhost:8080/api/posts/${id}/share`,
+        { content: shareContent },
+        { withCredentials: true }
+      );
+
+      if (response.data.success) {
+        toast.success("Chia sẻ bài viết thành công!");
+        setOpenShare(false);
+        setShareContent("");
+
+        // Cập nhật danh sách bài viết trên UI
+        onUpdate(response.data.newPost);
+      } else {
+        toast.error(response.data.message || "Chia sẻ thất bại!");
+      }
+    } catch (error) {
+      toast.error(error.response?.data?.message || "Lỗi khi chia sẻ bài viết!");
+    }
   };
 
 
@@ -198,12 +292,46 @@ const Post = ({ userId, id, checkLiked, photoURL, image, likes, comments, userna
           <p>{message}</p>
         )}
       </div>
-      {/* Ảnh đính kèm */}
-      {image && (
-        <div className={cx("postImage")}>
-          <img src={image} alt="Post" />
+      {/* Ảnh của bài viết  */}
+      {images && images.length > 0 ? (
+        <div className={cx("postImage", images.length > 1 ? "multiImage" : "singleImage")}>
+          {images.map((image, index) => (
+            <img
+              key={index}
+              src={image.url}
+              alt={`Post image ${index}`}
+              className={cx("image")}
+            />
+          ))}
+        </div>
+      ) : null}
+
+
+      {/* Phần chia sẻ */}
+      {sharedPost && (
+        <div className={cx("sharedPost")}>
+          {loadingSharedPost ? (
+            <p>⏳ Đang tải bài viết gốc...</p>
+          ) : sharedPostData ? (
+            <div>
+              <div className={cx("postHeader")}>
+                <Avatar src={sharedPostData.user?.avatarImage} alt="avatar" />
+                <div>
+                  <h4>{sharedPostData.user?.firstName}</h4>
+                  <h4>{sharedPostData.user?.lastName}</h4>
+                  <p>{formatDate(sharedPostData.createdAt)}</p>
+                </div>
+              </div>
+              <p>{sharedPostData.content}</p>
+              {sharedPostData?.images?.length > 0 && <img style={{ width: "100% " }} src={sharedPostData.images[0].url} alt="shared" />}
+            </div>
+          ) : (
+            <p>⚠️ Bài viết gốc không tồn tại hoặc đã bị xóa.</p>
+          )}
         </div>
       )}
+
+
       {/* Thống kê cảm xúc */}
       <div className={cx("postActions")}>
         <div className={cx("reactionCount")}>
@@ -228,7 +356,7 @@ const Post = ({ userId, id, checkLiked, photoURL, image, likes, comments, userna
         <button className={cx("btn")} onClick={() => handleOpenComments(id)}>
           💬 Bình luận
         </button>
-        <button className={cx("btn")}>🔗 Chia sẻ</button>
+        <button className={cx("btn")} onClick={handleShareOpen} >🔗 Chia sẻ</button>
         {editing && (
           <div className={cx("editActions")}>
             <button className={cx("btn", "saveBtn")} onClick={handleEdit}>
@@ -240,6 +368,38 @@ const Post = ({ userId, id, checkLiked, photoURL, image, likes, comments, userna
           </div>
         )}
       </div>
+
+
+      <Modal open={openShare} onClose={handleShareClose}>
+        <div className={cx("modalPop")}>
+          <h3>Chia sẻ bài viết</h3>
+          <div className={cx("user-info")}>
+            <img
+              src={loading ? "loading..." : (user ? user.avatarImage : "anh")}
+              alt=""
+              className={cx("avatar")}
+            />
+            <div className={cx("user-details")}>
+              <h5>{loading ? "Loading..." : (user ? user.firstName + user.lastName : "Guest")}</h5>
+              <div className={cx("share-options")}>
+                <span>Bảng feed</span>
+                <span>
+                  <PeopleIcon fontSize="small" /> Bạn bè
+                </span>
+              </div>
+            </div>
+          </div>
+          <textarea
+            rows="3"
+            placeholder="Bạn muốn chia sẻ gì về bài viết này?"
+            value={shareContent}
+            onChange={(e) => setShareContent(e.target.value)}
+          />
+          <button className={cx("postSubmit")} onClick={handleSharePost}>
+            Chia sẻ
+          </button>
+        </div>
+      </Modal>
     </div>
   );
 };
