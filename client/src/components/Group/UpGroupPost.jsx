@@ -65,13 +65,18 @@ function UpGroupPost({ groupId, onPostCreated, isMember }) {
 
     const formData = new FormData();
     formData.append("content", content.trim());
-    selectedFiles.forEach((file) => formData.append("images", file));
+    selectedFiles.forEach((file, index) => {
+      formData.append("images", file); // Đảm bảo key là "images" khớp với backend
+    });
 
     try {
       const response = await axios.post(
         `http://localhost:8080/api/groups/${groupId}/posts`,
         formData,
-        { withCredentials: true, headers: { "Content-Type": "multipart/form-data" } }
+        {
+          withCredentials: true,
+          headers: { "Content-Type": "multipart/form-data" },
+        }
       );
 
       if (response.data.success) {
@@ -126,7 +131,7 @@ function UpGroupPost({ groupId, onPostCreated, isMember }) {
                   </label>
                   <input
                     id="fileInput"
-                    name="images[]"
+                    name="images"
                     type="file"
                     accept="image/*"
                     multiple

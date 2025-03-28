@@ -41,8 +41,10 @@ const Group = () => {
         console.error("Lỗi khi lấy dữ liệu:", error);
       }
     };
+    
     fetchGroup();
 
+    
     socket.emit("joinGroup", groupId);
     socket.on("newGroupPost", (newPost) => {
       setPosts((prev) => [newPost, ...prev]); // Bài mới nhất sẽ lên đầu
@@ -171,7 +173,7 @@ const Group = () => {
               id={post._id}
               checkLiked={currentUser._id}
               photoURL={post.user.avatarImage}
-              images={post.images}
+              images={post.images || []}
               likes={post.likes}
               comments={post.comments}
               username={`${post.user.firstName} ${post.user.lastName}`}

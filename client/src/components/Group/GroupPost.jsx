@@ -157,13 +157,18 @@ const GroupPost = ({
         )}
       </div>
 
-      {images && images.length > 0 && (
+      {images && images.length > 0 ? (
         <div className={cx("postImage", images.length > 1 ? "multiImage" : "singleImage")}>
           {images.map((image, index) => (
-            <img key={index} src={image.url} alt={`Post image ${index}`} className={cx("image")} />
+            <img
+              key={index}
+              src={image.url}
+              alt={`Post image ${index}`}
+              className={cx("image")}
+            />
           ))}
         </div>
-      )}
+      ) : null}
 
 <div className={cx("postActions")}>
         <div className={cx("reactionCount")}>
