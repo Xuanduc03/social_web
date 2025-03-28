@@ -7,7 +7,7 @@ const FriendAddCard = ({ friend, onAddFriend }) => {
       <img src={friend.avatar} alt={friend.name} className={styles.avatar} />
       <div className={styles["friend-info"]}>
         <h3>{friend.name}</h3>
-        {friend.mutualFriends && <p>{friend.mutualFriends} bạn chung</p>}
+        {<p>{friend.mutualFriends} bạn chung</p>}
       </div>
       <div className={styles["friend-actions"]}>
         <button className={styles.confirm} onClick={onAddFriend}>

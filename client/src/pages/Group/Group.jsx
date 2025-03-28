@@ -85,8 +85,14 @@ const Group = () => {
   };
 
   const handlePostCreated = (newPost) => {
-    setPosts((prev) => [newPost, ...prev]); // Thêm bài mới vào đầu danh sách
+    setPosts((prev) => [newPost, ...prev]);
     socket.emit("newGroupPost", newPost);
+  };
+
+  const handlePostUpdate = (updatedPost) => {
+    setPosts((prev) =>
+      prev.map((post) => (post._id === updatedPost._id ? updatedPost : post))
+    );
   };
 
   if (!group || !currentUser) return <div>Loading...</div>;
@@ -158,24 +164,24 @@ const Group = () => {
         <div className={styles.leftColumn}>
           <UpGroupPost groupId={groupId} onPostCreated={handlePostCreated} isMember={isMember} />
           <div className={styles.postsFeed}>
-            {posts.map((post) => (
-              <GroupPost
-                key={post._id}
-                userId={post.user._id}
-                id={post._id}
-                checkLiked={currentUser._id}
-                photoURL={post.user.avatarImage}
-                images={post.images}
-                likes={post.likes}
-                comments={post.comments}
-                username={`${post.user.firstName} ${post.user.lastName}`}
-                time={post.createdAt}
-                message={post.content}
-                onUpdate={() => {}} 
-                onDelete={(id) => setPosts((prev) => prev.filter((p) => p._id !== id))}
-                isMember={isMember}
-              />
-            ))}
+          {posts.map((post) => (
+            <GroupPost
+              key={post._id}
+              userId={post.user._id}
+              id={post._id}
+              checkLiked={currentUser._id}
+              photoURL={post.user.avatarImage}
+              images={post.images}
+              likes={post.likes}
+              comments={post.comments}
+              username={`${post.user.firstName} ${post.user.lastName}`}
+              time={post.createdAt}
+              message={post.content}
+              onUpdate={handlePostUpdate} // Thêm callback để cập nhật
+              onDelete={(id) => setPosts((prev) => prev.filter((p) => p._id !== id))}
+              isMember={isMember}
+            />
+          ))}
           </div>
         </div>
       </div>
