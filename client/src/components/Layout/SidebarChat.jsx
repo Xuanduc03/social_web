@@ -1,10 +1,29 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import styles from "./SidebarChat.module.scss";
 import classNames from "classnames/bind";
+import axios from "axios";
 
 const cx = classNames.bind(styles);
 
 const SidebarChat = () => {
+  const [friends, setFriends] = useState(null);
+  const [loading, setLoading] = useState(true);
+  const [modalOpen, setModalOpen] = useState(false);
+
+  useEffect(() => {
+    try {
+      const fetchFriends = async () => {
+        const res = await axios.get("http://localhost:8080/api/all-friends", {
+          withCredentials: true
+        });
+        setFriends(res.data);
+      };
+      fetchFriends();
+    } catch (error) {
+      console.log(error);
+    }
+  }, []);
+
   return (
     <div className={cx("container")}>
       <div className={cx("logo")}>
@@ -18,18 +37,24 @@ const SidebarChat = () => {
         <input type="text" placeholder="Tìm kiếm..." />
       </div>
       <div className={cx("chatList")}>
-        {Array.from({ length: 8 }).map((_, index) => (
-          <div key={index} className={cx("chatItem")}>
-            <div className={cx("avatar")}>
-              <img src={`https://i.pravatar.cc/40?img=${index + 1}`} alt="Avatar" />
-              <span className={cx("statusDot", { active: index % 2 === 0 })}></span>
+
+        {Array.isArray(friends) && friends.length > 0 ? (
+          friends.map((user) => (
+            <div key={user._id} className={cx("chatItem")}>
+              <div className={cx("avatar")}>
+                <img src={user.avatarImage} alt="Avatar" />
+                <span className={cx("statusDot")}></span>
+              </div>
+              <div className={cx("chatInfo")}>
+                <h4>{user.firstName} {user.lastName}</h4>
+                <p>Last message...</p>
+              </div>
             </div>
-            <div className={cx("chatInfo")}>
-              <h4>User {index + 1}</h4>
-              <p>Last message...</p>
-            </div>
-          </div>
-        ))}
+          ))
+        ) : (
+          <p>Không có liên hệ nào</p>
+        )}
+
       </div>
       <div className={cx("footer")}>
         <button>Chat mới</button>

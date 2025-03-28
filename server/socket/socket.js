@@ -16,13 +16,19 @@ const initSocket = (server) => {
 
         socket.on("joinUser", (userId) => {
             socket.join(userId);
-        })
+        });
+
+        socket.on("sendMessage", (data) => {
+            console.log("📩 Message received:", data);
+            io.emit("receiveMessage", data); // Gửi tin nhắn đến tất cả client
+        });
+
         socket.on("likePost", ({ postId, userId }) => {
             console.log(`📌 Like Post: ${postId} từ User ${userId}`);
             io.emit(`UpdateLikes:${postId}`, { postId, userId });
         });
 
-        socket.on("commentPost", ({postId, userId}) => {
+        socket.on("commentPost", ({ postId, userId }) => {
             console.log(`📌 comment Post: ${postId} từ User ${userId}`);
             io.emit(`UpdateLikes:${postId}`, { postId, userId });
         });

@@ -32,7 +32,6 @@ const Post = ({ userId, id, checkLiked, photoURL, images, likes, comments, usern
   const [loadingSharedPost, setLoadingSharedPost] = useState(true);
 
 
-  console.log("sharedPost", sharedPost);
   const handleOpenComments = (id) => {
     navigate(`/post/${id}/comments`);
   };
