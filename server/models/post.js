@@ -6,14 +6,14 @@ const PostSchema = new mongoose.Schema(
       type: mongoose.Schema.Types.ObjectId,
       ref: "User",
       required: true,
-      index: true, 
+      index: true, // Thêm index để tối ưu truy vấn theo user
     },
     content: {
       type: String,
       required: true,
-      trim: true, 
-      minlength: 1, 
-      maxlength: 5000, 
+      trim: true, // Loại bỏ khoảng trắng thừa
+      minlength: 1, // Đảm bảo không rỗng
+      maxlength: 5000, // Giới hạn độ dài nội dung
     },
     images: [
       {
@@ -42,17 +42,22 @@ const PostSchema = new mongoose.Schema(
           required: true,
           trim: true,
           minlength: 1,
-          maxlength: 1000, 
+          maxlength: 1000, // Giới hạn độ dài bình luận
         },
         createdAt: {
           type: Date,
           default: Date.now,
         },
         updatedAt: {
-          type: Date, 
+          type: Date, // Thêm để theo dõi chỉnh sửa bình luận
         },
       },
     ],
+     sharedPost: { 
+      type: mongoose.Schema.Types.ObjectId, 
+      ref: "Post", // Tham chiếu bài viết gốc
+      default: null
+    },
     shares: [
       {
         user: {
@@ -62,15 +67,21 @@ const PostSchema = new mongoose.Schema(
         },
         sharedAt: {
           type: Date,
-          default: Date.now, 
+          default: Date.now, // Thời điểm chia sẻ
         },
       },
     ],
+    group: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "Group",
+      default: null,
+    },
   },
   { timestamps: true }
 );
 
 // Thêm index compound nếu cần truy vấn theo thời gian và user
 PostSchema.index({ user: 1, createdAt: -1 });
+PostSchema.index({ sharedPost: 1 });
 
 module.exports = mongoose.model("Post", PostSchema);

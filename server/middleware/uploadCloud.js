@@ -27,7 +27,7 @@ const storage = new CloudinaryStorage({
 
 // Chỉ chấp nhận file ảnh
 const fileFilter = (req, file, cb) => {
-  if (file.mimetype.startsWith("image/")) {
+  if (file.mimetype.startsWith("image/")) { 
     cb(null, true);
   } else {
     cb(new Error("Chỉ chấp nhận file ảnh (jpeg, jpg, png)!"), false);
@@ -39,11 +39,11 @@ const upload = multer({
   storage: storage,
   fileFilter: fileFilter,
   limits: { fileSize: 1024 * 1024 * 5 }, // Giới hạn kích thước file: 5MB
-}).array("image", 5); // Chấp nhận tối đa 5 file với field name là "image"
+}).array("images", 4); // Chấp nhận tối đa 4 file với field name là "images"
 
 // Middleware upload
 module.exports = (req, res, next) => {
-  upload(req, res, (err) => {
+  upload(req, res, (err) => { // Sửa "uploadCloud" thành "upload"
     if (err instanceof multer.MulterError) {
       // Lỗi từ multer (ví dụ: vượt quá số lượng file, kích thước file quá lớn)
       return res.status(400).json({

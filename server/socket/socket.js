@@ -14,6 +14,9 @@ const initSocket = (server) => {
     io.on("connection", (socket) => {
         console.log("🔥 User connected", socket.id);
 
+        socket.on("joinUser", (userId) => {
+            socket.join(userId);
+        })
         socket.on("likePost", ({ postId, userId }) => {
             console.log(`📌 Like Post: ${postId} từ User ${userId}`);
             io.emit(`UpdateLikes:${postId}`, { postId, userId });
