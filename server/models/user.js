@@ -38,7 +38,10 @@ const userSchema = new mongoose.Schema({
         type: Date,
         default: Date.now
     },
-
+    coverPhoto: {
+        type: String,
+        default: "", 
+      },
     //Friends
     friendRequests: [
         {

@@ -1,5 +1,5 @@
 const express = require("express");
-const { Login, Register, Logout, GetUser, SetAvatar, GetUserById, GetFriends, searchFriends, searchUsers, cancelFriendRequest } = require("../controllers/userController");
+const { Login, Register, Logout, GetUser, SetAvatar, SetCoverPhoto,GetUserById, GetFriends, searchFriends, searchUsers, cancelFriendRequest } = require("../controllers/userController");
 const {
   getAllPosts,
   getPostById,
@@ -45,7 +45,7 @@ router.get('/logout', Logout);
 router.get('/me', authProtect, GetUser);
 router.get('/user/:id', authProtect, GetUserById);
 router.post('/upload-avatar', authProtect, uploadAvatar.single("avatar"), SetAvatar);
-
+router.post('/upload-cover', authProtect, uploadAvatar.single("coverPhoto"), SetCoverPhoto);
 
 router.get('/posts',authProtect, getAllPosts); // Lấy tất cả bài viết (công khai)
 router.get('/posts/:id', getPostById); // Lấy bài viết theo ID (công khai)

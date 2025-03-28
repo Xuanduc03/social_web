@@ -155,6 +155,66 @@ module.exports.Logout = async (req, res) => {
     }
 };
 
+module.exports.SetCoverPhoto = async (req, res) => {
+    try {
+      const userId = req.user?._id;
+  
+      if (!userId || !mongoose.Types.ObjectId.isValid(userId)) {
+        return res.status(400).json({
+          message: "Invalid user ID",
+          success: false,
+          error: true,
+        });
+      }
+  
+      if (!req.file) {
+        return res.status(400).json({
+          message: "Vui lòng upload file ảnh!",
+          success: false,
+          error: true,
+        });
+      }
+  
+      const allowedMimeTypes = ["image/jpeg", "image/png", "image/webp"];
+      if (!allowedMimeTypes.includes(req.file.mimetype)) {
+        return res.status(400).json({
+          message: "Định dạng ảnh không hợp lệ. Chỉ chấp nhận JPG, PNG, WEBP!",
+          success: false,
+          error: true,
+        });
+      }
+  
+      const coverPhotoUrl = `http://localhost:8080/uploads/${req.file.filename}`;
+      const user = await User.findByIdAndUpdate(
+        userId,
+        { coverPhoto: coverPhotoUrl },
+        { new: true, runValidators: true }
+      );
+  
+      if (!user) {
+        return res.status(404).json({
+          message: "Không tìm thấy người dùng!",
+          success: false,
+          error: true,
+        });
+      }
+  
+      return res.status(200).json({
+        data: { coverPhoto: user.coverPhoto },
+        message: "Upload ảnh bìa thành công",
+        success: true,
+        error: false,
+      });
+    } catch (error) {
+      console.error("SetCoverPhoto error:", error);
+      return res.status(500).json({
+        message: error.message || "Lỗi khi upload ảnh bìa",
+        success: false,
+        error: true,
+      });
+    }
+  };
+
 module.exports.SetAvatar = async (req, res) => {
     try {
         const userId = req.user?._id;
