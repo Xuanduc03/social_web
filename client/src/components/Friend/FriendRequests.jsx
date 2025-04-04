@@ -63,8 +63,7 @@ const FriendRequests = () => {
             friend={{
               id: request.user._id,
               name: `${request.user.firstName} ${request.user.lastName}`,
-              avatar: request.user.avatarImage || "https://cellphones.com.vn/sforum/wp-content/uploads/2023/10/avatar-trang-4.jpg",
-              mutualFriends: request.mutualFriends,
+              avatar: request.user?.avatarImage?.[0]?.url || "https://cellphones.com.vn/sforum/wp-content/uploads/2023/10/avatar-trang-4.jpg",              mutualFriends: request.mutualFriends,
             }}
             onConfirm={() => handleConfirm(request.user._id)}
             onRemove={() => handleRemove(request.user._id)}

@@ -20,7 +20,7 @@ module.exports.createPost = async (req, res) => {
       });
     }
 
-    if (!content || !content.trim()) { 
+    if (!content || !content.trim()) {
       return res.status(400).json({
         message: "Nội dung bài viết là bắt buộc",
         success: false,
@@ -57,7 +57,7 @@ module.exports.createPost = async (req, res) => {
 
 
     const savedPost = await newPost.save();
-    await savedPost.populate('user', 'firstName lastName avatar'); 
+    await savedPost.populate('user', 'firstName lastName avatar');
 
     // emit create post on socket io
     const io = getIo();
@@ -67,7 +67,7 @@ module.exports.createPost = async (req, res) => {
       postId: savedPost._id,
       createdAt: savedPost.createdAt,
     });
-
+    
     res.status(201).json({
       data: savedPost,
       message: "Tạo bài viết thành công",
@@ -87,7 +87,7 @@ module.exports.createPost = async (req, res) => {
 // Lấy tất cả bài viết
 module.exports.getAllPosts = async (req, res) => {
   try {
-    const userId = req.user?.id; 
+    const userId = req.user?.id;
 
     if (!userId) {
       return res.status(401).json({
@@ -97,6 +97,15 @@ module.exports.getAllPosts = async (req, res) => {
       });
     }
 
+    // lấy page và limit từ query, mặc định page = 1 và limmit 10
+    let page = parseInt(req.query.page) || 1;
+    let limit = parseInt(req.query.limit) || 10;
+    if (page < 1) page = 1;
+    if (limit < 1) limit = 10;
+
+    const skip = (page - 1 ) * limit;
+
+
     // Lấy thông tin user hiện tại để lấy danh sách bạn bè
     const currentUser = await User.findById(userId).select("friends");
     const friendIds = currentUser.friends.map(friend => friend.toString());
@@ -104,21 +113,32 @@ module.exports.getAllPosts = async (req, res) => {
     // Thêm userId vào danh sách để bao gồm cả bài viết của chính mình
     const visibleUserIds = [userId, ...friendIds];
 
+    const totalPost = await Post.countDocuments({
+      user: { $in: visibleUserIds},
+      group: null // Chỉ lấy bài viết không thuộc nhóm
+    });
+
     // Lấy bài viết chỉ từ chính user và bạn bè, không bao gồm bài viết trong nhóm
-    const posts = await Post.find({ 
+    const posts = await Post.find({
       user: { $in: visibleUserIds },
       group: null // Chỉ lấy bài viết không thuộc nhóm
     })
       .populate('user', 'firstName lastName avatarImage')
       .populate('comments.user', 'firstName lastName avatar')
-      .sort({ createdAt: -1 }); // Sắp xếp mới nhất trước
+      .sort({ createdAt: -1 }) // Sắp xếp mới nhất trước
+      .skip(skip)
+      .limit(limit);
 
     res.status(200).json({
       data: posts,
+      currentPage: page,  
+      totalPages: Math.ceil(totalPost / limit), // Tổng số trang
+      totalPost,
       message: "Lấy danh sách bài viết thành công",
       success: true,
       error: false,
     });
+
   } catch (error) {
     console.error("Get All Posts Error:", error);
     res.status(500).json({
@@ -305,7 +325,6 @@ module.exports.sharePost = async (req, res) => {
     const { content } = req.body; // Nội dung người dùng nhập khi chia sẻ
     const userId = req.user.id;
 
-
     // Kiểm tra bài viết gốc có tồn tại không
     const originalPost = await Post.findById(postId);
     if (!originalPost) {
@@ -441,7 +460,7 @@ module.exports.GetLikePostById = async (req, res) => {
 };
 
 // Lấy danh sách like bài viết theo id bài viết 
-module.exports.GetCommentPostById = async (req, res) => {
+module.exports.GetPostById = async (req, res) => {
   try {
     const postId = req.params.id;
     const post = await Post.findById(postId).select('comments'); // Chỉ lấy trường likes
@@ -525,6 +544,98 @@ module.exports.commentPost = async (req, res) => {
       success: false,
       error: true,
     });
+  }
+};
+
+// sửa bình luận
+module.exports.editComment = async (req, res) => {
+  try {
+    const { postId, commentId } = req.params;
+    const { text } = req.body;
+    const userId = req.user?.id;
+
+    if (!userId) {
+      return res.status(401).json({ message: "Bạn chưa đăng nhập", success: false });
+    }
+    if (!text) {
+      return res.status(400).json({ message: "Nội dung bình luận không được để trống", success: false });
+    }
+    if (!mongoose.Types.ObjectId.isValid(postId) || !mongoose.Types.ObjectId.isValid(commentId)) {
+      return res.status(400).json({ message: "ID không hợp lệ", success: false });
+    }
+
+    const post = await Post.findById(postId);
+    if (!post) {
+      return res.status(404).json({ message: "Bài viết không tồn tại", success: false });
+    }
+
+    const comment = post.comments.id(commentId);
+    if (!comment) {
+      return res.status(404).json({ message: "Bình luận không tồn tại", success: false });
+    }
+    if (comment.user.toString() !== userId.toString()) {
+      return res.status(403).json({ message: "Bạn không có quyền sửa bình luận này", success: false });
+    }
+
+    // Cập nhật nội dung bình luận
+    comment.text = text;
+    await post.save();
+
+    // Emit sự kiện cập nhật bình luận
+    const io = getIo();
+    io.emit(`updateComments:${postId}`, { comments: post.comments });
+
+    res.status(200).json({ message: "Chỉnh sửa bình luận thành công", success: true, data: post.comments });
+  } catch (error) {
+    console.error("Edit Comment Error:", error);
+    res.status(500).json({
+      message: error.message || "Lỗi server khi sửa bình luận",
+      success: false,
+      error: true,
+    });
+  }
+}
+
+//xóa bình luận
+module.exports.deleteComment = async (req, res) => {
+  try {
+    const { postId, commentId } = req.params;
+    const userId = req.user?.id;
+
+    if (!userId) {
+      return res.status(401).json({ message: "Bạn chưa đăng nhập", success: false });
+    }
+    if (!mongoose.Types.ObjectId.isValid(postId) || !mongoose.Types.ObjectId.isValid(commentId)) {
+      return res.status(400).json({ message: "ID không hợp lệ", success: false });
+    }
+
+    const post = await Post.findById(postId);
+    if (!post) {
+      return res.status(404).json({ message: "Bài viết không tồn tại", success: false });
+    }
+
+    const comment = post.comments.id(commentId);
+    if (!comment) {
+      return res.status(404).json({ message: "Bình luận không tồn tại", success: false });
+    }
+
+    // Chỉ cho phép xóa nếu là chủ bài viết hoặc chủ bình luận
+    if (comment.user.toString() !== userId.toString() && post.user.toString() !== userId.toString()) {
+      return res.status(403).json({ message: "Bạn không có quyền xóa bình luận này", success: false });
+    }
+
+    // Xóa bình luận
+    comment.deleteOne();
+    await post.save();
+
+    // Emit sự kiện xóa bình luận
+    const io = getIo();
+    io.emit(`updateComments:${postId}`, { comments: post.comments });
+
+    res.status(200).json({ message: "Xóa bình luận thành công", success: true });
+  } catch (error) {
+    console.error("Delete Comment Error:", error);
+    res.status(500).json({ message: "Lỗi server khi xóa bình luận", success: false });
   }
 };
 

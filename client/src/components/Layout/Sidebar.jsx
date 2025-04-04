@@ -35,7 +35,7 @@ const Sidebar = () => {
 
   const sidebarOptions = [
     {
-      src: user?.avatarImage || "https://i.pravatar.cc/150",
+      src: user?.avatarImage[0].url || "https://i.pravatar.cc/150",
       title: "Trang cá nhân",
       link: `/profile/`,
     },

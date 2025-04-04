@@ -1,129 +1,85 @@
 import { Avatar } from "@mui/material";
 import { useNavigate } from "react-router-dom";
+import { useRef } from "react";
+import {  useEffect, useState } from "react";
+import axios from "axios";
 import styles from "./Story.module.scss";
+import { Add, ChevronLeft, ChevronRight } from "@mui/icons-material";
 
-export const stories = [
-    {
-        id: 1,
-        name: "Nguyễn Văn A",
-        avatar: "https://i.pravatar.cc/150?img=1",
-        background: "https://source.unsplash.com/random/300x500?nature",
-    },
-    {
-        id: 2,
-        name: "Trần Thị B",
-        avatar: "https://i.pravatar.cc/150?img=2",
-        background: "https://source.unsplash.com/random/300x500?city",
-    },
-    {
-        id: 3,
-        name: "Phạm Văn C",
-        avatar: "https://i.pravatar.cc/150?img=3",
-        background: "https://source.unsplash.com/random/300x500?ocean",
-    },
-    {
-        id: 4,
-        name: "Lê Thị D",
-        avatar: "https://i.pravatar.cc/150?img=4",
-        background: "https://source.unsplash.com/random/300x500?forest",
-    },
-];
-
-function Story() {
+function Story({ user }) {
     const router = useNavigate();
+    const scrollRef = useRef(null);
+    const [stories, setStories] = useState([]);
+
+    useEffect(() => {
+        if (!user) return;
+
+        const fetchLatestStories = async () => {
+            try {
+                const res = await axios.get(`http://localhost:8080/api/stories/latest/${user._id}`);
+                setStories([
+                    ...(res.data.data.myLatestStory ? [res.data.data.myLatestStory] : []),
+                    ...res.data.data.friendLatestStories,
+                ]);
+                console.log("Latest stories:", res.data.data);
+            } catch (error) {
+                console.error("Lỗi khi tải stories:", error);
+            }
+        };
+
+        fetchLatestStories();
+    }, [user]);
+
+    const scrollLeft = () => {
+        if (scrollRef.current) {
+            scrollRef.current.scrollBy({ left: -150, behavior: "smooth" });
+        }
+    };
+
+    const scrollRight = () => {
+        if (scrollRef.current) {
+            scrollRef.current.scrollBy({ left: 150, behavior: "smooth" });
+        }
+    };
 
     return (
-        <div className={styles.storyReel}>
-            <div
-                onClick={() => {
-                    router("/stories/create");
-                }}
-                className={styles.story}
-                style={{
-                    display: "flex",
-                    flexDirection: "column",
-                    alignItems: "center",
-                    justifyContent: "center",
-                }}
-            >
-                <img
-                    src={
-                        "https://sme.hust.edu.vn/wp-content/uploads/2022/02/Avatar-Facebook-trang.jpg"
-                    }
-                    alt="avatar"
-                    className={styles.avatar_me}
-                />
-                <div
-                    style={{
-                        position: "relative",
-                        minHeight: 28,
-                        padding: "16px 0",
-                    }}
-                >
-                    <button
-                        style={{
-                            border: "2px solid #fff",
-                            top: -20,
-                            left: "50%",
-                            transform: "translateX(-50%)",
-                            position: "absolute",
-                            width: 32,
-                            height: 32,
-                            borderRadius: "50%",
-                            background: "#0866ff",
-                            color: "#fff",
-                            display: "flex",
-                            justifyContent: "center",
-                            alignItems: "center",
-                        }}
-                    >
-                        <svg
-                            viewBox="0 0 20 20"
-                            width="20"
-                            height="20"
-                            fill="currentColor"
-                            class="xfx01vb x1lliihq x1tzjh5l x1k90msu x2h7rmj x1qfuztq"
-                        >
-                            <g
-                                fill-rule="evenodd"
-                                transform="translate(-446 -350)"
-                            >
-                                <g fill-rule="nonzero">
-                                    <path
-                                        d="M95 201.5h13a1 1 0 1 0 0-2H95a1 1 0 1 0 0 2z"
-                                        transform="translate(354.5 159.5)"
-                                    ></path>
-                                    <path
-                                        d="M102.5 207v-13a1 1 0 1 0-2 0v13a1 1 0 1 0 2 0z"
-                                        transform="translate(354.5 159.5)"
-                                    ></path>
-                                </g>
-                            </g>
-                        </svg>
-                    </button>
-                    <p
-                        style={{
-                            color: "#fff",
-                            fontWeight: 600,
-                        }}
-                    >
-                        Tạo tin
-                    </p>
+        <div className={styles.storyContainer}>
+            {/* Nút lùi */}
+            <button className={styles.prevBtn} onClick={scrollLeft}>
+                <ChevronLeft fontSize="large" />
+            </button>
+
+            <div className={styles.storyReel} ref={scrollRef}>
+                {/* Nút tạo tin */}
+                <div className={`${styles.story} ${styles.createStory}`} onClick={() => router("/stories/create")}>
+                    <img src={user ? user.avatarImage[0].url : "https://sme.hust.edu.vn/wp-content/uploads/2022/02/Avatar-Facebook-trang.jpg"} alt="avatar" />
+                    <p>Tạo tin</p>
                 </div>
+
+                {/* Hiển thị danh sách story */}
+                {stories.map((story) => (
+                    <div
+                        key={story._id}
+                        className={styles.story}
+                        style={{
+                            backgroundImage: story.type === "image" ? `url(${story.media.url})` : "none",
+                            backgroundColor: story.type === "text" ? story.bgColor : "transparent",
+                        }}
+                        onClick={() => router(`/stories/view/${story._id}`)}
+                    >
+                        <Avatar src={story.user.avatarImage[0].url} className={styles.avatar} />
+                        <h4>{story.user.firstName + " " + story.user.lastName}</h4>
+
+                        {/* Nếu là story văn bản, hiển thị nội dung */}
+                        {story.type === "text" && <p className={styles.storyText}>{story.title}</p>}
+                    </div>
+                ))}
             </div>
-            {stories.map((story) => (
-                <div
-                    key={story.id}
-                    className={styles.story}
-                    style={{ backgroundImage: `url(${story.background})` }}
-                    onClick={() => {
-                        router(`/stories/view/${story.id}`);
-                    }}
-                >
-                    <Avatar src={story.avatar} className={styles.avatar} />
-                    <h4>{story.name}</h4>
-                </div>
-            ))}
+
+            {/* Nút tiến */}
+            <button className={styles.nextBtn} onClick={scrollRight}>
+                <ChevronRight fontSize="large" />
+            </button>
         </div>
     );
 }

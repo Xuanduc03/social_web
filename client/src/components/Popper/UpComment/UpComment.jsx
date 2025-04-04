@@ -25,7 +25,7 @@ const UpComment = () => {
   const handleEditComment = (comment) => {
     setEditingCommentId(comment._id);
     setEditContent(comment.text);
-    setActionMenuOpen(null); 
+    setActionMenuOpen(null);
   };
 
   const handleCancelEdit = () => {
@@ -37,6 +37,21 @@ const UpComment = () => {
     if (!editContent.trim()) return;
 
     try {
+      const response = await axios.post(`http://localhost:8080/api/comment/${postId}/${commentId}`, {
+        text: editContent,
+      }, {
+        withCredentials: true,
+        headers: { "Content-Type": "application/json" }
+      });
+      if (response.data.success) {
+        toast.success("Cập nhật bình luận thành công!");
+        const updatedComments = comments.map((comment) =>
+          comment._id === commentId ? { ...comment, text: editContent } : comment
+        );
+        setComments(updatedComments);
+        setEditingCommentId(null);
+        setEditContent("");
+      }
     } catch (error) {
       console.error("Lỗi khi cập nhật bình luận:", error);
     }
@@ -44,6 +59,15 @@ const UpComment = () => {
 
   const handleDeleteComment = async (commentId) => {
     try {
+      const response = await axios.delete(`http://localhost:8080/api/comment/${postId}/${commentId}`, {
+        withCredentials: true,
+      });
+      if (response.data.success) {
+        toast.success("Xóa bình luận thành công!");
+        const updatedComments = comments.filter((comment) => comment._id !== commentId);
+        setComments(updatedComments);
+      }
+      
     } catch (error) {
       console.error("Lỗi khi xóa bình luận:", error);
     }
@@ -78,7 +102,7 @@ const UpComment = () => {
     };
     fetchPostData();
   }, [postId]);
- 
+
 
   // Xử lý gửi bình luận
   const handleAddComment = async () => {
@@ -167,9 +191,9 @@ const UpComment = () => {
 
                   {/* Menu Actions */}
                   <div className={style.actionMenu}>
-                    <button onClick={() => toggleActionMenu(comment._id)}>⋮</button>
+                    <button onClick={() => toggleActionMenu(comment._id)}><i class="fa-solid fa-ellipsis-vertical"></i></button>
                     {actionMenuOpen === comment._id && (
-                      <div className={style.dropdownMenu}>
+                      <div className={`${style.dropdownMenu} ${actionMenuOpen === comment._id ? style.active : ''}`}>
                         <button onClick={() => handleEditComment(comment)}>Sửa</button>
                         <button onClick={() => handleDeleteComment(comment._id)}>Xóa</button>
                       </div>
@@ -202,7 +226,7 @@ const UpComment = () => {
 
 
           <div className={style.commentForm}>
-          <Avatar
+            <Avatar
               src={user.avatarImage || "https://via.placeholder.com/40"} // Dùng photoURL nếu có
               alt="avatar"
               className={style.avatar}

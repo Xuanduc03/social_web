@@ -33,7 +33,7 @@ function Rightsidebar() {
             <div key={user._id} className={styles.contactItem}>
               <div className={styles.avatarWrapper}>
                 <img
-                  src={user.avatarImage || "/default-avatar.png"}
+                  src={user?.avatarImage[0].url || "/default-avatar.png"}
                   alt={`${user.firstName} ${user.lastName}`}
                   className={styles.contactAvatar}
                 />

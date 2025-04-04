@@ -199,7 +199,7 @@ const Group = () => {
                     userId={post.user._id}
                     id={post._id}
                     checkLiked={currentUser._id}
-                    photoURL={post.user.avatarImage}
+                    photoURL={post.user.avatarImage[0].url || "https://via.placeholder.com/40"}
                     images={post.images || []}
                     likes={post.likes}
                     comments={post.comments}

@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState ,useTransition } from "react";
 import styles from "./SidebarChat.module.scss";
 import classNames from "classnames/bind";
 import axios from "axios";
@@ -8,6 +8,7 @@ const cx = classNames.bind(styles);
 const SidebarChat = ({ onSelectFriend }) => {
   const [friends, setFriends] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [isPending, startTransition] = useTransition();
 
   useEffect(() => {
     const fetchFriends = async () => {
@@ -15,7 +16,9 @@ const SidebarChat = ({ onSelectFriend }) => {
         const res = await axios.get("http://localhost:8080/api/all-friends", {
           withCredentials: true,
         });
-        setFriends(res.data);
+        startTransition(() => {
+          setFriends(res.data);
+        });
       } catch (error) {
         console.log("Error fetching friends:", error);
       } finally {
@@ -25,11 +28,23 @@ const SidebarChat = ({ onSelectFriend }) => {
     fetchFriends();
   }, []);
 
+  if (loading) {
+    return (
+      <div className={cx("container")}>
+        <div className={cx("skeleton-loading")}>
+          {/* Thêm các phần tử skeleton giống layout thật */}
+          {[...Array(5)].map((_, i) => (
+            <div key={i} className={cx("skeleton-item")}></div>
+          ))}
+        </div>
+      </div>
+    );
+  }
   return (
     <div className={cx("container")}>
       <div className={cx("logo")}>
         <img
-          src="https://scontent.fhan2-4.fna.fbcdn.net/v/t39.30808-6/459026421_1231801741296134_6024370460723247118_n.jpg?stp=cp6_dst-jpg_s960x960_tt6&_nc_cat=105&ccb=1-7&_nc_sid=6ee11a&_nc_ohc=EQD30nV6vTAQ7kNvgGBjFrk&_nc_oc=Adj2H5-TnwhpTeBvUi-RlRYvqe7KX2FN_PMG2buwK8LTU0ngBX_kaKDv7Hm-nP9KVw0&_nc_zt=23&_nc_ht=scontent.fhan2-4.fna&_nc_gid=ADl29HWWbSspNvBwQNl5Zvj&oh=00_AYCXYCeD6RY_oTJMUYDZj_Yb0byeo5tT80kX1WzF3FFoSA&oe=67B0E458"
+        src=""
           alt="Logo"
         />
         <h1>Đoạn chat</h1>
@@ -49,9 +64,8 @@ const SidebarChat = ({ onSelectFriend }) => {
             >
               <div className={cx("avatar")}>
                 <img
-                  src={user.avatarImage || "https://via.placeholder.com/40"}
+                  src={user?.avatarImage[0].url || "https://cellphones.com.vn/sforum/wp-content/uploads/2023/10/avatar-trang-4.jpg"}
                   alt={`${user.firstName} ${user.lastName}`}
-                  onError={(e) => (e.target.src = "https://via.placeholder.com/40")}
                 />
                 <span className={cx("statusDot", { active: true })}></span>
               </div>

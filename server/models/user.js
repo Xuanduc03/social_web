@@ -11,7 +11,6 @@ const userSchema = new mongoose.Schema({
     },
     username: {
         type: String,
-        required: true,
         unique: true,
     },
     email: {
@@ -29,10 +28,10 @@ const userSchema = new mongoose.Schema({
     },
     gender: {
         type: String,
-        required: true,
-        enum: ["male", "female", "other"],
+        enum: ["nam", "nữ", "khác"],
+        default: "nam",
     },
-    job : {
+    job: {
         type: String,
         default: "",
     },
@@ -46,8 +45,8 @@ const userSchema = new mongoose.Schema({
     },
     maritalStatus: {
         type: String,
-        enum: ["single", "married", "divorced"],
-        default: "single",
+        enum: ["độc thân", "đã kết hôn", "ly hôn", "mập mờ"],
+        default: "độc thân",
     },
     bio: {
         type: String,
@@ -63,14 +62,32 @@ const userSchema = new mongoose.Schema({
         type: Boolean,
         default: false,
     },
-    avatarImage: {
-        type: String,
-        default: "",
-    },
-    coverPhoto: {
-        type: String,
-        default: "",
-    },
+    avatarImage: [
+        {
+            url: {
+                type: String,
+                trim: true,
+            },
+            public_id: {
+                type: String,
+                required: true,
+                // match: /^https?:\/\/.+/i, // Kiểm tra định dạng URL
+            },
+        },
+    ],
+    coverPhoto: [
+        {
+            url: {
+                type: String,
+                trim: true,
+            },
+            public_id: {
+                type: String,
+                required: true,
+                // match: /^https?:\/\/.+/i, // Kiểm tra định dạng URL
+            },
+        },
+    ],
     createAt: {
         type: Date,
         default: Date.now,

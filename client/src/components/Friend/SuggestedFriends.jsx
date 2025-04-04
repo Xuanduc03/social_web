@@ -47,7 +47,7 @@ const SuggestedFriends = () => {
             friend={{
               id: friend._id,
               name: `${friend.firstName} ${friend.lastName}`,
-              avatar: friend.avatarImage || "https://cellphones.com.vn/sforum/wp-content/uploads/2023/10/avatar-trang-4.jpg",
+              avatar: friend ?.avatarImage?.[0]?.url || "https://cellphones.com.vn/sforum/wp-content/uploads/2023/10/avatar-trang-4.jpg",
               mutualFriends: friend.mutualFriends,
             }}
             onAddFriend={() => handleAddFriend(friend._id)}

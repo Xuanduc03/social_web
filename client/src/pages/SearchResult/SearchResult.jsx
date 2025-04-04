@@ -110,7 +110,7 @@ const SearchResults = () => {
                             <ListItem key={user._id} sx={{ display: "flex", alignItems: "center", gap: 2 }}>
                                 <ListItemAvatar>
                                     <Avatar
-                                        src={user.avatarImage || "/default-avatar.png"}
+                                        src={user.avatarImage[0].url || "/default-avatar.png"}
                                         onClick={() => handleGoToProfile(user._id)}
                                         style={{ cursor: "pointer" }}
                                     />

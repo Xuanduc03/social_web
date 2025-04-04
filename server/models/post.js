@@ -20,6 +20,10 @@ const PostSchema = new mongoose.Schema(
         url: {
           type: String,
           trim: true,
+        },
+        public_id: {
+          type: String,
+          required: true,
           // match: /^https?:\/\/.+/i, // Kiểm tra định dạng URL
         },
       },

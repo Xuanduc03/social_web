@@ -1,5 +1,19 @@
 const express = require("express");
-const { Login, Register, Logout, GetUser, SetAvatar, SetCoverPhoto,GetUserById, GetFriends, searchFriends, searchUsers, cancelFriendRequest, updateUserProfile } = require("../controllers/userController");
+const {
+  Login,
+  Register,
+  Logout,
+  GetUser,
+  SetAvatar,
+  SetCoverPhoto,
+  GetUserById,
+  GetFriends,
+  searchFriends,
+  searchUsers,
+  cancelFriendRequest,
+  updateUserProfile
+  
+} = require("../controllers/userController");
 const {
   getAllPosts,
   getPostById,
@@ -10,8 +24,10 @@ const {
   commentPost,
   getPostsByUserId,
   GetLikePostById,
-  GetCommentPostById,getPostByIds,
+ getPostByIds,
   sharePost,
+  editComment,
+  deleteComment,
 } = require('../controllers/postController');
 
 const {
@@ -20,6 +36,7 @@ const {
   rejectFriendRequest,
   getFriendRequests,
   getSuggestedFriends,
+  removeFriend,
 } = require("../controllers/userController");
 
 const {
@@ -33,10 +50,11 @@ const {
 } = require("../controllers/groupController");
 
 const { authProtect } = require("../middleware/authProtect");
-const uploadAvatar = require("../middleware/uploadAvatar"); // Middleware upload avatar
+const uploadAvatar = require("../middleware/uploadAvatar");
+const uploadStory = require("../middleware/uploadStory");
 const upload = require("../middleware/uploadCloud");
-const uploadGroup = require("../middleware/uploadGroup");
 const { getMessages } = require("../controllers/messageController");
+const { createStory, getAllStories, getLatestStories, getMyStories, getFriendStories, deleteStory } = require("../controllers/storyController");
 
 const router = express.Router();
 
@@ -46,20 +64,21 @@ router.get('/logout', Logout);
 router.get('/me', authProtect, GetUser);
 router.get('/user/:id', authProtect, GetUserById);
 router.put('/user/update-info', authProtect, updateUserProfile);  //route cập nhật thông tin người dùng
-router.post('/upload-avatar', authProtect, uploadAvatar.single("avatar"), SetAvatar); // upload avatar
-router.post('/upload-cover', authProtect, uploadAvatar.single("coverPhoto"), SetCoverPhoto); // upload ảnh bìa
+router.post('/upload-avatar', authProtect, uploadAvatar, SetAvatar); // upload avatar
+router.post('/upload-cover', authProtect, uploadAvatar , SetCoverPhoto); // upload ảnh bìa
 
 
-router.get('/posts',authProtect, getAllPosts); // Lấy tất cả bài viết (công khai)
+router.get('/posts', authProtect, getAllPosts); // Lấy tất cả bài viết (công khai)
 router.get('/posts/:id', getPostById); // Lấy bài viết theo ID (công khai)
-router.get("/posts/user/:userId",getPostsByUserId);// Lấy bài viết theo ID (người dùng)
-router.post('/posts', authProtect, upload , createPost); // Tạo bài viết (yêu cầu đăng nhập, sử dụng multer mới)
+router.get("/posts/user/:userId", getPostsByUserId);// Lấy bài viết theo ID (người dùng)
+router.post('/posts', authProtect, upload, createPost); // Tạo bài viết (yêu cầu đăng nhập, sử dụng multer mới)
 router.put('/posts/:id', authProtect, updatePost); // Cập nhật bài viết (yêu cầu đăng nhập)
 router.delete('/posts/:id', authProtect, deletePost); // Xóa bài viết (yêu cầu đăng nhập)
 router.post('/posts/:id/like', authProtect, toggleLikePost); // Thích/bỏ thích bài viết
 router.post('/posts/:id/comment', authProtect, commentPost); // Bình luận bài viết
 router.get("/posts/:id/likes", authProtect, GetLikePostById); //lấy danh sách like theo id bài viết
-router.get("/posts/:id/comments", authProtect, GetCommentPostById);
+router.post('/comment/:postId/:commentId', authProtect, editComment); // sửa Bình luận bài viết
+router.delete('/comment/:postId/:commentId', authProtect, deleteComment); // xóa Bình luận bài viết
 
 //  Gợi ý bạn bè (popup)
 router.get("/search-friends", searchFriends);
@@ -79,7 +98,7 @@ router.post("/cancel-friend-request", cancelFriendRequest);
 
 // API chia sẻ bài viết
 router.get("/posts/share/:postId", getPostByIds);
-router.post("/posts/:postId/share",authProtect, sharePost);
+router.post("/posts/:postId/share", authProtect, sharePost);
 
 // Routes chức năng kết bạn
 router.get("/all-friends", authProtect, GetFriends);
@@ -88,17 +107,42 @@ router.post("/accept-friend-request", authProtect, acceptFriendRequest);
 router.post("/reject-friend-request", authProtect, rejectFriendRequest);
 router.get("/friend-requests", authProtect, getFriendRequests);
 router.get("/suggested-friends", authProtect, getSuggestedFriends);
+router.post("/remove-friend", authProtect, removeFriend);
 
 
-router.post("/groups", authProtect, uploadGroup, createGroup);
-router.get("/groups", getAllGroups); 
+router.post("/groups", authProtect, upload , createGroup);
+router.get("/groups", getAllGroups);
 router.get("/groups/:groupId", getGroupById);
 router.post("/groups/:groupId/join", authProtect, joinGroup);
 router.post("/groups/:groupId/leave", authProtect, leaveGroup);
 router.post("/groups/:groupId/posts", authProtect, upload, createGroupPost);
 router.delete("/groups/:groupId", authProtect, deleteGroup);
 
+// story
+// Route thêm story (yêu cầu đăng nhập)
+// Tạo tin mới
+router.post("/stories", authProtect, uploadStory , createStory);
+
+// Lấy tất cả tin
+router.get("/stories", getAllStories);
+// Lấy tin của một user cụ thể
+router.get("/stories/latest/:userId", getLatestStories);
+router.get("/stories/me", authProtect, getMyStories);
+router.get("/stories/friends", authProtect, getFriendStories);
+router.delete("/stories/:storyId", authProtect, deleteStory);
+
 // API nhắn tin
-router.get("/api/messages", authProtect, getMessages); // Lấy tin nhắn giữa 2 người dùng
+router.get("/api/messages", authProtect, async (req, res) => {
+  const { senderId, receiverId } = req.query;
+  console.log("📞 API /api/messages called with senderId:", senderId, "receiverId:", receiverId);
+  try {
+    const messages = await messageController.getMessages(senderId, receiverId);
+    res.json(messages);
+  } catch (err) {
+    console.error("❌ API /api/messages error:", err.message);
+    res.status(500).json({ error: err.message });
+  }
+});
+
 
 module.exports = router;

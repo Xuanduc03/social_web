@@ -13,6 +13,7 @@ import axios from "axios";
 import { toast } from "react-toastify";
 import { io } from "socket.io-client";
 import { formatDistanceToNow } from "date-fns";
+import { GroupAddOutlined } from "@mui/icons-material";
 
 const cx = classNames.bind(styles);
 const socket = io("http://localhost:8080", { withCredentials: true, transports: ["websocket"] });
@@ -49,7 +50,7 @@ function Header() {
 
     // Lấy bài viết của user hiện tại
     useEffect(() => {
-        if(!userId) return;
+        if (!userId) return;
 
         const fetchUserPosts = async () => {
             if (!userId) return;
@@ -204,7 +205,7 @@ function Header() {
                                 {suggestedFriends.map((friend) => (
                                     <ListItem key={friend._id} button onMouseDown={() => handleUserClick(friend._id)}>
                                         <ListItemAvatar>
-                                            <Avatar src={friend.avatarImage || "/default-avatar.png"} />
+                                            <Avatar src={friend.avatarImage[0].url || "/default-avatar.png"} />
                                         </ListItemAvatar>
                                         <ListItemText primary={`${friend.firstName} ${friend.lastName}`} />
                                     </ListItem>
@@ -219,6 +220,9 @@ function Header() {
                 <Link to="/" className={cx("headerOptions", { active: window.location.pathname === "/" })}>
                     <HomeIcon fontSize="large" />
                 </Link>
+                <Link to="/groups" className={cx("headerOptions", { active: window.location.pathname === "/groups" })}>
+                    <GroupAddOutlined fontSize="large" />
+                </Link>
                 <Link to="/Friend" className={cx("headerOptions", { active: window.location.pathname === "/Friend" })}>
                     <PeopleIcon fontSize="large" />
                 </Link>
@@ -226,7 +230,7 @@ function Header() {
 
             <div className={cx("headerRight")}>
                 <Link to={userId ? `/profile/${userId}` : "/login"} className={cx("headerInfo")}>
-                    <Avatar src={loading ? "" : user?.avatarImage || "/default-avatar.png"} className={cx("avatar")} />
+                    <Avatar src={loading ? "" : user?.avatarImage[0].url || "/default-avatar.png"} className={cx("avatar")} />
                     <h5>{loading ? "Loading..." : user ? user.lastName : "Guest"}</h5>
                 </Link>
 
@@ -266,7 +270,7 @@ function Header() {
                                                 }}
                                             >
                                                 <ListItemAvatar>
-                                                    <Avatar src={noti.user?.avatarImage || "/default-avatar.png"} />
+                                                    <Avatar src={noti.user?.avatarImage[0].url || "/default-avatar.png"} />
                                                 </ListItemAvatar>
                                                 <ListItemText
                                                     primary={noti.message}

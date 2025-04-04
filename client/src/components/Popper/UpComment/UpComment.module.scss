@@ -76,6 +76,69 @@
       justify-content: space-between;
       font-size: 14px;
       color: #555;
+
+
+      .actionMenu {
+        position: relative;
+        display: inline-block;
+      
+        button {
+          background: transparent;
+          border: none;
+          cursor: pointer;
+          font-size: 18px;
+          padding: 5px;
+          color: #888;
+          transition: color 0.3s ease-in-out;
+      
+          &:hover {
+            color: #333;
+          }
+        }
+      
+        .dropdownMenu {
+          position: absolute;
+          right: 0;
+          top: 100%;
+          background: #fff;
+          border-radius: 8px;
+          box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.15);
+          overflow: hidden;
+          width: 120px;
+          opacity: 0;
+          transform: scale(0.95);
+          transition: opacity 0.2s ease-in-out, transform 0.2s ease-in-out;
+          z-index: 10;
+          pointer-events: none;
+      
+          &.active {
+            opacity: 1;
+            transform: scale(1);
+            pointer-events: all;
+          }
+      
+          button {
+            width: 100%;
+            padding: 8px 12px;
+            text-align: left;
+            background: none;
+            border: none;
+            cursor: pointer;
+            font-size: 14px;
+            color: #444;
+            transition: background 0.2s ease-in-out;
+      
+            &:hover {
+              background: #f4f4f4;
+            }
+      
+            &:first-child {
+              border-bottom: 1px solid #ddd;
+            }
+          }
+        }
+      }
+      
     }
   
     p {

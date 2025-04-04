@@ -10,30 +10,36 @@ const Profile = () => {
   const { userId } = useParams(""); // Lấy userId từ URL
   const [activeTab, setActiveTab] = useState("posts"); // Tab mặc định là "Bài viết"
   const [posts, setPosts] = useState([]);
+  const [userProfile, setUserProfile] = useState(null); // Thêm state cho user
+  const [loading, setLoading] = useState(true); // Thêm loading state
 
   useEffect(() => {
-    const fetchUserPosts = async () => {
+    const fetchProfileData = async () => {
       try {
-        const response = await axios.get(`http://localhost:8080/api/posts/user/${userId}`);
-        if (response.data.success) {
-          setPosts(response.data.data);
-        } else {
-          console.error("Không thể lấy bài viết!");
-        }
+        setLoading(true);
+        const userResponse = await axios.get(`http://localhost:8080/api/user/${userId}`, {
+          withCredentials: true,
+        });
+        const postsResponse = await axios.get(`http://localhost:8080/api/posts/user/${userId}`, {
+          withCredentials: true,
+        });
+
+        if (userResponse.data.success) setUserProfile(userResponse.data.data);
+        if (postsResponse.data.success) setPosts(postsResponse.data.data);
       } catch (error) {
-        console.error("Lỗi khi lấy bài viết:", error);
+        console.error("Lỗi khi lấy dữ liệu profile:", error);
+      } finally {
+        setLoading(false);
       }
     };
 
-    if (userId) {
-      fetchUserPosts();
-    }
+    if (userId) fetchProfileData();
   }, [userId]);
 
   return (
     <div className={styles.profile}>
       {/* Ảnh đại diện & ảnh bìa */}
-      <ProfileHeader />
+      <ProfileHeader user={userProfile} loading={loading}/>
       {/* Thanh điều hướng Profile */}
       <div className={styles.profileNav}>
         <ul className={styles.navLinks}>
@@ -96,7 +102,7 @@ const PostsTab = ({ posts }) => (
         <Post
           key={post._id}
           id={post._id}
-          photoURL={post.user?.avatarImage || ""}
+          photoURL={post.user?.avatarImage[0].url || "https://cellphones.com.vn/sforum/wp-content/uploads/2023/10/avatar-trang-4.jpg"}
           username={`${post.user?.firstName} ${post.user?.lastName}`}
           time={new Date(post.createdAt).toLocaleString()}
           message={post.content}
@@ -206,7 +212,6 @@ const FriendsTab = () => {
         const res = await axios.get("http://localhost:8080/api/all-friends", {
           withCredentials: true,
         });
-        console.log(res.data);
         setFriends(res.data);
         setLoading(false);
       } catch (err) {
@@ -220,11 +225,15 @@ const FriendsTab = () => {
   const handleDeleteFriend = async (friendId) => {
     if (window.confirm("Bạn có chắc muốn xóa bạn bè này không?")) {
       try {
-        await axios.delete(`http://localhost:8080/api/friends/${friendId}`, {
-          withCredentials: true,
-        });
-        setFriends(friends.filter((friend) => friend._id !== friendId)); // Cập nhật danh sách
-        console.log(`Đã xóa bạn bè với ID: ${friendId}`);
+        const response = await axios.post(
+          "http://localhost:8080/api/remove-friend",
+          { friendId },
+          { withCredentials: true }
+        );
+        if (response.data.success) {
+          setFriends(friends.filter((friend) => friend._id !== friendId));
+          console.log(`Đã xóa bạn bè với ID: ${friendId}`);
+        }
       } catch (err) {
         setError("Không thể xóa bạn bè. Vui lòng thử lại.");
       }
@@ -243,10 +252,10 @@ const FriendsTab = () => {
             friends.map((friend) => (
               <div key={friend._id} className={styles.friendItem}>
                 <img
-                  src={friend.avatarImage || "https://via.placeholder.com/100"}
+                  src={friend.avatarImage[0].url || "https://cellphones.com.vn/sforum/wp-content/uploads/2023/10/avatar-trang-4.jpg"}
                   alt={`${friend.firstName} ${friend.lastName}`}
                   className={styles.friendAvatar}
-                  onError={(e) => (e.target.src = "https://via.placeholder.com/100")}
+                  onError={(e) => (e.target.src = "https://cellphones.com.vn/sforum/wp-content/uploads/2023/10/avatar-trang-4.jpg")}
                 />
                 <span className={styles.friendName}>
                   {`${friend.firstName} ${friend.lastName}`}

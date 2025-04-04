@@ -142,7 +142,7 @@ const GroupComment = ({ isMember }) => {
       <div className={style.upCommentContainer}>
         <div className={style.postDetail}>
           <div className={style.postHeader}>
-            <Avatar src={postData.user.avatarImage || "https://via.placeholder.com/40"} className={style.avatar} />
+            <Avatar src={postData.user.avatarImage[0].url || "https://via.placeholder.com/40"} className={style.avatar} />
             <div className={style.userInfo}>
               <h4 className={style.username}>{`${postData.user.firstName} ${postData.user.lastName}`}</h4>
               <p className={style.time}>{formatDate(postData.createdAt)}</p>

@@ -1,4 +1,28 @@
+.skeleton-loading {
+  padding: 15px;
+  
+  .skeleton-item {
+    height: 60px;
+    background: #f0f0f0;
+    border-radius: 8px;
+    margin-bottom: 10px;
+    animation: pulse 1.5s infinite ease-in-out;
+  }
+}
 
+@keyframes pulse {
+  0% { opacity: 0.6; }
+  50% { opacity: 1; }
+  100% { opacity: 0.6; }
+}
+
+.container {
+  transition: opacity 0.3s ease;
+  
+  &.loading {
+    opacity: 0.5;
+  }
+}
 // SidebarChat.module.scss
 .container {
   width: 300px;

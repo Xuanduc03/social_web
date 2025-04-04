@@ -112,7 +112,7 @@ function UpPost() {
             <div className="modalHeaderTop">
               <Link to="/profile" className="uploadinfo">                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        
                 <Avatar
-                  src={loading ? "" : user?.avatarImage || ""}
+                  src={loading ? "" : user?.avatarImage[0].url || ""}
                   alt={user ? `${user.firstName} ${user.lastName}` : "Guest"}
                 />
                 <h5>{loading ? "Loading..." : user ? `${user.firstName} ${user.lastName}` : "Guest"}</h5>
@@ -169,7 +169,7 @@ function UpPost() {
       <div className="upPost">
         <div className="upPostTop">
           <Avatar
-            src={loading ? "" : user?.avatarImage || ""}
+            src={loading ? "" : user?.avatarImage[0].url || ""}
             alt={user ? `${user.firstName} ${user.lastName}` : "Guest"}
           />
           <input

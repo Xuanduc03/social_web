@@ -18,11 +18,12 @@ const ProfileSidebar = () => {
     job: "",
     address: "",
     phone: "",
+    gender: "nam",
     email: "",
     birthday: "",
     bio: "",
     social: "",
-    maritalStatus: "single",
+    maritalStatus: "độc thân",
   });
   
   useEffect(() => {
@@ -73,9 +74,10 @@ const ProfileSidebar = () => {
             phone: userData.phone || "",
             email: userData.email || "",
             birthday: userData.birthday || "",
+            gender: userData.gender || "nam",
             bio: userData.bio || "",
             social: userData.social || "",
-            maritalStatus: userData.maritalStatus || "single",
+            maritalStatus: userData.maritalStatus || "độc thân",
           });
         } else {
           console.log("Không lấy được thông tin user:", response.data.message);
@@ -176,6 +178,20 @@ const ProfileSidebar = () => {
                 onChange={handleInputChange}
                 margin="dense"
               />
+              {/* Giới tính */}
+              <FormControl fullWidth margin="dense">
+                <InputLabel>Giới tính</InputLabel>
+                <Select
+                  name="maritalStatus"
+                  value={formData.gender}
+                  onChange={handleInputChange}
+                >
+                  <MenuItem value="nam">Nam</MenuItem>
+                  <MenuItem value="nữ">Nữ</MenuItem>
+                  <MenuItem value="Khác">Khác</MenuItem>
+                </Select>
+              </FormControl>
+
               <TextField
                 label="Địa chỉ"
                 fullWidth
@@ -240,9 +256,10 @@ const ProfileSidebar = () => {
                   value={formData.maritalStatus}
                   onChange={handleInputChange}
                 >
-                  <MenuItem value="single">Độc thân</MenuItem>
-                  <MenuItem value="married">Đã kết hôn</MenuItem>
-                  <MenuItem value="divorced">Ly hôn</MenuItem>
+                  <MenuItem value="độc thân">Độc thân</MenuItem>
+                  <MenuItem value="đã kết hôn">Đã kết hôn</MenuItem>
+                  <MenuItem value="ly hôn">Ly hôn</MenuItem>
+                  <MenuItem value="mập mờ">Mập mờ</MenuItem>
                 </Select>
               </FormControl>
             </div>
