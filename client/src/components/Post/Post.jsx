@@ -16,7 +16,7 @@ const socket = io("http://localhost:8080", { withCredentials: true, transports: 
 
 const Post = React.forwardRef(
   (
-    { userId, id, checkLiked, photoURL, images, likes, comments, username, time, message, onUpdate, onDelete, sharedPost },
+    { userId, id, checkLiked, photoURL, images, likes, comments, username, time, message, onUpdate, onDelete, sharedPost, countShare },
     ref
   ) => {
     const navigate = useNavigate();
@@ -340,9 +340,9 @@ const Post = React.forwardRef(
           </div>
           <div className={cx("actionButtons")}>
             <span>
-              <strong>{comment ? comment.length : ""}</strong> Bình luận
+              <strong>{comment ? comment.length : ""}</strong> <i class="fa-solid fa-comment"></i>
             </span>
-            <span>Chia sẻ</span>
+            <span><strong>{countShare ? countShare.length : ""}</strong> <i class="fa-solid fa-share"></i></span>
           </div>
         </div>
         {/* Nút tương tác */}
@@ -375,7 +375,7 @@ const Post = React.forwardRef(
             <h3>Chia sẻ bài viết</h3>
             <div className={cx("user-info")}>
               <img
-                src={loading ? "loading..." : (user ? user.avatarImage : "anh")}
+                src={loading ? "loading..." : (user ? user?.avatarImage[0].url : "anh")}
                 alt=""
                 className={cx("avatar")}
               />

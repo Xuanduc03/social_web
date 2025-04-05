@@ -11,8 +11,9 @@ const {
   searchFriends,
   searchUsers,
   cancelFriendRequest,
-  updateUserProfile
-  
+  updateUserProfile,
+  changePassword
+
 } = require("../controllers/userController");
 const {
   getAllPosts,
@@ -24,7 +25,7 @@ const {
   commentPost,
   getPostsByUserId,
   GetLikePostById,
- getPostByIds,
+  getPostByIds,
   sharePost,
   editComment,
   deleteComment,
@@ -65,7 +66,8 @@ router.get('/me', authProtect, GetUser);
 router.get('/user/:id', authProtect, GetUserById);
 router.put('/user/update-info', authProtect, updateUserProfile);  //route cập nhật thông tin người dùng
 router.post('/upload-avatar', authProtect, uploadAvatar, SetAvatar); // upload avatar
-router.post('/upload-cover', authProtect, uploadAvatar , SetCoverPhoto); // upload ảnh bìa
+router.post('/upload-cover', authProtect, uploadAvatar, SetCoverPhoto); // upload ảnh bìa
+router.post('/change-password', authProtect, changePassword); // đổi mật khẩu
 
 
 router.get('/posts', authProtect, getAllPosts); // Lấy tất cả bài viết (công khai)
@@ -110,7 +112,7 @@ router.get("/suggested-friends", authProtect, getSuggestedFriends);
 router.post("/remove-friend", authProtect, removeFriend);
 
 
-router.post("/groups", authProtect, upload , createGroup);
+router.post("/groups", authProtect, upload, createGroup);
 router.get("/groups", getAllGroups);
 router.get("/groups/:groupId", getGroupById);
 router.post("/groups/:groupId/join", authProtect, joinGroup);
@@ -121,7 +123,7 @@ router.delete("/groups/:groupId", authProtect, deleteGroup);
 // story
 // Route thêm story (yêu cầu đăng nhập)
 // Tạo tin mới
-router.post("/stories", authProtect, uploadStory , createStory);
+router.post("/stories", authProtect, uploadStory, createStory);
 
 // Lấy tất cả tin
 router.get("/stories", getAllStories);

@@ -67,7 +67,7 @@ const UpComment = () => {
         const updatedComments = comments.filter((comment) => comment._id !== commentId);
         setComments(updatedComments);
       }
-      
+
     } catch (error) {
       console.error("Lỗi khi xóa bình luận:", error);
     }
@@ -184,11 +184,16 @@ const UpComment = () => {
             comments.map((comment) => (
               <div key={comment._id} className={style.comment}>
                 <div className={style.commentHeader}>
-                  <div>
+                  <div className={style.commentUser}>
+                    <Avatar
+                      src={comment.user.avatarImage || "https://via.placeholder.com/40"} // Dùng photoURL nếu có
+                      alt="avatar"
+                      className={style.avatar}
+                    />
                     <strong>{loading ? "Loading..." : comment ? `${comment.user.firstName} ${comment.user.lastName}` : "User Name"}</strong>
-                    <span>{formatDate(comment.createdAt)}</span>
+                    <span className={style.dateTime}>{formatDate(comment.createdAt)}</span>
                   </div>
-
+              
                   {/* Menu Actions */}
                   <div className={style.actionMenu}>
                     <button onClick={() => toggleActionMenu(comment._id)}><i class="fa-solid fa-ellipsis-vertical"></i></button>
@@ -222,12 +227,12 @@ const UpComment = () => {
           ) : (
             <p className={style.noComments}>Chưa có bình luận nào.</p>
           )}
-
+          
 
 
           <div className={style.commentForm}>
             <Avatar
-              src={user.avatarImage || "https://via.placeholder.com/40"} // Dùng photoURL nếu có
+              src={user?.avatarImage[0].url || "https://via.placeholder.com/40"} // Dùng photoURL nếu có
               alt="avatar"
               className={style.avatar}
             />

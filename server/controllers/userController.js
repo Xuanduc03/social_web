@@ -168,27 +168,21 @@ module.exports.SetCoverPhoto = async (req, res) => {
             });
         }
 
+       
         if (!req.file) {
-            return res.status(400).json({
-                message: "Vui lòng upload file ảnh!",
-                success: false,
-                error: true,
-            });
+            return res.status(400).json({ message: "Please upload an image file", success: false, error: true });
         }
 
-        const allowedMimeTypes = ["image/jpeg", "image/png", "image/webp"];
-        if (!allowedMimeTypes.includes(req.file.mimetype)) {
-            return res.status(400).json({
-                message: "Định dạng ảnh không hợp lệ. Chỉ chấp nhận JPG, PNG, WEBP!",
-                success: false,
-                error: true,
-            });
-        }
+        const image = {
+            url: req.file.path, // URL từ Cloudinary
+            public_id: req.file.filename, // public_id từ Cloudinary
+        };
 
-        const coverPhotoUrl = `http://localhost:8080/uploads/${req.file.filename}`;
         const user = await User.findByIdAndUpdate(
             userId,
-            { coverPhoto: coverPhotoUrl },
+            {
+                coverPhoto: image, // Gán mảng 1 phần tử
+            },
             { new: true, runValidators: true }
         );
 
@@ -242,49 +236,49 @@ module.exports.updateUserProfile = async (req, res) => {
 
 module.exports.SetAvatar = async (req, res) => {
     try {
-      const userId = req.user?._id;
-  
-      if (!userId || !mongoose.Types.ObjectId.isValid(userId)) {
-        return res.status(400).json({ message: "Invalid user ID", success: false, error: true });
-      }
-  
-      if (!req.file) {
-        return res.status(400).json({ message: "Please upload an image file", success: false, error: true });
-      }
-  
-      const image = {
-        url: req.file.path, // URL từ Cloudinary
-        public_id: req.file.filename, // public_id từ Cloudinary
-      };
-  
-      const user = await User.findByIdAndUpdate(
-        userId,
-        {
-          avatarImage: image, // Gán mảng 1 phần tử
-          isAvatarImageSet: true,
-        },
-        { new: true, runValidators: true }
-      );
-  
-      if (!user) {
-        return res.status(404).json({ message: "User not found", success: false, error: true });
-      }
-  
-      return res.status(200).json({
-        data: { avatar: user.avatarImage },
-        message: "Avatar uploaded successfully",
-        success: true,
-        error: false,
-      });
+        const userId = req.user?._id;
+
+        if (!userId || !mongoose.Types.ObjectId.isValid(userId)) {
+            return res.status(400).json({ message: "Invalid user ID", success: false, error: true });
+        }
+
+        if (!req.file) {
+            return res.status(400).json({ message: "Please upload an image file", success: false, error: true });
+        }
+
+        const image = {
+            url: req.file.path, // URL từ Cloudinary
+            public_id: req.file.filename, // public_id từ Cloudinary
+        };
+
+        const user = await User.findByIdAndUpdate(
+            userId,
+            {
+                avatarImage: image, // Gán mảng 1 phần tử
+                isAvatarImageSet: true,
+            },
+            { new: true, runValidators: true }
+        );
+
+        if (!user) {
+            return res.status(404).json({ message: "User not found", success: false, error: true });
+        }
+
+        return res.status(200).json({
+            data: { avatar: user.avatarImage },
+            message: "Avatar uploaded successfully",
+            success: true,
+            error: false,
+        });
     } catch (error) {
-      console.error("SetAvatar error:", error);
-      return res.status(500).json({
-        message: error.message || "Error uploading avatar",
-        success: false,
-        error: true,
-      });
+        console.error("SetAvatar error:", error);
+        return res.status(500).json({
+            message: error.message || "Error uploading avatar",
+            success: false,
+            error: true,
+        });
     }
-  };
+};
 
 module.exports.GetAllUsers = async (req, res) => {
     try {
@@ -380,14 +374,29 @@ module.exports.GetFriends = async (req, res) => {
 
 module.exports.sendFriendRequest = async (req, res) => {
     try {
-        const { friendId } = req.body;
-        const userId = req.user?._id;
+        if (!req.user || !req.user._id) {
+            return res.status(401).json({ message: "Không thể xác thực người dùng", success: false });
+        }
 
-        if (!friendId) return res.status(400).json({ message: "Vui lòng cung cấp ID người nhận", success: false });
-        if (friendId === userId.toString()) return res.status(400).json({ message: "Không thể gửi lời mời cho chính mình", success: false });
+        const userId = req.user._id;
+        const { friendId } = req.body;
+
+        if (!friendId) {
+            return res.status(400).json({ message: "Vui lòng cung cấp ID người nhận", success: false });
+        }
+
+        if (!mongoose.Types.ObjectId.isValid(friendId)) {
+            return res.status(400).json({ message: "ID người nhận không hợp lệ", success: false });
+        }
+
+        if (friendId === userId.toString()) {
+            return res.status(400).json({ message: "Không thể gửi lời mời cho chính mình", success: false });
+        }
 
         const friend = await User.findById(friendId);
-        if (!friend) return res.status(404).json({ message: "Không tìm thấy người dùng", success: false });
+        if (!friend) {
+            return res.status(404).json({ message: "Không tìm thấy người dùng", success: false });
+        }
 
         // Kiểm tra xem đã là bạn bè chưa
         if (friend.friends.includes(userId)) {
@@ -396,17 +405,87 @@ module.exports.sendFriendRequest = async (req, res) => {
 
         // Kiểm tra xem đã gửi lời mời chưa
         const existingRequest = friend.friendRequests.find((req) => req.user.toString() === userId.toString());
-        if (existingRequest) return res.status(400).json({ message: "Đã gửi lời mời trước đó", success: false });
+        if (existingRequest) {
+            return res.status(400).json({ message: "Đã gửi lời mời trước đó", success: false });
+        }
 
         friend.friendRequests.push({ user: userId });
-        await friend.save();
+        await friend.save({ validateBeforeSave: false }); // Bỏ qua validation
 
-        res.status(200).json({ message: "Đã gửi lời mời kết bạn", success: true });
+        return res.status(200).json({ message: "Đã gửi lời mời kết bạn", success: true });
     } catch (error) {
         console.error("Send Friend Request Error:", error);
-        res.status(500).json({ message: "Lỗi server khi gửi lời mời", success: false });
+        if (!res.headersSent) {
+            return res.status(500).json({ message: "Lỗi server khi gửi lời mời", success: false, error: error.message });
+        }
     }
 };
+
+
+module.exports.changePassword = async (req, res) => {
+    try {
+        const userId = req.user?._id;
+        const { currentPassword, newPassword } = req.body;
+
+        if (!currentPassword || !newPassword) {
+            return res.status(400).json({
+                message: "Vui lòng cung cấp mật khẩu hiện tại và mật khẩu mới",
+                success: false,
+                error: true,
+            });
+        }
+
+        const user = await User.findById(userId);
+        if (!user) {
+            return res.status(404).json({
+                message: "Không tìm thấy người dùng",
+                success: false,
+                error: true,
+            });
+        }
+
+        const isMatch = await bcrypt.compare(currentPassword, user.password);
+        if (!isMatch) {
+            return res.status(401).json({
+                message: "Mật khẩu hiện tại không đúng",
+                success: false,
+                error: true,
+            });
+        }
+
+        const isSamePassword = await bcrypt.compare(newPassword, user.password);
+        if (isSamePassword) {
+            return res.status(400).json({
+                message: "Mật khẩu mới không được trùng với mật khẩu hiện tại",
+                success: false,
+                error: true,
+            });
+        }
+
+        const hashedNewPassword = await bcrypt.hash(newPassword, 10);
+
+        // Cập nhật chỉ trường password mà không validate toàn bộ document
+        await User.findByIdAndUpdate(
+            userId,
+            { password: hashedNewPassword },
+            { new: true, runValidators: false } // Tắt validation cho toàn bộ document
+        );
+
+        return res.status(200).json({
+            message: "Đổi mật khẩu thành công",
+            success: true,
+            error: false,
+        });
+    } catch (error) {
+        console.error("ChangePassword error:", error);
+        return res.status(500).json({
+            message: error.message || "Lỗi khi đổi mật khẩu",
+            success: false,
+            error: true,
+        });
+    }
+};
+
 
 module.exports.acceptFriendRequest = async (req, res) => {
     try {

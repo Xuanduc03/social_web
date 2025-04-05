@@ -34,10 +34,12 @@ function CreateStories() {
 
     const handleMediaChange = (e) => {
         const file = e.target.files[0];
+       
         if (file) {
             const mediaUrl = URL.createObjectURL(file);
             setMedia({ url: mediaUrl, type: file.type });
             setMediaFile(file);
+            console.log("File được chọn:", mediaUrl);
         }
     };
 
@@ -54,7 +56,14 @@ function CreateStories() {
         if (storyType === "image" && mediaFile) {
             formData.append("media", mediaFile);
         }
+        console.log("Dữ liệu gửi đi:", {
+            type: storyType,
+            title,
+            bgColor,
+            mediaFile: mediaFile ? mediaFile.name : "Không có file",
+        });
 
+          
         try {
             const response = await axios.post("http://localhost:8080/api/stories", formData, {
                 headers: { "Content-Type": "multipart/form-data" },

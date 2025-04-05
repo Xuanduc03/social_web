@@ -406,26 +406,34 @@ module.exports.toggleLikePost = async (req, res) => {
 
     const liked = post.likes.includes(userId);
     if (liked) {
-      post.likes = post.likes.filter(id => id.toString() !== userId);
+      post.likes = post.likes.filter((id) => id.toString() !== userId);
     } else {
       post.likes.push(userId);
     }
-    post.likes = Array.isArray(post.likes) ? post.likes : [];
 
     const updatedPost = await post.save();
-    await updatedPost.populate('user', 'firstName lastName avatar');
+    await updatedPost.populate("user", "firstName lastName avatar");
 
-    // Emit sự kiện updateLikes
     const io = getIo();
-    io.emit(`updateLikes:${postId}`, { likes: post.likes });
 
-    // Emit sự kiện newLike (nếu user vừa like)
-    if (!liked) {
-      const liker = await User.findById(userId).select("firstName lastName avatarImage");
-      io.to(post.user.toString()).emit("newLike", {
-        postId: postId,
-        liker,
+    // Gửi cập nhật số lượt thích đến tất cả client
+    io.emit(`updateLikes:${postId}`, {
+      postId,
+      likes: updatedPost.likes,
+      liked: updatedPost.likes.includes(userId),
+    });
+
+    // Gửi thông báo tới chủ bài viết nếu là hành động "like"
+    if (!liked && post.user.toString() !== userId) {
+      const liker = await User.findById(userId).select("firstName lastName");
+
+      io.to(post.user.toString()).emit("likeNoti", {
+        message: `${liker.firstName} ${liker.lastName} đã thích bài viết của bạn.`,
+        postId: post._id,
+        createdAt: new Date(),
       });
+
+      console.log(`📣 Sent 'notification' to Post Owner ${post.user.toString()} from ${liker.firstName} ${liker.lastName}`);
     }
 
     res.status(200).json({
@@ -444,18 +452,24 @@ module.exports.toggleLikePost = async (req, res) => {
   }
 };
 
+
 // Lấy danh sách like bài viết theo id bài viết 
 module.exports.GetLikePostById = async (req, res) => {
   try {
     const postId = req.params.id;
-    const post = await Post.findById(postId).select('likes'); // Chỉ lấy trường likes
+    const post = await Post.findById(postId).select("likes");
     if (!post) {
-      return res.status(404).json({ success: false, message: 'Bài viết không tồn tại' });
+      return res.status(404).json({ success: false, message: "Bài viết không tồn tại" });
     }
-    res.json({ success: true, likes: post.likes });
+    res.json({
+      success: true,
+      data: {
+        likes: post.likes,
+      },
+    });
   } catch (error) {
-    console.error('Lỗi khi lấy lượt thích:', error);
-    res.status(500).json({ success: false, message: 'Lỗi server' });
+    console.error("Lỗi khi lấy lượt thích:", error);
+    res.status(500).json({ success: false, message: "Lỗi server" });
   }
 };
 

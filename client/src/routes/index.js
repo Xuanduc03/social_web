@@ -8,6 +8,7 @@ import Register from "~/pages/Register/Register";
 import SearchResult from "~/pages/SearchResult/SearchResult";
 import CreateStories from "~/components/Story/Create/CreateStories";
 import ViewStories from "~/components/Story/View/ViewStories";
+import ChangePassword from "~/components/ChangePassword/Password";
 
 const { default: Chat } = require("~/pages/Chat/Chat");
 const { default: Home } = require("~/pages/Home/Home");
@@ -25,6 +26,7 @@ const publicRoute = [
   { path: "/search", component: SearchResult },
   { path: "/stories/create", component: CreateStories },
   { path: "/stories/view/:id", component: ViewStories },
+  { path: "/password", component: ChangePassword },
 ];
 
 export default publicRoute;

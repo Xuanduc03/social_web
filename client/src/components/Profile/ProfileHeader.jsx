@@ -28,7 +28,7 @@ const ProfileHeader = ({ user, loading }) => {
     }
 
     const formData = new FormData();
-    formData.append("coverPhoto", selectedFile);
+    formData.append("avatar", selectedFile);
     formData.append("userId", user._id);
 
     try {
@@ -107,7 +107,7 @@ const ProfileHeader = ({ user, loading }) => {
 
   return (
     <div className={styles.profileHeader}>
-      <div className={styles.coverPhoto} style={{ backgroundImage: `url(${user?.coverPhoto || ''})` }}>
+      <div className={styles.coverPhoto} style={{ backgroundImage: `url(${user?.coverPhoto[0].url || ''})` }}>
       </div>
       <div className={styles.profileInfo}>
         <div className={styles.avatarContainer}>

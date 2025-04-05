@@ -15,7 +15,7 @@
 
   .coverPhoto {
     position: relative;
-    height: 300px;
+    height: 400px;
     width: 100%;
     background: linear-gradient(135deg, #007bff 0%, #00c4cc 100%);
     border-radius: 15px 15px 0 0;
@@ -30,7 +30,7 @@
       position: absolute;
       inset: 0;
       background-image: url("https://via.placeholder.com/1200x400"); // Ảnh mặc định
-      background-size: cover;
+      background-size: contain;
       background-position: center;
       filter: blur(10px); // Làm mờ nền nếu không có ảnh bìa
       z-index: 0;

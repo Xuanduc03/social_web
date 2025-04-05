@@ -9,11 +9,11 @@ module.exports.createStory = async (req, res) => {
     try {
         const { type, title, bgColor } = req.body;
         const userId = req.user.id; // Lấy ID người dùng từ token
-
+        console.log("File nhận từ frontend:", type); 
         const media = [];
-        if (req.file && type === "media") {
+        if (req.file && type === "image") {
 
-            console.log("File nhận được:", req.file);
+            console.log("File nhận từ frontend:", req.file); 
 
             media.push({
                 url: req.file.path, // URL từ Cloudinary
@@ -21,6 +21,7 @@ module.exports.createStory = async (req, res) => {
                 type: req.file.mimetype.startsWith("video/") ? "video" : "image",
                 duration: req.file.duration || null, // Nếu có video
             });
+           
         }
 
         const storyData = {
@@ -30,11 +31,12 @@ module.exports.createStory = async (req, res) => {
             expiresAt: new Date(Date.now() + 24 * 60 * 60 * 1000),
         };
 
-        if (type === "media" && media.length > 0) {
+        if (type === "image" && media.length > 0) {
             storyData.media = media;
         } else if (type === "text") {
             storyData.bgColor = bgColor;
         }
+        console.log("Media:",storyData); 
 
         const story = new Story(storyData);
         await story.save();
@@ -129,7 +131,9 @@ module.exports.getFriendStories = async (req, res) => {
         const friendIds = user.friends; // Danh sách ID bạn bè
 
         // Lấy stories của bạn bè
-        const stories = await Story.find({ user: { $in: friendIds } })
+        const stories = await Story.find(
+            { user: { $in: friendIds } }
+        )
             .populate("user", "firstName lastName avatarImage")
             .sort({ createdAt: -1 });
 

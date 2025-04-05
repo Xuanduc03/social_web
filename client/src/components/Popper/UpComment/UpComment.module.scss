@@ -77,6 +77,26 @@
       font-size: 14px;
       color: #555;
 
+      .commentUser {
+        display: flex;
+        align-items: center;
+
+        .avatar {
+          width: 30px;
+          height: 30px;
+          margin-right: 10px;
+        }
+
+        .username {
+          font-weight: bold;
+          color: #333;
+        }
+      }
+
+      .commentTime {
+        color: #999;
+        font-size: 12px;
+      }
 
       .actionMenu {
         position: relative;

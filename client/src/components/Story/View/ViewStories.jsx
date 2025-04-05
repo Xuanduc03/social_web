@@ -6,7 +6,6 @@ import { formatDistanceToNow } from "date-fns";
 import { vi } from "date-fns/locale";
 
 function ViewStories() {
-    const navigate = useNavigate();
     const [myStories, setMyStories] = useState([]);
     const [friendStories, setFriendStories] = useState([]);
     const [currentUserIndex, setCurrentUserIndex] = useState(0);
@@ -33,7 +32,6 @@ function ViewStories() {
         });
         return Object.values(groupedStories);
     };
-
     // Fetch stories từ API
     useEffect(() => {
         const fetchStories = async () => {
@@ -43,14 +41,14 @@ function ViewStories() {
                     headers: { Authorization: `Bearer ${token}` },
                     withCredentials: true
                 });
-
+                
                 const friendStoriesRes = await axios.get("http://localhost:8080/api/stories/friends", {
                     headers: { Authorization: `Bearer ${token}` },
                     withCredentials: true
                 });
-
                 setMyStories(groupStoriesByUser(myStoriesRes.data.data));
                 setFriendStories(groupStoriesByUser(friendStoriesRes.data.data));
+
             } catch (error) {
                 console.error("Lỗi lấy stories:", error);
             }
@@ -120,6 +118,7 @@ function ViewStories() {
         }
     };
 
+
     return (
         <div className={styles.storyContainer}>
             {/* Cột trái - Danh sách người đăng story */}
@@ -148,17 +147,25 @@ function ViewStories() {
                     </div>
                 ))}
             </div>
+
             {/* Cột phải - Hiển thị story */}
             <div className={styles.rightColumn}>
+
                 {currentUser && currentUser.stories.length > 0 && (
+
+
                     <div className={styles.storyContent}>
                         {currentUser.stories[currentStoryIndex].type === "image" ? (
-                            <img src={`http://localhost:8080${currentUser.stories[currentStoryIndex].imageUrl}`} alt="story" className={styles.imageStory} />
-                        ) : (
-                            <div className={styles.textStory} style={{ backgroundColor: currentUser.stories[currentStoryIndex].bgColor }}>
-                                <p className={styles.textCenter}>{currentUser.stories[currentStoryIndex].title}</p>
-                            </div>
-                        )}
+                            <img
+                                src={currentUser.stories[currentStoryIndex].media[0].url ? currentUser.stories[currentStoryIndex].media[0].url : "https://sme.hust.edu.vn/wp-content/uploads/2022/02/Avatar-Facebook-trang.jpg"}
+                                alt="story" className={styles.imageStory} />
+                        ) :
+
+                            (
+                                <div className={styles.textStory} style={{ backgroundColor: currentUser.stories[currentStoryIndex].bgColor }}>
+                                    <p className={styles.textCenter}>{currentUser.stories[currentStoryIndex].title}</p>
+                                </div>
+                            )}
 
                         <div className={styles.overlay}>
                             <img src={currentUser.user.avatarImage[0].url || "/default-avatar.jpg"} style={{ width: "80px", height: "80px", objectFit: "contain" }} alt="avatar" className={styles.avatarLarge} />
@@ -169,9 +176,17 @@ function ViewStories() {
                             <p className={styles.timeAgo}>{timeAgo(currentUser.stories[currentStoryIndex].createdAt)}</p>
 
                             {/* Nút xóa tin */}
+
                             <button className={styles.deleteBtn} onClick={() => deleteStory(currentUser.stories[currentStoryIndex]._id)}>
                                 <i class="fa-solid fa-trash"></i>
                             </button>
+                            {/* Nút xóa tin */}
+
+                            {/* {currentUser.user._id ==userId  ? // Thay "ID_cua_ban" bằng ID của người dùng hiện tại
+                                <button className={styles.deleteBtn} onClick={() => deleteStory(currentUser.stories[currentStoryIndex]._id)}>
+                                    <i className="fa-solid fa-trash"></i>
+                                </button>
+                            : ""} */}
                         </div>
 
                         {/* Nút điều hướng */}
@@ -179,7 +194,9 @@ function ViewStories() {
                         <button className={styles.nextBtn} onClick={nextStory}>❯</button>
                     </div>
                 )}
+
             </div>
+
         </div>
     );
 }

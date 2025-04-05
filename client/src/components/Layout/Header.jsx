@@ -51,88 +51,79 @@ function Header() {
     // Lấy bài viết của user hiện tại
     useEffect(() => {
         if (!userId) return;
-
+      
         const fetchUserPosts = async () => {
-            if (!userId) return;
-            try {
-                const response = await axios.get(`http://localhost:8080/api/posts/user/${userId}`);
-                if (response.data.success) {
-                    setPosts(response.data.data);
-                } else {
-                    console.error("Không thể lấy bài viết!");
-                }
-            } catch (error) {
-                console.error("Lỗi khi lấy bài viết:", error);
-            }
+          try {
+            const response = await axios.get(`http://localhost:8080/api/posts/user/${userId}`);
+            if (response.data.success) 
+                setPosts(response.data.data);
+          } catch (error) {
+            console.error("Lỗi khi lấy bài viết:", error);
+          }
         };
-
+      
         fetchUserPosts();
-
-        // Join room của user hiện tại
-        socket.emit("joinUser", userId);
-
-        // Nhận bài viết mới
+      
+        if (socket && userId) {
+            socket.emit("joinUser", userId);
+            console.log("🔗 Joined room with ID:", userId);
+          }
+      
         socket.on("newPost", (newPost) => {
-            console.log("Received newPost:", newPost);
-            setPosts((prevPosts) => [newPost, ...prevPosts]);
+          console.log("Received newPost:", newPost);
+          setPosts((prevPosts) => [newPost, ...prevPosts]);
         });
 
-        // Nhận thông báo
+      
         socket.on("notification", (notification) => {
-            console.log("Received notification:", notification);
-            setNotifications((prev) => [
-                {
-                    message: notification.message,
-                    postId: notification.postId,
-                    createdAt: notification.createdAt,
-                    type: "newPost",
-                },
-                ...prev,
-            ]);
-            toast.info(notification.message, {
-                onClick: () => {
-                    window.location.href = `/post/${notification.postId}`;
-                },
-            });
+          console.log("Received notification:", notification);
+          setNotifications((prev) => [
+            { message: notification.message, postId: notification.postId, createdAt: notification.createdAt, type: "newPost" },
+            ...prev,
+          ]);
+          toast.info(notification.message, { onClick: () => window.location.href = `/post/${notification.postId}` });
         });
-
-        // Nhận thông báo khi có comment mới
+      
         socket.on("newComment", ({ postId, commenter, commentText }) => {
-            console.log("Received newComment:", { postId, commenter, commentText });
-            setNotifications((prev) => [
-                {
-                    message: `${commenter.firstName} ${commenter.lastName} đã bình luận bài viết của bạn: "${commentText}"`,
-                    postId,
-                    createdAt: new Date(),
-                    type: "comment",
-                    user: commenter,
-                },
-                ...prev,
-            ]);
+          console.log("Received newComment:", { postId, commenter, commentText });
+          setNotifications((prev) => [
+            {
+              message: `${commenter.firstName} ${commenter.lastName} đã bình luận bài viết của bạn: "${commentText}"`,
+              postId,
+              createdAt: new Date(),
+              type: "comment",
+              user: commenter,
+            },
+            ...prev,
+          ]);
         });
+        
 
-        // Nhận thông báo khi có like mới
-        socket.on("newLike", ({ postId, liker }) => {
-            console.log("Received newLike:", { postId, liker });
+          
+        socket.on("likeNoti", ({ message, postId, createdAt }) => {
+            console.log("✅ Received notification:", { message, postId, createdAt });
+          
             setNotifications((prev) => [
-                {
-                    message: `${liker.firstName} ${liker.lastName} đã thích bài viết của bạn`,
-                    postId,
-                    createdAt: new Date(),
-                    type: "like",
-                    user: liker,
-                },
-                ...prev,
+              {
+                message,
+                postId,
+                createdAt,
+                type: "updateLikes", // hoặc 'post' nếu muốn phân loại
+              },
+              ...prev,
             ]);
-        });
-
+          });
+          
+      
         return () => {
-            socket.off("newPost");
-            socket.off("notification");
-            socket.off("newComment");
-            socket.off("newLike");
+          socket.off("newPost");
+          socket.off("notification");
+          socket.off("newComment");
+          socket.off("likeNoti");
         };
-    }, [userId]);
+      }, [socket, userId]);
+
+      
 
     // Tìm kiếm bạn bè khi nhập
     useEffect(() => {
@@ -300,7 +291,7 @@ function Header() {
                                 <Link to={`/profile/${userId}`}><i class="fa-solid fa-user"></i> Trang cá nhân</Link>
                                 {!user && <Link to="/login"><i class="fa-solid fa-user-plus"></i> Đăng nhập</Link>}
 
-                                <Link to="/settings"><i class="fa-solid fa-gear"></i> Cài đặt</Link>
+                                <Link to="/password"><i class="fa-solid fa-gear"></i> Cài đặt</Link>
                                 {user && (
                                     <a onClick={handleLogout}><i className="fa-solid fa-right-from-bracket"></i> Đăng xuất</a>
                                 )}
