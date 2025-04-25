@@ -182,7 +182,7 @@ const ProfileSidebar = () => {
               <FormControl fullWidth margin="dense">
                 <InputLabel>Giới tính</InputLabel>
                 <Select
-                  name="maritalStatus"
+                  name="gender"
                   value={formData.gender}
                   onChange={handleInputChange}
                 >

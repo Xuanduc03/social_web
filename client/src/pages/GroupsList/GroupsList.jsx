@@ -3,6 +3,7 @@ import styles from "./GroupsList.module.scss";
 import axios from "axios";
 import GroupCard from "~/components/Group/GroupCard";
 import Sidebar from "~/components/Layout/Sidebar";
+import { toast } from "react-toastify";
 
 const GroupsList = () => {
   const [groups, setGroups] = useState([]);
@@ -59,11 +60,11 @@ const GroupsList = () => {
         setName("");
         setDescription("");
         setCoverImage(null);
-        alert("Tạo nhóm thành công!");
+        toast.success("Tạo nhóm thành công!");
       }
     } catch (error) {
       console.error("Lỗi khi tạo nhóm:", error);
-      alert("Lỗi khi tạo nhóm: " + (error.response?.data?.message || error.message));
+      toast.error("Lỗi khi tạo nhóm: " + (error.response?.data?.message || error.message));
     }
   };
 

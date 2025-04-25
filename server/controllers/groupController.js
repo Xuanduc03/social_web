@@ -9,23 +9,29 @@ module.exports.createGroup = async (req, res) => {
   try {
     const { name, description } = req.body;
     const userId = req.user?.id;
-    const file = req.files?.images?.[0];
 
     if (!name) {
       return res.status(400).json({ message: "Tên nhóm là bắt buộc", success: false });
     }
 
-    let coverImage = "https://via.placeholder.com/300x150";
-    if (req.file) { 
-      coverImage = req.file.path;
+    // Kiểm tra xem có file được upload không
+    if (!req.files || req.files.length === 0) {
+      return res.status(400).json({ message: "Vui lòng upload ảnh bìa", success: false });
     }
+
+    // Lấy thông tin file từ req.files (do dùng .array())
+    const uploadedFile = req.files[0];
+    const image = {
+      url: uploadedFile.path, // URL từ Cloudinary (path là URL trong CloudinaryStorage)
+      public_id: uploadedFile.filename, // public_id từ Cloudinary (filename là public_id)
+    };
 
     const newGroup = new Group({
       name,
       description,
       creator: userId,
       members: [{ user: userId }],
-      coverImage: coverImage,
+      coverImage: image,
     });
 
     const savedGroup = await newGroup.save();
@@ -41,7 +47,6 @@ module.exports.createGroup = async (req, res) => {
     res.status(500).json({ message: "Lỗi server", success: false, error: error.message });
   }
 };
-
 // Lấy danh sách nhóm
 module.exports.getAllGroups = async (req, res) => {
   try {
@@ -152,7 +157,7 @@ module.exports.createGroupPost = async (req, res) => {
     const { content } = req.body;
     const userId = req.user?.id;
     const files = req.files || [];
-    
+
     const group = await Group.findById(groupId);
     if (!group) {
       return res.status(404).json({ message: "Không tìm thấy nhóm", success: false });

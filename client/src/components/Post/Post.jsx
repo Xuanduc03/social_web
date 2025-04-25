@@ -335,7 +335,7 @@ const Post = React.forwardRef(
         {/* Thống kê cảm xúc */}
         <div className={cx("postActions")}>
           <div className={cx("reactionCount")}>
-            <span role="img" aria-label="like">👍</span>
+            <span role="img" aria-label="like"><i class="fa-regular fa-thumbs-up"></i></span>
             <span className={cx("likes")} onClick={handleLike}>{liked ? `Bạn và ${like.length - 1} đã thích` : `${like.length} đã thích`}</span>
           </div>
           <div className={cx("actionButtons")}>
@@ -354,9 +354,9 @@ const Post = React.forwardRef(
             <ThumbUpIcon /> {liked ? "Đã thích" : "Thích"}
           </button>
           <button className={cx("btn")} onClick={() => handleOpenComments(id)}>
-            💬 Bình luận
+          <i class="fa-regular fa-comments"></i> Bình luận
           </button>
-          <button className={cx("btn")} onClick={handleShareOpen} >🔗 Chia sẻ</button>
+          <button className={cx("btn")} onClick={handleShareOpen} ><i class="fa-solid fa-share"></i> Chia sẻ</button>
           {editing && (
             <div className={cx("editActions")}>
               <button className={cx("btn", "saveBtn")} onClick={handleEdit}>

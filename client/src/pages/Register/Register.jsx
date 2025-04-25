@@ -109,7 +109,7 @@ const Register = () => {
                   <input
                     type="radio"
                     name="gender"
-                    value="Male"
+                    value="nam"
                     onChange={handleChange}
                     required
                   />
@@ -119,7 +119,7 @@ const Register = () => {
                   <input
                     type="radio"
                     name="gender"
-                    value="Female"
+                    value="nữ"
                     onChange={handleChange}
                     required
                   />
@@ -129,7 +129,7 @@ const Register = () => {
                   <input
                     type="radio"
                     name="gender"
-                    value="Other"
+                    value="Khác"
                     onChange={handleChange}
                     required
                   />

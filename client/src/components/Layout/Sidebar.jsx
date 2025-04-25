@@ -5,15 +5,15 @@ import GroupsIcon from "@mui/icons-material/Groups";
 import VideoLibraryIcon from "@mui/icons-material/VideoLibrary";
 import BookmarkIcon from "@mui/icons-material/Bookmark";
 import StorefrontIcon from "@mui/icons-material/Storefront";
-import styles from "./Sidebar.module.scss"; // Chuyển sang SCSS module
+import styles from "./Sidebar.module.scss";
 import axios from "axios";
-import { Link } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
 
 const Sidebar = () => {
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);
-
   const [error, setError] = useState(null);
+  const location = useLocation(); // Lấy URL hiện tại
 
   useEffect(() => {
     const fetchUser = async () => {
@@ -35,9 +35,9 @@ const Sidebar = () => {
 
   const sidebarOptions = [
     {
-      src: user?.avatarImage[0].url || "https://i.pravatar.cc/150",
+      src: user?.avatarImage?.[0]?.url || "https://i.pravatar.cc/150", // Sửa avatarImage[0].url thành avatarImage
       title: "Trang cá nhân",
-      link: `/profile/`,
+      link: user ? `/profile/${user._id}` : "/login", // Thêm userId vào link
     },
     { Icon: PeopleIcon, title: "Bạn bè", link: "/friend" },
     { Icon: GroupsIcon, title: "Nhóm", link: "/groups" },
@@ -55,7 +55,9 @@ const Sidebar = () => {
           <Link
             to={option.link}
             key={index}
-            className={styles.sidebarRow}
+            className={`${styles.sidebarRow} ${
+              location.pathname === option.link ? styles.active : ""
+            }`}
           >
             {option.src && (
               <Avatar

@@ -36,7 +36,7 @@
     }
 
     .headerSearch {
-      position: relative; // Để định vị popup kết quả tìm kiếm
+      position: relative;
       display: flex;
       align-items: center;
       background: rgba(255, 255, 255, 0.2);
@@ -44,16 +44,25 @@
       padding: 8px 15px;
       transition: all 0.3s ease;
       width: 250px;
-    
+
       &:hover {
         background: rgba(255, 255, 255, 0.3);
+        .MuiSvgIcon-root {
+          color: #fff; // Hover cho SearchIcon
+        }
       }
-    
+
       .MuiSvgIcon-root {
-        color: #fff;
+        color: rgba(255, 255, 255, 0.8);
         font-size: 22px;
+        transition: color 0.3s ease;
       }
-    
+
+      .icon-active {
+        color: #fff; // Trạng thái active cho SearchIcon
+        transform: scale(1.1); // Phóng to nhẹ khi active
+      }
+
       input {
         border: none;
         background: transparent;
@@ -62,108 +71,27 @@
         font-size: 14px;
         margin-left: 8px;
         width: 100%;
-    
+
         &::placeholder {
           color: rgba(255, 255, 255, 0.8);
         }
       }
-    
-      // Popup tìm kiếm
+
       .searchResults {
-        position: absolute; // Đặt popup cố định dưới thanh tìm kiếm
-        top: 100%; // Nằm ngay dưới thanh tìm kiếm
+        position: absolute;
+        top: 100%;
         left: 0;
-        width: 350px; // Tăng độ rộng để phù hợp hơn với popup
-        max-height: 400px; // Giới hạn chiều cao, có thể cuộn nếu dài
-        overflow-y: auto; // Thêm thanh cuộn nếu vượt quá chiều cao
-        margin-top: 5px; // Khoảng cách nhỏ với thanh tìm kiếm
+        width: 350px;
+        max-height: 400px;
+        overflow-y: auto;
+        margin-top: 5px;
         padding: 15px;
         background: #ffffff;
         border-radius: 10px;
         box-shadow: 0 6px 20px rgba(0, 0, 0, 0.15);
-        z-index: 1000; // Đảm bảo popup nằm trên các phần tử khác
-      }
-    
-      .resultsTitle {
-        font-size: 18px;
-        font-weight: 600;
-        color: #333;
-        margin-bottom: 10px;
-        border-bottom: 2px solid #007bff;
-        display: inline-block;
-        padding-bottom: 4px;
-      }
-    
-      .resultsList {
-        display: flex;
-        flex-direction: column;
-        gap: 10px; // Giảm khoảng cách giữa các mục để tiết kiệm không gian
-      }
-    
-      .resultItem {
-        display: flex;
-        align-items: center;
-        padding: 8px;
-        border-radius: 6px;
-        background: #f9f9f9;
-        transition: all 0.3s ease;
-    
-        &:hover {
-          background: #f1f3f5;
-          transform: translateX(3px); // Dịch nhẹ hơn để phù hợp popup
-          box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05);
-        }
-      }
-    
-      .resultAvatar {
-        width: 40px; // Giảm kích thước để phù hợp popup
-        height: 40px;
-        border-radius: 50%;
-        object-fit: cover;
-        border: 2px solid #007bff;
-        margin-right: 12px;
-        transition: border-color 0.3s ease;
-    
-        .resultItem:hover & {
-          border-color: #0056b3;
-        }
-      }
-    
-      .resultInfo {
-        flex: 1;
-        display: flex;
-        flex-direction: column;
-      }
-    
-      .resultName {
-        font-size: 14px; // Giảm font để gọn hơn
-        font-weight: 500;
-        color: #222;
-        line-height: 1.2;
-      }
-    
-      .resultDetail {
-        font-size: 12px;
-        color: #666;
-        margin-top: 2px;
-      }
-    
-      .actionButton {
-        padding: 4px 10px; // Giảm kích thước nút
-        font-size: 12px;
-        color: #fff;
-        background: #007bff;
-        border: none;
-        border-radius: 4px;
-        cursor: pointer;
-        transition: background 0.3s ease;
-    
-        &:hover {
-          background: #0056b3;
-        }
+        z-index: 1000;
       }
     }
-    
   }
 
   // Header Mid
@@ -180,16 +108,18 @@
       .MuiSvgIcon-root {
         color: rgba(255, 255, 255, 0.8);
         font-size: 28px;
+        transition: color 0.3s ease, transform 0.3s ease;
       }
 
       &:hover {
         background: rgba(255, 255, 255, 0.2);
         .MuiSvgIcon-root {
-          color: #fff;
+          color: #fff; // Hover cho HomeIcon, PeopleIcon, GroupAddOutlined
+          transform: scale(1.1); // Phóng to nhẹ khi hover
         }
       }
 
-      &.headerOptions-active {
+      &.active {
         background: rgba(255, 255, 255, 0.3);
         position: relative;
 
@@ -208,6 +138,11 @@
         .MuiSvgIcon-root {
           color: #fff;
         }
+      }
+
+      .icon-active {
+        color: #fff; // Trạng thái active cho HomeIcon, PeopleIcon, GroupAddOutlined
+        transform: scale(1.1); // Phóng to nhẹ khi active
       }
     }
   }
@@ -249,14 +184,14 @@
         background: rgba(255, 255, 255, 0.2);
       }
     }
+
     .chat {
       line-height: 10px;
-      .chat-icon {
+      .chatIcon {
         color: #fff;
         align-items: center;
       }
     } 
-    
 
     .MuiIconButton-root {
       color: rgba(255, 255, 255, 0.8);
@@ -273,97 +208,98 @@
       }
     }
 
-
-    .dropdown-container{
+    .dropdown-container {
       display: flex;
       gap: 10px;
     }
+
     .dropdown {
       position: relative;
-  
+
       .dropdown-menu {
+        position: absolute;
+        top: 110%;
+        right: 0;
+        display: flex;
+        flex-direction: column;
+        padding: 5px;
+        background: #fff;
+        border-radius: 12px;
+        box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+        overflow: hidden;
+        min-width: 250px;
+        max-width: 300px;
+        animation: fadeIn 0.3s ease-in-out;
+        z-index: 100;
+
+        &::before {
+          content: "";
           position: absolute;
-          top: 110%; // Đẩy xuống dưới nút bấm
-          right: 0;
+          top: -8px;
+          right: 15px;
+          width: 0;
+          height: 0;
+          border-left: 8px solid transparent;
+          border-right: 8px solid transparent;
+          border-bottom: 8px solid white;
+        }
+
+        .dropdown-header {
+          padding: 12px 15px;
+          font-weight: bold;
+          background: #f0f2f5;
+          color: #333;
+          text-align: center;
+        }
+
+        a {
+          padding: 6px;
+          color: #333;
+        }
+
+        a:hover {
+          color: #00c4cc;
+        }
+
+        .dropdown-item {
           display: flex;
-          flex-direction: column;
-          padding: 5px;
-          background: #fff;
-          border-radius: 12px;
-          box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
-          overflow: hidden;
-          min-width: 250px;
-          max-width: 300px;
-          animation: fadeIn 0.3s ease-in-out;
-          z-index: 100;
-  
-          &::before {
-              content: "";
-              position: absolute;
-              top: -8px;
-              right: 15px;
-              width: 0;
-              height: 0;
-              border-left: 8px solid transparent;
-              border-right: 8px solid transparent;
-              border-bottom: 8px solid white;
+          align-items: center;
+          gap: 12px;
+          padding: 12px 15px;
+          font-size: 14px;
+          color: #333;
+          transition: background 0.2s ease-in-out;
+          text-decoration: none;
+          cursor: pointer;
+
+          i {
+            font-size: 16px;
+            color: #007bff;
           }
-  
-          .dropdown-header {
-              padding: 12px 15px;
-              font-weight: bold;
-              background: #f0f2f5;
-              color: #333;
-              text-align: center;
+
+          &:hover {
+            background: rgba(0, 123, 255, 0.1);
+            color: #007bff;
           }
-          a {
-            padding: 6px;
-            color: #333;
+        }
+
+        .logout {
+          border-top: 1px solid #e0e0e0;
+          padding: 12px 15px;
+          text-align: center;
+          font-weight: bold;
+          color: #d9534f;
+          cursor: pointer;
+          transition: background 0.2s;
+
+          &:hover {
+            background: rgba(217, 83, 79, 0.1);
+            color: #c9302c;
           }
-          a:hover {
-            color: #00c4cc;
-          }
-          .dropdown-item {
-              display: flex;
-              align-items: center;
-              gap: 12px;
-              padding: 12px 15px;
-              font-size: 14px;
-              color: #333;
-              transition: background 0.2s ease-in-out;
-              text-decoration: none;
-              cursor: pointer;
-  
-              i {
-                  font-size: 16px;
-                  color: #007bff;
-              }
-  
-              &:hover {
-                  background: rgba(0, 123, 255, 0.1);
-                  color: #007bff;
-              }
-          }
-  
-          .logout {
-              border-top: 1px solid #e0e0e0;
-              padding: 12px 15px;
-              text-align: center;
-              font-weight: bold;
-              color: #d9534f;
-              cursor: pointer;
-              transition: background 0.2s;
-  
-              &:hover {
-                  background: rgba(217, 83, 79, 0.1);
-                  color: #c9302c;
-              }
-          }
+        }
       }
-  }
-  
-    
-    // Animation xuất hiện mượt mà
+    }
+
     @keyframes fadeIn {
       from {
         opacity: 0;
@@ -373,7 +309,7 @@
         opacity: 1;
         transform: translateY(0);
       }
-    }   
+    }
   }
 }
 
@@ -388,7 +324,6 @@
   }
 }
 
-// Responsive
 @media (max-width: 768px) {
   .header {
     padding: 10px;

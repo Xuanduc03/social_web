@@ -8,7 +8,7 @@ import { Avatar, IconButton, List, ListItem, ListItemAvatar, ListItemText, Paper
 import ChatIcon from "@mui/icons-material/Chat";
 import NotificationsIcon from "@mui/icons-material/Notifications";
 import ArrowDropDownIcon from "@mui/icons-material/ArrowDropDown";
-import { Link, useNavigate } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 import axios from "axios";
 import { toast } from "react-toastify";
 import { io } from "socket.io-client";
@@ -29,6 +29,7 @@ function Header() {
     const [searchText, setSearchText] = useState("");
     const [suggestedFriends, setSuggestedFriends] = useState([]);
     const navigate = useNavigate();
+    const location = useLocation();
 
     // Lấy thông tin user hiện tại
     useEffect(() => {
@@ -181,7 +182,7 @@ function Header() {
                     />
                 </Link>
                 <div className={cx("headerSearch")} onBlur={() => setTimeout(() => setSuggestedFriends([]), 300)}>
-                    <SearchIcon />
+                    <SearchIcon className={cx({ "icon-active": location.pathname === "/search" })} />
                     <input
                         type="text"
                         placeholder="Tìm kiếm bạn bè..."
@@ -208,20 +209,20 @@ function Header() {
             </div>
 
             <div className={cx("headerMid")}>
-                <Link to="/" className={cx("headerOptions", { active: window.location.pathname === "/" })}>
-                    <HomeIcon fontSize="large" />
+                <Link to="/" className={cx("headerOptions", { active: location.pathname === "/" })}>
+                    <HomeIcon fontSize="large" className={cx({ "icon-active": location.pathname === "/" })} />
                 </Link>
-                <Link to="/groups" className={cx("headerOptions", { active: window.location.pathname === "/groups" })}>
-                    <GroupAddOutlined fontSize="large" />
+                <Link to="/groups" className={cx("headerOptions", { active: location.pathname === "/groups" })}>
+                    <GroupAddOutlined fontSize="large" className={cx({ "icon-active": location.pathname === "/groups" })} />
                 </Link>
-                <Link to="/Friend" className={cx("headerOptions", { active: window.location.pathname === "/Friend" })}>
-                    <PeopleIcon fontSize="large" />
+                <Link to="/Friend" className={cx("headerOptions", { active: location.pathname === "/Friend" })}>
+                    <PeopleIcon fontSize="large" className={cx({ "icon-active": location.pathname === "/Friend" })} />
                 </Link>
             </div>
 
             <div className={cx("headerRight")}>
                 <Link to={userId ? `/profile/${userId}` : "/login"} className={cx("headerInfo")}>
-                    <Avatar src={loading ? "" : user?.avatarImage[0].url || "/default-avatar.png"} className={cx("avatar")} />
+                    <Avatar src={loading ? "" : user?.avatarImage?.[0]?.url || "https://cellphones.com.vn/sforum/wp-content/uploads/2023/10/avatar-trang-4.jpg"} className={cx("avatar")} />
                     <h5>{loading ? "Loading..." : user ? user.lastName : "Guest"}</h5>
                 </Link>
 
@@ -232,7 +233,6 @@ function Header() {
                 </IconButton>
 
                 <div className="dropdown-container">
-                    {/* Thông báo */}
                     <div className="dropdown notifications">
                         <IconButton onClick={() => setNotiDropdownOpen(!notiDropdownOpen)}>
                             <Badge badgeContent={notifications.length} color="error">
@@ -281,24 +281,21 @@ function Header() {
                         )}
                     </div>
 
-                    {/* Profile */}
                     <div className="dropdown profile">
                         <IconButton onClick={() => setProfileDropdownOpen(!profileDropdownOpen)}>
                             <ArrowDropDownIcon />
                         </IconButton>
                         {profileDropdownOpen && (
                             <div className="dropdown-menu">
-                                <Link to={`/profile/${userId}`}><i class="fa-solid fa-user"></i> Trang cá nhân</Link>
-                                {!user && <Link to="/login"><i class="fa-solid fa-user-plus"></i> Đăng nhập</Link>}
-
-                                <Link to="/password"><i class="fa-solid fa-gear"></i> Cài đặt</Link>
+                                <Link to={`/profile/${userId}`}><i className="fa-solid fa-user"></i> Trang cá nhân</Link>
+                                {!user && <Link to="/login"><i className="fa-solid fa-user-plus"></i> Đăng nhập</Link>}
+                                <Link to="/password"><i className="fa-solid fa-gear"></i> Cài đặt</Link>
                                 {user && (
                                     <a onClick={handleLogout}><i className="fa-solid fa-right-from-bracket"></i> Đăng xuất</a>
                                 )}
                             </div>
                         )}
                     </div>
-
                 </div>
             </div>
         </div>

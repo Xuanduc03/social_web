@@ -126,7 +126,7 @@ const Group = () => {
     <div className={styles.groupContainer}>
       <div className={styles.coverSection}>
         <img
-          src={group.coverImage || "https://via.placeholder.com/300x150"}
+          src={group?.coverImage?.[0].url || "https://via.placeholder.com/300x150"}
           alt="Group Cover"
           className={styles.coverImage}
         />

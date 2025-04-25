@@ -17,6 +17,8 @@ const UpComment = () => {
   const [comments, setComments] = useState([]); // Danh sách bình luận
   const [open, setOpen] = useState(true);
   const [user, setUser] = useState("");
+  const [likes, setLikes] = useState([]); // State cho số lượt like
+  const [shares, setShares] = useState([]); // State cho số lượt share
   const [loading, setLoading] = useState("");
   const [actionMenuOpen, setActionMenuOpen] = useState(null);
   const [editingCommentId, setEditingCommentId] = useState(null);
@@ -155,8 +157,8 @@ const UpComment = () => {
         <div className={style.postDetail}>
           <div className={style.postHeader}>
             <Avatar
-              src={user.avatarImage || "https://via.placeholder.com/40"} // Dùng photoURL nếu có
-              alt="avatar"
+              src={postData.user?.avatarImage?.[0]?.url || "https://via.placeholder.com/40"}
+              alt={`${postData.user?.firstName} ${postData.user?.lastName}`}
               className={style.avatar}
             />
             <div className={style.userInfo}>
@@ -175,88 +177,100 @@ const UpComment = () => {
               />
             )}
           </div>
-        </div>
 
-        {/* Phần bình luận */}
-        <div className={style.commentsSection}>
-          <h3>Bình luận</h3>
-          {comments.length > 0 ? (
-            comments.map((comment) => (
-              <div key={comment._id} className={style.comment}>
-                <div className={style.commentHeader}>
-                  <div className={style.commentUser}>
-                    <Avatar
-                      src={comment.user.avatarImage || "https://via.placeholder.com/40"} // Dùng photoURL nếu có
-                      alt="avatar"
-                      className={style.avatar}
-                    />
-                    <strong>{loading ? "Loading..." : comment ? `${comment.user.firstName} ${comment.user.lastName}` : "User Name"}</strong>
-                    <span className={style.dateTime}>{formatDate(comment.createdAt)}</span>
-                  </div>
-              
-                  {/* Menu Actions */}
-                  <div className={style.actionMenu}>
-                    <button onClick={() => toggleActionMenu(comment._id)}><i class="fa-solid fa-ellipsis-vertical"></i></button>
-                    {actionMenuOpen === comment._id && (
-                      <div className={`${style.dropdownMenu} ${actionMenuOpen === comment._id ? style.active : ''}`}>
-                        <button onClick={() => handleEditComment(comment)}>Sửa</button>
-                        <button onClick={() => handleDeleteComment(comment._id)}>Xóa</button>
-                      </div>
-                    )}
-                  </div>
+          {/* Thêm phần hiển thị số lượt like, comment, share */}
+          <div className={style.postActions}>
+            <div className={style.reactionCount}>
+              <span role="img" aria-label="like"><i class="fa-regular fa-thumbs-up"></i></span>
+              <span>{likes.length} đã thích</span>
+            </div>
+            <div className={style.actionButtons}>
+              <span><strong>{comments.length}</strong> <i className="fa-solid fa-comment"></i></span>
+              <span><strong>{shares.length}</strong> <i className="fa-solid fa-share"></i></span>
+            </div>
+          </div>
+      </div>
+
+      {/* Phần bình luận */}
+      <div className={style.commentsSection}>
+        <h3>Bình luận</h3>
+        {comments.length > 0 ? (
+          comments.map((comment) => (
+            <div key={comment._id} className={style.comment}>
+              <div className={style.commentHeader}>
+                <div className={style.commentUser}>
+                  <Avatar
+                    src={comment.user?.avatarImage?.[0]?.url || "https://via.placeholder.com/40"}
+                    alt={`${comment.user?.firstName} ${comment.user?.lastName}`}
+                    className={style.avatar}
+                  />
+                  <strong>{loading ? "Loading..." : comment ? `${comment.user.firstName} ${comment.user.lastName}` : "User Name"}</strong>
+                  <span className={style.dateTime}>{formatDate(comment.createdAt)}</span>
                 </div>
 
-                {editingCommentId === comment._id ? (
-                  <textarea
-                    className={style.editCommentInput}
-                    value={editContent}
-                    onChange={(e) => setEditContent(e.target.value)}
-                  />
-                ) : (
-                  <p>{comment.text}</p>
-                )}
-
-                {editingCommentId === comment._id && (
-                  <div className={style.commentActions}>
-                    <button className={style.saveButton} onClick={() => handleSaveEdit(comment._id)}>Lưu</button>
-                    <button className={style.cancelButton} onClick={handleCancelEdit}>Hủy</button>
-                  </div>
-                )}
+                {/* Menu Actions */}
+                <div className={style.actionMenu}>
+                  <button onClick={() => toggleActionMenu(comment._id)}><i class="fa-solid fa-ellipsis-vertical"></i></button>
+                  {actionMenuOpen === comment._id && (
+                    <div className={`${style.dropdownMenu} ${actionMenuOpen === comment._id ? style.active : ''}`}>
+                      <button onClick={() => handleEditComment(comment)}>Sửa</button>
+                      <button onClick={() => handleDeleteComment(comment._id)}>Xóa</button>
+                    </div>
+                  )}
+                </div>
               </div>
-            ))
-          ) : (
-            <p className={style.noComments}>Chưa có bình luận nào.</p>
-          )}
-          
+
+              {editingCommentId === comment._id ? (
+                <textarea
+                  className={style.editCommentInput}
+                  value={editContent}
+                  onChange={(e) => setEditContent(e.target.value)}
+                />
+              ) : (
+                <p>{comment.text}</p>
+              )}
+
+              {editingCommentId === comment._id && (
+                <div className={style.commentActions}>
+                  <button className={style.saveButton} onClick={() => handleSaveEdit(comment._id)}>Lưu</button>
+                  <button className={style.cancelButton} onClick={handleCancelEdit}>Hủy</button>
+                </div>
+              )}
+            </div>
+          ))
+        ) : (
+          <p className={style.noComments}>Chưa có bình luận nào.</p>
+        )}
 
 
-          <div className={style.commentForm}>
-            <Avatar
-              src={user?.avatarImage[0].url || "https://via.placeholder.com/40"} // Dùng photoURL nếu có
-              alt="avatar"
-              className={style.avatar}
-            />
-            <TextField
-              rows={2}
-              value={commentContent}
-              onChange={(e) => setCommentContent(e.target.value)}
-              placeholder="Viết bình luận của bạn..."
-              variant="outlined"
-              className={style.commentInput}
-            />
-            <Button
-              type='submit'
-              variant="contained"
-              color="primary"
-              onClick={handleAddComment}
-              className={style.submitButton}
-            >
-              Gửi
-            </Button>
-          </div>
+
+        <div className={style.commentForm}>
+          <Avatar
+            src={user?.avatarImage[0].url || "https://via.placeholder.com/40"} // Dùng photoURL nếu có
+            alt="avatar"
+            className={style.avatar}
+          />
+          <TextField
+            rows={2}
+            value={commentContent}
+            onChange={(e) => setCommentContent(e.target.value)}
+            placeholder="Viết bình luận của bạn..."
+            variant="outlined"
+            className={style.commentInput}
+          />
+          <Button
+            type='submit'
+            variant="contained"
+            color="primary"
+            onClick={handleAddComment}
+            className={style.submitButton}
+          >
+            Gửi
+          </Button>
         </div>
       </div>
-    </Modal>
+    </div>
+    </Modal >
   );
 };
 

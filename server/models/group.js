@@ -14,10 +14,19 @@ const GroupSchema = new mongoose.Schema(
       trim: true,
       maxlength: 500,
     },
-    coverImage: {
-      type: String,
-      default: "",
-    },
+    coverImage: [
+      {
+        url: {
+          type: String,
+          trim: true,
+        },
+        public_id: {
+          type: String,
+          required: true,
+          // match: /^https?:\/\/.+/i, // Kiểm tra định dạng URL
+        },
+      },
+    ],
     creator: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "User",

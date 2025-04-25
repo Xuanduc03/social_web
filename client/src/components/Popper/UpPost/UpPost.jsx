@@ -16,6 +16,7 @@ function UpPost() {
   const [content, setContent] = useState("");
   const [selectedFiles, setSelectedFiles] = useState([]);
   const [previewUrls, setPreviewUrls] = useState([]);
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   // Lấy thông tin người dùng
   useEffect(() => {
@@ -63,16 +64,16 @@ function UpPost() {
       toast.error("Vui lòng đăng nhập để đăng bài!");
       return;
     }
-  
+
     if (!content.trim() && selectedFiles.length === 0) { // Sử dụng trim() để kiểm tra khoảng trắng
       toast.error("Vui lòng nhập nội dung hoặc chọn ít nhất một ảnh!");
       return;
     }
-  
+
     const formData = new FormData();
     formData.append("content", content.trim()); // Đảm bảo gửi content không rỗng
     selectedFiles.forEach((file) => formData.append("images", file)); // Gửi nhiều file nếu có
-  
+
     // Log dữ liệu gửi lên để kiểm tra
     for (let pair of formData.entries()) {
       console.log(pair[0] + ': ' + pair[1]);
@@ -94,6 +95,8 @@ function UpPost() {
       toast.error(error.response?.data?.message || "Lỗi khi đăng bài!");
 
       console.log("Lỗi chi tiết:", error.response?.data || error.message);
+    } finally {
+      setIsSubmitting(false);
     }
   };
 
@@ -110,9 +113,9 @@ function UpPost() {
             </div>
 
             <div className="modalHeaderTop">
-              <Link to="/profile" className="uploadinfo">                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        
+              <Link to="/profile" className="uploadinfo">
                 <Avatar
-                  src={loading ? "" : user?.avatarImage[0].url || ""}
+                  src={loading ? "" : user?.avatarImage?.[0]?.url || "https://cellphones.com.vn/sforum/wp-content/uploads/2023/10/avatar-trang-4.jpg"}
                   alt={user ? `${user.firstName} ${user.lastName}` : "Guest"}
                 />
                 <h5>{loading ? "Loading..." : user ? `${user.firstName} ${user.lastName}` : "Guest"}</h5>
@@ -161,7 +164,7 @@ function UpPost() {
               </div>
             </div>
 
-            <input type="submit" className="postSubmit" value="Đăng" />
+            <button type="submit" disabled={isSubmitting} className="postSubmit">{isSubmitting ? "Đang đăng..." : "Đăng bài"}</button>
           </form>
         </div>
       </Modal>
@@ -169,7 +172,7 @@ function UpPost() {
       <div className="upPost">
         <div className="upPostTop">
           <Avatar
-            src={loading ? "" : user?.avatarImage[0].url || ""}
+            src={loading ? "" : user?.avatarImage?.[0]?.url || "https://cellphones.com.vn/sforum/wp-content/uploads/2023/10/avatar-trang-4.jpg"}
             alt={user ? `${user.firstName} ${user.lastName}` : "Guest"}
           />
           <input

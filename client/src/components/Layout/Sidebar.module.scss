@@ -1,4 +1,4 @@
-// Sidebar.scss
+
 .sidebar {
   width: 280px;
   padding: 20px 10px;
@@ -37,6 +37,26 @@
 
       .MuiSvgIcon-root {
         color: #fff;
+      }
+    }
+
+    // Trạng thái active
+    &.active {
+      background: #007bff; // Màu nền khi active
+      color: #fff;
+      box-shadow: 0 4px 15px rgba(0, 123, 255, 0.3);
+
+      .MuiAvatar-root {
+        border-color: #fff;
+      }
+
+      .MuiSvgIcon-root {
+        color: #fff; // Màu icon khi active
+      }
+
+      p {
+        color: #fff; // Màu chữ khi active
+        font-weight: 600;
       }
     }
 
@@ -86,7 +106,7 @@
   }
 }
 
-// Responsive
+// Responsive (giữ nguyên)
 @media (max-width: 768px) {
   .sidebar {
     display: none;

@@ -39,7 +39,7 @@ const Profile = () => {
   return (
     <div className={styles.profile}>
       {/* Ảnh đại diện & ảnh bìa */}
-      <ProfileHeader user={userProfile} loading={loading}/>
+      <ProfileHeader user={userProfile} loading={loading} />
       {/* Thanh điều hướng Profile */}
       <div className={styles.profileNav}>
         <ul className={styles.navLinks}>

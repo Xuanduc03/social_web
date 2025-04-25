@@ -41,16 +41,28 @@
   }
 
   .actionBar {
+    background: #ffffff;
+    border-radius: 12px;
+    box-shadow: 0 2px 15px rgba(0, 0, 0, 0.1);
+    padding: 10px 20px;
     display: flex;
     justify-content: space-between;
     align-items: center;
-    padding: 10px 0;
-    border-bottom: 1px solid #e0e0e0;
     margin-bottom: 20px;
+    position: sticky;
+    top: 70px;
+    z-index: 10;
+    transition: all 0.3s ease;
 
+    &:hover {
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
+    }
     .tabs {
       display: flex;
-      gap: 20px;
+      list-style: none;
+      margin: 0;
+      padding: 0;
+      gap: 15px;
 
       .tabButton {
         background: none;

@@ -55,6 +55,38 @@
       margin-top: 10px;
     }
   }
+
+
+  .postActions {
+    display: flex;
+    justify-content: space-between;
+    padding: 10px 15px;
+    border-top: 1px solid #e0e0e0;
+    border-bottom: 1px solid #e0e0e0;
+    font-size: 14px;
+    color: #65676b;
+  }
+  
+  .reactionCount {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+  }
+  
+  .actionButtons {
+    display: flex;
+    gap: 15px;
+  
+    span {
+      display: flex;
+      align-items: center;
+      gap: 5px;
+  
+      i {
+        font-size: 16px;
+      }
+    }
+  }
 }
 
 .commentsSection {

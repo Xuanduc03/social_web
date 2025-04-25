@@ -103,7 +103,7 @@ function UpGroupPost({ groupId, onPostCreated, isMember }) {
               </IconButton>
             </div>
             <div className="modalHeaderTop">
-              <Avatar src={loading ? "" : user?.avatarImage || ""} />
+              <Avatar src={loading ? "" : user?.avatarImage[0].url || ""} />
               <h5>{loading ? "Loading..." : user ? `${user.firstName} ${user.lastName}` : "Guest"}</h5>
             </div>
             <div className="modalBody">

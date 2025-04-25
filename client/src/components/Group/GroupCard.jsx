@@ -5,7 +5,7 @@ import "./GroupCard.scss";
 function GroupCard({ group }) {
   return (
     <div className="groupCard">
-      <img src={group.coverImage || "https://via.placeholder.com/300x150"} alt="Cover" />
+      <img src={group?.coverImage?.[0].url || "https://via.placeholder.com/300x150"} alt="Cover" />
       <div className="groupInfo">
         <h3>{group.name}</h3>
         <p>{group.members.length} thành viên</p>

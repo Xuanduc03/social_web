@@ -2,6 +2,7 @@ const bcrypt = require("bcrypt");
 const User = require("../models/user");
 const jwt = require("jsonwebtoken");
 const mongoose = require("mongoose");
+const {getIo} = require("../socket/socket");
 const cloudinary = require("cloudinary").v2;
 
 module.exports.Register = async (req, res) => {
@@ -83,7 +84,21 @@ module.exports.Login = async (req, res) => {
                 success: false
             });
         }
+        // Cập nhật trạng thái online
+        await User.updateOne(
+            { _id: userData._id },
+            { statusOnline: "online" }
+        );
+        const io = getIo();
+        // Gửi danh sách user đang online hiện tại
+        const onlineUsers = await User.find({ statusOnline: "online" }).select("_id");
+        const onlineUserIds = onlineUsers.map(user => user._id);
 
+        setInterval(() => {
+            io.emit("SERVER_INITIAL_ONLINE_USERS", onlineUserIds);
+        }, 600);
+    
+        io.emit("SERVER_RETURN_USER_ONLINE", userData._id);
         const isPasswordValid = await bcrypt.compare(password, userData.password);
         if (!isPasswordValid) {
             return res.status(401).json({
@@ -126,6 +141,52 @@ module.exports.Login = async (req, res) => {
         console.error("Login error:", error);
         return res.status(500).json({
             message: error.message || "An error occurred during login",
+            success: false,
+            error: true
+        });
+    }
+};
+
+module.exports.Logout = async (req, res) => {
+ 
+   
+    try {
+
+        const { userId } = req.body; // Lấy userId từ request body
+
+        if (!userId) {
+            return res.status(400).json({
+                message: "User ID is required",
+                success: false,
+                error: true
+            });
+        }
+    
+        await User.updateOne(
+            { _id: userId },
+            { statusOnline: "offline" }
+        );
+        // Gửi thông báo tới tất cả bạn bè của người dùng đã logout (nếu cần)
+        const io = getIo();
+        io.emit("SERVER_RETURN_USER_OFFLINE", userId);
+
+        const tokenOption = {
+            httpOnly: true,
+            secure: process.env.NODE_ENV === "production",
+            sameSite: "strict"
+        };
+
+
+        res.clearCookie("token", tokenOption);
+        return res.status(200).json({
+            message: "Logout Successful",
+            success: true,
+            error: false
+        });
+    } catch (error) {
+        console.error("Logout error:", error);
+        return res.status(500).json({
+            message: "Logout failed",
             success: false,
             error: true
         });

@@ -92,6 +92,9 @@ const userSchema = new mongoose.Schema({
         type: Date,
         default: Date.now,
     },
+    statusOnline: {
+        type: String,
+    },
     // Friends
     friendRequests: [
         {

@@ -52,7 +52,7 @@ function Story({ user }) {
             <div className={styles.storyReel} ref={scrollRef}>
                 {/* Nút tạo tin */}
                 <div className={`${styles.story} ${styles.createStory}`} onClick={() => router("/stories/create")}>
-                    <img src={user ? user.avatarImage[0].url : "https://sme.hust.edu.vn/wp-content/uploads/2022/02/Avatar-Facebook-trang.jpg"} alt="avatar" />
+                    <img src={user ? user?.avatarImage?.[0]?.url : "https://cellphones.com.vn/sforum/wp-content/uploads/2023/10/avatar-trang-4.jpg"} alt="avatar" />
                     <p>Tạo tin</p>
                 </div>
 

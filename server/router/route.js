@@ -56,6 +56,7 @@ const uploadStory = require("../middleware/uploadStory");
 const upload = require("../middleware/uploadCloud");
 const { getMessages } = require("../controllers/messageController");
 const { createStory, getAllStories, getLatestStories, getMyStories, getFriendStories, deleteStory } = require("../controllers/storyController");
+const uploadGroup = require("../middleware/uploadGroup");
 
 const router = express.Router();
 
@@ -112,7 +113,7 @@ router.get("/suggested-friends", authProtect, getSuggestedFriends);
 router.post("/remove-friend", authProtect, removeFriend);
 
 
-router.post("/groups", authProtect, upload, createGroup);
+router.post("/groups", authProtect, uploadGroup, createGroup);
 router.get("/groups", getAllGroups);
 router.get("/groups/:groupId", getGroupById);
 router.post("/groups/:groupId/join", authProtect, joinGroup);

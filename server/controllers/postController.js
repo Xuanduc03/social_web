@@ -57,7 +57,7 @@ module.exports.createPost = async (req, res) => {
 
 
     const savedPost = await newPost.save();
-    await savedPost.populate('user', 'firstName lastName avatar');
+    await savedPost.populate('user', 'firstName lastName avatarImage');
 
     // emit create post on socket io
     const io = getIo();
@@ -124,7 +124,7 @@ module.exports.getAllPosts = async (req, res) => {
       group: null // Chỉ lấy bài viết không thuộc nhóm
     })
       .populate('user', 'firstName lastName avatarImage')
-      .populate('comments.user', 'firstName lastName avatar')
+      .populate('comments.user', 'firstName lastName avatarImage')
       .sort({ createdAt: -1 }) // Sắp xếp mới nhất trước
       .skip(skip)
       .limit(limit);
@@ -163,8 +163,8 @@ module.exports.getPostById = async (req, res) => {
     }
 
     const post = await Post.findById(postId)
-      .populate('user', 'firstName lastName avatar')
-      .populate('comments.user', 'firstName lastName avatar');
+      .populate('user', 'firstName lastName avatarImage')
+      .populate('comments.user', 'firstName lastName avatarImage');
 
     if (!post) {
       return res.status(404).json({
@@ -233,7 +233,7 @@ module.exports.updatePost = async (req, res) => {
     post.content = content || post.content;
     post.images = images || post.images;
     const updatedPost = await post.save();
-    await updatedPost.populate('user', 'firstName lastName avatar');
+    await updatedPost.populate('user', 'firstName lastName avatarImage');
 
     res.status(200).json({
       data: updatedPost,
@@ -412,7 +412,7 @@ module.exports.toggleLikePost = async (req, res) => {
     }
 
     const updatedPost = await post.save();
-    await updatedPost.populate("user", "firstName lastName avatar");
+    await updatedPost.populate("user", "firstName lastName avatarImage");
 
     const io = getIo();
 
@@ -530,8 +530,8 @@ module.exports.commentPost = async (req, res) => {
 
     post.comments.push({ user: userId, text });
     const updatedPost = await post.save();
-    await updatedPost.populate('user', 'firstName lastName avatar');
-    await updatedPost.populate('comments.user', 'firstName lastName avatar');
+    await updatedPost.populate('user', 'firstName lastName avatarImage');
+    await updatedPost.populate('comments.user', 'firstName lastName avatarImage');
 
     // Emit sự kiện updateComments
     const io = getIo();
