@@ -37,12 +37,12 @@ function ViewStories() {
         const fetchStories = async () => {
             try {
 
-                const myStoriesRes = await axios.get("http://localhost:8080/api/stories/me", {
+                const myStoriesRes = await axios.get(`${process.env.REACT_APP_API_URL}/stories/me`, {
                     headers: { Authorization: `Bearer ${token}` },
                     withCredentials: true
                 });
                 
-                const friendStoriesRes = await axios.get("http://localhost:8080/api/stories/friends", {
+                const friendStoriesRes = await axios.get(`${process.env.REACT_APP_API_URL}/stories/friends`, {
                     headers: { Authorization: `Bearer ${token}` },
                     withCredentials: true
                 });
@@ -84,7 +84,7 @@ function ViewStories() {
     const deleteStory = async (storyId) => {
         try {
 
-            await axios.delete(`http://localhost:8080/api/stories/${storyId}`, {
+            await axios.delete(`${process.env.REACT_APP_API_URL}/stories/${storyId}`, {
                 headers: { Authorization: `Bearer ${token}` },
                 withCredentials: true
             });

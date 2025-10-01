@@ -13,7 +13,7 @@ const SidebarChat = ({ onSelectFriend }) => {
   useEffect(() => {
     const fetchFriends = async () => {
       try {
-        const res = await axios.get("http://localhost:8080/api/all-friends", {
+        const res = await axios.get(`${process.env.REACT_APP_API_URL}/all-friends`, {
           withCredentials: true,
         });
         startTransition(() => {

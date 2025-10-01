@@ -17,10 +17,10 @@ const Profile = () => {
     const fetchProfileData = async () => {
       try {
         setLoading(true);
-        const userResponse = await axios.get(`http://localhost:8080/api/user/${userId}`, {
+        const userResponse = await axios.get(`${process.env.REACT_APP_API_URL}/user/${userId}`, {
           withCredentials: true,
         });
-        const postsResponse = await axios.get(`http://localhost:8080/api/posts/user/${userId}`, {
+        const postsResponse = await axios.get(`${process.env.REACT_APP_API_URL}/posts/user/${userId}`, {
           withCredentials: true,
         });
 
@@ -124,7 +124,7 @@ const AboutTab = () => {
   useEffect(() => {
     const fetchUserInfo = async () => {
       try {
-        const response = await axios.get("http://localhost:8080/api/me", { withCredentials: true });
+        const response = await axios.get(`${process.env.REACT_APP_API_URL}/me`, { withCredentials: true });
         if (response.data.success) {
           setUserInfo(response.data.data);
         } else {
@@ -209,7 +209,7 @@ const FriendsTab = () => {
   useEffect(() => {
     const fetchFriends = async () => {
       try {
-        const res = await axios.get("http://localhost:8080/api/all-friends", {
+        const res = await axios.get(`${process.env.REACT_APP_API_URL}/all-friends`, {
           withCredentials: true,
         });
         setFriends(res.data);
@@ -226,7 +226,7 @@ const FriendsTab = () => {
     if (window.confirm("Bạn có chắc muốn xóa bạn bè này không?")) {
       try {
         const response = await axios.post(
-          "http://localhost:8080/api/remove-friend",
+          `${process.env.REACT_APP_API_URL}/remove-friend`,
           { friendId },
           { withCredentials: true }
         );

@@ -13,7 +13,7 @@ import DeleteIcon from "@mui/icons-material/Delete";
 import ExitToAppIcon from "@mui/icons-material/ExitToApp";
 import { Avatar } from "@mui/material";
 
-const socket = io("http://localhost:8080", { withCredentials: true });
+const socket = io(`${process.env.REACT_APP_SOCKET_URL}`, { withCredentials: true });
 
 const Group = () => {
   const { groupId } = useParams();
@@ -26,7 +26,7 @@ const Group = () => {
   useEffect(() => {
     const fetchGroup = async () => {
       try {
-        const groupResponse = await axios.get(`http://localhost:8080/api/groups/${groupId}`, { withCredentials: true });
+        const groupResponse = await axios.get(`${process.env.REACT_APP_API_URL}/groups/${groupId}`, { withCredentials: true });
         if (groupResponse.data.success) {
           setGroup(groupResponse.data.data);
           const sortedPosts = (groupResponse.data.data.posts || []).sort((a, b) => 
@@ -34,7 +34,7 @@ const Group = () => {
           );
           setPosts(sortedPosts);
         }
-        const userResponse = await axios.get("http://localhost:8080/api/me", { withCredentials: true });
+        const userResponse = await axios.get(`${process.env.REACT_APP_API_URL}/me`, { withCredentials: true });
         if (userResponse.data.success) {
           setCurrentUser(userResponse.data.data);
         }
@@ -56,7 +56,7 @@ const Group = () => {
     if (window.confirm("Bạn có chắc muốn tham gia nhóm này?")) { // Sửa confirm message
       try {
         const response = await axios.post(
-          `http://localhost:8080/api/groups/${groupId}/join`,
+          `${process.env.REACT_APP_API_URL}/groups/${groupId}/join`,
           {},
           { withCredentials: true }
         );
@@ -76,7 +76,7 @@ const Group = () => {
   const handleDeleteGroup = async () => {
     if (window.confirm("Bạn có chắc muốn xóa nhóm này?")) {
       try {
-        const response = await axios.delete(`http://localhost:8080/api/groups/${groupId}`, { withCredentials: true });
+        const response = await axios.delete(`${process.env.REACT_APP_API_URL}/groups/${groupId}`, { withCredentials: true });
         if (response.data.success) {
           toast.success("Xóa nhóm thành công!");
           navigate("/groups");
@@ -91,7 +91,7 @@ const Group = () => {
     if (window.confirm("Bạn có chắc muốn rời khỏi nhóm này?")) {
       try {
         const response = await axios.post(
-          `http://localhost:8080/api/groups/${groupId}/leave`,
+          `${process.env.REACT_APP_API_URL}/groups/${groupId}/leave`,
           {},
           { withCredentials: true }
         );

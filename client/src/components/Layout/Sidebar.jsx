@@ -18,7 +18,7 @@ const Sidebar = () => {
   useEffect(() => {
     const fetchUser = async () => {
       try {
-        const response = await axios.get("http://localhost:8080/api/me", {
+        const response = await axios.get(`${process.env.REACT_APP_API_URL}/me`, {
           withCredentials: true,
         });
         if (response.data.success) {

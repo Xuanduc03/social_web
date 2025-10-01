@@ -6,7 +6,7 @@ import UpPost from '../Popper/UpPost/UpPost';
 import axios from 'axios';
 import { io } from 'socket.io-client';
 
-const socket = io("http://localhost:8080", { withCredentials: true, transports: ["websocket"] });
+const socket = io(`${process.env.REACT_APP_SOCKET_URL}`, { withCredentials: true, transports: ["websocket"] });
 
 function Feed() {
   const [page, setPage] = useState(1);
@@ -22,7 +22,7 @@ function Feed() {
   // Lấy thông tin người dùng
   const fetchUser = async () => {
     try {
-      const response = await axios.get("http://localhost:8080/api/me", { withCredentials: true });
+      const response = await axios.get(`${process.env.REACT_APP_API_URL}me`, { withCredentials: true });
       if (response.data.success) setUser(response.data.data);
       else setError("Không lấy được thông tin user.");
     } catch (error) {
@@ -34,7 +34,7 @@ function Feed() {
   const fetchPosts = async () => {
     setLoading(true);
     try {
-      const response = await axios.get(`http://localhost:8080/api/posts?page=${page}&limit=5`, {
+      const response = await axios.get(`${process.env.REACT_APP_API_URL}/posts?page=${page}&limit=5`, {
         withCredentials: true,
       });
       if (response.data.success) {

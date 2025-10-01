@@ -12,7 +12,7 @@ import classNames from "classnames/bind";
 import styles from "./Post.module.scss";
 
 const cx = classNames.bind(styles);
-const socket = io("http://localhost:8080", { withCredentials: true, transports: ["websocket"], });
+const socket = io(`${process.env.REACT_APP_SOCKET_URL}`, { withCredentials: true, transports: ["websocket"], });
 
 const Post = React.forwardRef(
   (
@@ -63,7 +63,7 @@ const Post = React.forwardRef(
     useEffect(() => {
       const fetchUser = async () => {
         try {
-          const response = await axios.get("http://localhost:8080/api/me", { withCredentials: true });
+          const response = await axios.get(`${process.env.REACT_APP_API_URL}/me`, { withCredentials: true });
           if (response.data.success) {
             setUser(response.data.data);
           } else {
@@ -82,7 +82,7 @@ const Post = React.forwardRef(
     useEffect(() => {
       const fetchInitialLikes = async () => {
         try {
-          const response = await axios.get(`http://localhost:8080/api/posts/${id}/likes`, {
+          const response = await axios.get(`${process.env.REACT_APP_API_URL}/posts/${id}/likes`, {
             withCredentials: true,
           });
           if (response.data.success) {
@@ -114,7 +114,7 @@ const Post = React.forwardRef(
     const handleLike = async () => {
       try {
         const response = await axios.post(
-          `http://localhost:8080/api/posts/${id}/like`,
+          `${process.env.REACT_APP_API_URL}/posts/${id}/like`,
           {},
           { withCredentials: true }
         );
@@ -136,7 +136,7 @@ const Post = React.forwardRef(
     const handleEdit = async () => {
       try {
         const response = await axios.put(
-          `http://localhost:8080/api/posts/${id}`,
+          `${process.env.REACT_APP_API_URL}/posts/${id}`,
           { content: editContent },
           { withCredentials: true }
         );
@@ -156,7 +156,7 @@ const Post = React.forwardRef(
     const handleDelete = async () => {
       if (window.confirm("Bạn có chắc muốn xóa bài viết này?")) {
         try {
-          const response = await axios.delete(`http://localhost:8080/api/posts/${id}`, {
+          const response = await axios.delete(`${process.env.REACT_APP_API_URL}/posts/${id}`, {
             withCredentials: true,
           });
           if (response.data.success) {
@@ -186,7 +186,7 @@ const Post = React.forwardRef(
       if (sharedPost) {
         const fetchSharedPost = async () => {
           try {
-            const response = await axios.get(`http://localhost:8080/api/posts/share/${sharedPost}`, { withCredentials: true });
+            const response = await axios.get(`${process.env.REACT_APP_API_URL}/posts/share/${sharedPost}`, { withCredentials: true });
             if (response.data.success) {
               setSharedPostData(response.data.post);
             } else {
@@ -212,7 +212,7 @@ const Post = React.forwardRef(
 
       try {
         const response = await axios.post(
-          `http://localhost:8080/api/posts/${id}/share`,
+          `${process.env.REACT_APP_API_URL}/posts/${id}/share`,
           { content: shareContent },
           { withCredentials: true }
         );

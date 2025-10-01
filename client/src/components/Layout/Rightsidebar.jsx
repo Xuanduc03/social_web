@@ -3,7 +3,7 @@ import styles from "./Rightsidebar.module.scss"; // Import CSS Module
 import CircleIcon from '@mui/icons-material/Circle'; // Icon trạng thái online
 import axios from "axios";
 import { io } from "socket.io-client";
-const socket = io("http://localhost:8080", { withCredentials: true, transports: ["websocket"], });
+const socket = io(`${process.env.REACT_APP_SOCKET_URL}`, { withCredentials: true, transports: ["websocket"], });
 
 function Rightsidebar() {
   const [friends, setFriends] = useState(null);
@@ -15,8 +15,8 @@ function Rightsidebar() {
   useEffect(() => {
     const fetchFriends = async () => {
       try {
-        const res = await axios.get("http://localhost:8080/api/all-friends", { withCredentials: true });
-        
+        const res = await axios.get(`${process.env.REACT_APP_API_URL}/all-friends`, { withCredentials: true });
+
         setFriends(res.data.map(friend => ({
           ...friend,
           statusOnline: friend.statusOnline  // Khởi tạo trạng thái ban đầu
@@ -41,12 +41,12 @@ function Rightsidebar() {
         );
       });
     });
-  
+
     return () => {
       socket.off("SERVER_INITIAL_ONLINE_USERS");
     };
   }, []);
-  
+
 
   // Lắng nghe sự kiện user online từ server
   useEffect(() => {
@@ -78,7 +78,7 @@ function Rightsidebar() {
         );
       });
     });
-  
+
     return () => {
       socket.off("SERVER_RETURN_USER_OFFLINE");
     };
@@ -94,7 +94,7 @@ function Rightsidebar() {
       <div className={styles.widgetContacts}>
         {Array.isArray(friends) && friends.length > 0 ? (
           friends.map((user) => (
-<div key={user._id} className={styles.contactItem}>
+            <div key={user._id} className={styles.contactItem}>
               <div className={styles.avatarWrapper}>
                 <img
                   src={user?.avatarImage[0].url || "/default-avatar.png"}

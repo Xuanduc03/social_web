@@ -16,7 +16,7 @@ import { formatDistanceToNow } from "date-fns";
 import { GroupAddOutlined } from "@mui/icons-material";
 
 const cx = classNames.bind(styles);
-const socket = io("http://localhost:8080", { withCredentials: true, transports: ["websocket"] });
+const socket = io(`${process.env.REACT_APP_SOCKET_URL}`, { withCredentials: true, transports: ["websocket"] });
 
 function Header() {
     const [profileDropdownOpen, setProfileDropdownOpen] = useState(false);
@@ -35,7 +35,7 @@ function Header() {
     useEffect(() => {
         const fetchUser = async () => {
             try {
-                const response = await axios.get("http://localhost:8080/api/me", { withCredentials: true });
+                const response = await axios.get(`${process.env.REACT_APP_API_URL}/me`, { withCredentials: true });
                 if (response.data.success) {
                     setUser(response.data.data);
                     setUserId(response.data.data._id);
@@ -55,7 +55,7 @@ function Header() {
       
         const fetchUserPosts = async () => {
           try {
-            const response = await axios.get(`http://localhost:8080/api/posts/user/${userId}`);
+            const response = await axios.get(`${process.env.REACT_APP_API_URL}/posts/user/${userId}`);
             if (response.data.success) 
                 setPosts(response.data.data);
           } catch (error) {
@@ -131,7 +131,7 @@ function Header() {
         if (searchText.trim() !== "") {
             const fetchFriends = async () => {
                 try {
-                    const res = await axios.get(`http://localhost:8080/api/search-friends?query=${searchText}&userId=${userId}`);
+                    const res = await axios.get(`${process.env.REACT_APP_API_URL}/search-friends?query=${searchText}&userId=${userId}`);
                     setSuggestedFriends(res.data.data);
                 } catch (err) {
                     console.error("Lỗi tìm kiếm bạn bè:", err);
@@ -145,7 +145,7 @@ function Header() {
 
     const handleLogout = async () => {
         try {
-            const response = await axios.get("http://localhost:8080/api/logout", { withCredentials: true });
+            const response = await axios.get(`${process.env.REACT_APP_API_URL}/logout`, { withCredentials: true });
             if (response.data.success) {
                 toast.success("Đăng xuất thành công");
                 navigate("/login");

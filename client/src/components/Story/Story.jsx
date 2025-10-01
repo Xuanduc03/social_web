@@ -16,7 +16,7 @@ function Story({ user }) {
 
         const fetchLatestStories = async () => {
             try {
-                const res = await axios.get(`http://localhost:8080/api/stories/latest/${user._id}`);
+                const res = await axios.get(`${process.env.REACT_APP_API_URL}/stories/latest/${user._id}`);
                 setStories([
                     ...(res.data.data.myLatestStory ? [res.data.data.myLatestStory] : []),
                     ...res.data.data.friendLatestStories,

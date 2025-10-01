@@ -22,8 +22,8 @@ const GroupComment = ({ isMember }) => {
   useEffect(() => {
     const fetchPostData = async () => {
       try {
-        const responseUser = await axios.get("http://localhost:8080/api/me", { withCredentials: true });
-        const response = await axios.get(`http://localhost:8080/api/posts/${postId}`, { withCredentials: true });
+        const responseUser = await axios.get(`${process.env.REACT_APP_API_URL}/me`, { withCredentials: true });
+        const response = await axios.get(`${process.env.REACT_APP_API_URL}/posts/${postId}`, { withCredentials: true });
         if (response.data.success) {
           if (!response.data.data.group) {
             toast.error("Đây không phải bài viết trong nhóm!");
@@ -61,7 +61,7 @@ const GroupComment = ({ isMember }) => {
 
     try {
       const response = await axios.post(
-        `http://localhost:8080/api/posts/${postId}/comment`,
+        `${process.env.REACT_APP_API_URL}/posts/${postId}/comment`,
         { text: commentContent },
         { withCredentials: true, headers: { "Content-Type": "application/json" } }
       );
@@ -93,7 +93,7 @@ const GroupComment = ({ isMember }) => {
     }
     try {
       const response = await axios.put(
-        `http://localhost:8080/api/posts/${postId}/comment/${commentId}`,
+        `${process.env.REACT_APP_API_URL}/posts/${postId}/comment/${commentId}`,
         { text: editContent },
         { withCredentials: true, headers: { "Content-Type": "application/json" } }
       );
@@ -114,7 +114,7 @@ const GroupComment = ({ isMember }) => {
     if (!window.confirm("Bạn có chắc muốn xóa bình luận này?")) return;
     try {
       const response = await axios.delete(
-        `http://localhost:8080/api/posts/${postId}/comment/${commentId}`,
+        `${process.env.REACT_APP_API_URL}/posts/${postId}/comment/${commentId}`,
         { withCredentials: true }
       );
       if (response.data.success) {

@@ -10,7 +10,7 @@ const ListFriend = () => {
   useEffect(() => {
     const fetchFriends = async () => {
       try {
-        const response = await axios.get("http://localhost:8080/api/all-friends", {
+        const response = await axios.get(`${process.env.REACT_APP_API_URL}/all-friends`, {
           withCredentials: true,
         });
         setFriends(response.data); // API trả về danh sách bạn bè trực tiếp
@@ -25,7 +25,7 @@ const ListFriend = () => {
     try {
 
       const response = await axios.post(
-        "http://localhost:8080/api/remove-friend",
+        `${process.env.REACT_APP_API_URL}/remove-friend`,
         { friendId },
         { withCredentials: true }
       );

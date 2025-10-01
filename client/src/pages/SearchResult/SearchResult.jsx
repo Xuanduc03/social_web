@@ -26,13 +26,13 @@ const SearchResults = () => {
 
                 // Nếu chưa có userId, gọi API để lấy
                 if (!userId) {
-                    const userRes = await axios.get("http://localhost:8080/api/me", { withCredentials: true });
+                    const userRes = await axios.get(`${process.env.REACT_APP_API_URL}/me`, { withCredentials: true });
                     userId = userRes.data.data._id;
                     setCurrentUserId(userId);
                 }
 
                 // Gọi API tìm kiếm
-                const res = await axios.get(`http://localhost:8080/api/search-users?query=${searchQuery}&userId=${userId}`);
+                const res = await axios.get(`${process.env.REACT_APP_API_URL}/auth/search-users?query=${searchQuery}&userId=${userId}`);
                 setUsers(res.data.data);
             } catch (err) {
                 console.error("Lỗi khi tìm kiếm:", err);
@@ -49,7 +49,7 @@ const SearchResults = () => {
     const handleAddFriend = async (friendId) => {
         try {
             const res = await axios.post(
-                "http://localhost:8080/api/send-friend-request",
+                `${process.env.REACT_APP_API_URL}/send-friend-request`,
                 { friendId }, // Chỉ gửi friendId
                 { withCredentials: true }
             );
@@ -67,7 +67,7 @@ const SearchResults = () => {
     const handleCancelRequest = async (friendId) => {
         try {
             const res = await axios.post(
-                "http://localhost:8080/api/cancel-friend-request",
+                `${process.env.REACT_APP_API_URL}/cancel-friend-request`,
                 { userId: currentUserId, friendId },
                 { withCredentials: true }
             );

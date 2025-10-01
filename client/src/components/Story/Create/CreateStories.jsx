@@ -21,7 +21,7 @@ function CreateStories() {
     useEffect(() => {
         const fetchUser = async () => {
             try {
-                const response = await axios.get("http://localhost:8080/api/me", { withCredentials: true });
+                const response = await axios.get(`${process.env.REACT_APP_API_URL}/me`, { withCredentials: true });
                 if (response.data.success) setUser(response.data.data);
             } catch (error) {
                 console.error("Lỗi lấy thông tin user:", error);
@@ -65,7 +65,7 @@ function CreateStories() {
 
           
         try {
-            const response = await axios.post("http://localhost:8080/api/stories", formData, {
+            const response = await axios.post(`${process.env.REACT_APP_API_URL}/stories`, formData, {
                 headers: { "Content-Type": "multipart/form-data" },
                 withCredentials: true,
             });

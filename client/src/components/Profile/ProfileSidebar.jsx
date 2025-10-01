@@ -29,7 +29,7 @@ const ProfileSidebar = () => {
   useEffect(() => {
     const fetchUser = async () => {
       try {
-        const response = await axios.get("http://localhost:8080/api/me", { withCredentials: true });
+        const response = await axios.get(`${process.env.REACT_APP_API_URL}/me`, { withCredentials: true });
         if (response.data.success) {
           setCurrentUser(response.data.data._id);
         } else {
@@ -47,7 +47,7 @@ const ProfileSidebar = () => {
   useEffect(() => {
     const fetchUserPosts = async () => {
       try {
-        const response = await axios.get(`http://localhost:8080/api/posts/user/${userId}`);
+        const response = await axios.get(`${process.env.REACT_APP_API_URL}/posts/user/${userId}`);
         if (response.data.success) {
           setPosts(response.data.data);
         } else {
@@ -64,7 +64,7 @@ const ProfileSidebar = () => {
   useEffect(() => {
     const fetchUser = async () => {
       try {
-        const response = await axios.get(`http://localhost:8080/api/user/${userId}`, { withCredentials: true });
+        const response = await axios.get(`${process.env.REACT_APP_API_URL}/user/${userId}`, { withCredentials: true });
         if (response.data.success) {
           const userData = response.data.data;
           setUser(userData);
@@ -115,7 +115,7 @@ const ProfileSidebar = () => {
   const handleSaveInfo = async () => {
     console.log(" Data gửi đi:", formData);
     try {
-      const response = await axios.put("http://localhost:8080/api/user/update-info", formData,  { withCredentials: true });
+      const response = await axios.put(`${process.env.REACT_APP_API_URL}/user/update-info`, formData,  { withCredentials: true });
       if (response.data.success) {
         toast.success("Cập nhật thành công!");
         setUser(response.data.data);

@@ -18,7 +18,7 @@ function UpGroupPost({ groupId, onPostCreated, isMember }) {
   useEffect(() => {
     const fetchUser = async () => {
       try {
-        const response = await axios.get("http://localhost:8080/api/me", { withCredentials: true });
+        const response = await axios.get(`${process.env.REACT_APP_API_URL}/me`, { withCredentials: true });
         if (response.data.success) {
           setUser(response.data.data);
         }
@@ -71,7 +71,7 @@ function UpGroupPost({ groupId, onPostCreated, isMember }) {
 
     try {
       const response = await axios.post(
-        `http://localhost:8080/api/groups/${groupId}/posts`,
+        `${process.env.REACT_APP_API_URL}/groups/${groupId}/posts`,
         formData,
         {
           withCredentials: true,

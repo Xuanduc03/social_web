@@ -7,7 +7,7 @@ import { format, formatDistanceToNow } from "date-fns";
 import { useNavigate, useParams } from "react-router-dom";
 import { io } from 'socket.io-client';
 
-const socket = io("http://localhost:8080", { withCredentials: true, transports: ["websocket"], });
+const socket = io(`${process.env.REACT_APP_SOCKET_URL}`, { withCredentials: true, transports: ["websocket"], });
 
 const UpComment = () => {
   const { postId } = useParams(); // Lấy postId từ URL
@@ -39,7 +39,7 @@ const UpComment = () => {
     if (!editContent.trim()) return;
 
     try {
-      const response = await axios.post(`http://localhost:8080/api/comment/${postId}/${commentId}`, {
+      const response = await axios.post(`${process.env.REACT_APP_API_URL}/comment/${postId}/${commentId}`, {
         text: editContent,
       }, {
         withCredentials: true,
@@ -61,7 +61,7 @@ const UpComment = () => {
 
   const handleDeleteComment = async (commentId) => {
     try {
-      const response = await axios.delete(`http://localhost:8080/api/comment/${postId}/${commentId}`, {
+      const response = await axios.delete(`${process.env.REACT_APP_API_URL}/comment/${postId}/${commentId}`, {
         withCredentials: true,
       });
       if (response.data.success) {
@@ -88,8 +88,8 @@ const UpComment = () => {
   useEffect(() => {
     const fetchPostData = async () => {
       try {
-        const responseUser = await axios.get("http://localhost:8080/api/me", { withCredentials: true });
-        const response = await axios.get(`http://localhost:8080/api/posts/${postId}`, {
+        const responseUser = await axios.get(`${process.env.REACT_APP_API_URL}/me`, { withCredentials: true });
+        const response = await axios.get(`${process.env.REACT_APP_API_URL}/posts/${postId}`, {
           withCredentials: true,
         });
         if (response.data.success) {
@@ -116,7 +116,7 @@ const UpComment = () => {
     try {
 
       const response = await axios.post(
-        `http://localhost:8080/api/posts/${postId}/comment`,
+        `${process.env.REACT_APP_API_URL}/posts/${postId}/comment`,
         { text: commentContent },
         {
           withCredentials: true,
@@ -126,7 +126,7 @@ const UpComment = () => {
 
       if (response.data.success) {
         toast.success("Bình luận thành công!");
-        const response = await axios.get(`http://localhost:8080/api/posts/${postId}`, {
+        const response = await axios.get(`${process.env.REACT_APP_API_URL}/posts/${postId}`, {
           withCredentials: true,
         });
         setComments(response.data.data.comments || []);

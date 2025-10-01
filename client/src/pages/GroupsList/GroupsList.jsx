@@ -15,7 +15,7 @@ const GroupsList = () => {
   useEffect(() => {
     const fetchGroups = async () => {
       try {
-        const response = await axios.get("http://localhost:8080/api/groups", {
+        const response = await axios.get(`${process.env.REACT_APP_API_URL}/groups`, {
           withCredentials: true,
         });
         if (response.data.success) {
@@ -48,7 +48,7 @@ const GroupsList = () => {
         formData.append("coverImage", coverImage);
       }
   
-      const response = await axios.post("http://localhost:8080/api/groups", formData, {
+      const response = await axios.post(`${process.env.REACT_APP_API_URL}/groups`, formData, {
         withCredentials: true,
         headers: {
           "Content-Type": "multipart/form-data",

@@ -10,7 +10,7 @@ import axios from "axios";
 import { toast } from "react-toastify";
 
 const cx = classNames.bind(styles);
-const socket = io("http://localhost:8080", {
+const socket = io(`${process.env.REACT_APP_SOCKET_URL}`, {
   withCredentials: true,
   transports: ["websocket"],
 });
@@ -29,7 +29,7 @@ const ChatBox = ({ userId, friendId, friendName, friendAvatar, onClose }) => {
     const fetchMessages = async () => {
       try {
         const res = await axios.get(
-          `http://localhost:8080/api/messages?senderId=${userId}&receiverId=${friendId}`,
+          `${process.env.REACT_APP_API_URL}/messages?senderId=${userId}&receiverId=${friendId}`,
           { withCredentials: true }
         );
         console.log("📜 Fetched messages:", res.data);

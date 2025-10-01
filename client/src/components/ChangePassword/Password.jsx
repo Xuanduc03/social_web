@@ -24,7 +24,7 @@ function ChangePassword() {
 
     try {
         const response = await axios.post(
-            "http://localhost:8080/api/change-password",
+            `${process.env.REACT_APP_API_URL}/change-password`,
             {
                 currentPassword,
                 newPassword,
@@ -37,7 +37,7 @@ function ChangePassword() {
             setCurrentPassword("");
             setNewPassword("");
             setConfirmPassword("");
-            await axios.get("http://localhost:8080/api/logout", { withCredentials: true });
+            await axios.get(`${process.env.REACT_APP_API_URL}/logout`, { withCredentials: true });
             navigate("/login");
         } else {
             toast.error(response.data.message);

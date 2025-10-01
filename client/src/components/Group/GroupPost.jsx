@@ -46,7 +46,7 @@ const GroupPost = ({
     }
     try {
       const response = await axios.post(
-        `http://localhost:8080/api/posts/${id}/like`,
+        `${process.env.REACT_APP_API_URL}/posts/${id}/like`,
         {},
         { withCredentials: true }
       );
@@ -87,7 +87,7 @@ const GroupPost = ({
     }
     try {
       const response = await axios.put(
-        `http://localhost:8080/api/posts/${id}`,
+        `${process.env.REACT_APP_API_URL}/posts/${id}`,
         { content: editContent },
         { withCredentials: true }
       );
@@ -111,7 +111,7 @@ const GroupPost = ({
     }
     if (!window.confirm("Bạn có chắc muốn xóa bài viết này?")) return;
     try {
-      const response = await axios.delete(`http://localhost:8080/api/posts/${id}`, { withCredentials: true });
+      const response = await axios.delete(`${process.env.REACT_APP_API_URL}/posts/${id}`, { withCredentials: true });
       if (response.data.success) {
         toast.success("Xóa bài viết thành công!");
         onDelete(id);

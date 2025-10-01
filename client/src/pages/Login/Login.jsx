@@ -19,7 +19,7 @@ const Login = () => {
     e.preventDefault();
 
     try {
-      const response = await axios.post("http://localhost:8080/api/login", form, { withCredentials: true });
+      const response = await axios.post(`${process.env.REACT_APP_API_URL}/login`, form, { withCredentials: true });
 
       if (response.data.success) {
         toast.success("Đăng nhập thành công");

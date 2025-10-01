@@ -10,7 +10,7 @@ const FriendRequests = () => {
   useEffect(() => {
     const fetchFriendRequests = async () => {
       try {
-        const response = await axios.get("http://localhost:8080/api/friend-requests", {
+        const response = await axios.get(`${process.env.REACT_APP_API_URL}/friend-requests`, {
           withCredentials: true,
         });
         setFriendRequests(response.data.data);
@@ -24,7 +24,7 @@ const FriendRequests = () => {
   const handleConfirm = async (friendId) => {
     try {
       const response = await axios.post(
-        "http://localhost:8080/api/accept-friend-request",
+        `${process.env.REACT_APP_API_URL}/accept-friend-request`,
         { friendId },
         { withCredentials: true }
       );
@@ -40,7 +40,7 @@ const FriendRequests = () => {
   const handleRemove = async (friendId) => {
     try {
       const response = await axios.post(
-        "http://localhost:8080/api/reject-friend-request",
+        `${process.env.REACT_APP_API_URL}/reject-friend-request`,
         { friendId },
         { withCredentials: true }
       );
