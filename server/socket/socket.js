@@ -6,9 +6,9 @@ const initSocket = (server) => {
     io = new Server(server, {
         cors: {
             origin: process.env.FRONTEND_URL || "http://localhost:3000",
+            methods: ["GET", "POST"],
             credentials: true
-        },
-        transports: ["websocket", "polling"] // 🔥 Bắt buộc dùng WebSocket & Polling
+        }
     });
 
     io.on("connection", (socket) => {
@@ -18,7 +18,7 @@ const initSocket = (server) => {
             socket.join(userId);
         });
 
-        
+
         socket.on("likePost", ({ postId, userId }) => {
             console.log(`📌 Like Post: ${postId} từ User ${userId}`);
             io.emit(`UpdateLikes:${postId}`, { postId, userId });
@@ -34,26 +34,26 @@ const initSocket = (server) => {
             const room = [userId, friendId].sort().join("-"); // Tạo room từ userId và friendId
             socket.join(room);
             console.log(`User ${userId} joined room ${userId}`);
-            io.to(room).emit("roomJoined", {room, userId, friendId})
+            io.to(room).emit("roomJoined", { room, userId, friendId })
         });
 
         // Xử lý gửi tin nhắn real-time
         socket.on("sendMessage", async ({ userId, friendId, content }) => {
             try {
-              const message = await messageController.saveMessage({
-                sender: userId, // Đổi tên param cho khớp
-                receiver: friendId,
-                content,
-              });
-      
-              const room = [userId, friendId].sort().join("-");
-              io.to(room).emit("receiveMessage", message);
-              console.log(`📩 Message sent in room ${room}:`, message);
+                const message = await messageController.saveMessage({
+                    sender: userId, // Đổi tên param cho khớp
+                    receiver: friendId,
+                    content,
+                });
+
+                const room = [userId, friendId].sort().join("-");
+                io.to(room).emit("receiveMessage", message);
+                console.log(`📩 Message sent in room ${room}:`, message);
             } catch (error) {
-              console.error("❌ Error sending message:", error.message);
-              socket.emit("error", { message: error.message });
+                console.error("❌ Error sending message:", error.message);
+                socket.emit("error", { message: error.message });
             }
-          });
+        });
 
 
         socket.on("disconnect", () => {
