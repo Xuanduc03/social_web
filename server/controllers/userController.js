@@ -2,7 +2,7 @@ const bcrypt = require("bcryptjs");
 const User = require("../models/user");
 const jwt = require("jsonwebtoken");
 const mongoose = require("mongoose");
-const {getIo} = require("../socket/socket");
+const { getIo } = require("../socket/socket");
 const cloudinary = require("cloudinary").v2;
 
 module.exports.Register = async (req, res) => {
@@ -97,7 +97,7 @@ module.exports.Login = async (req, res) => {
         setInterval(() => {
             io.emit("SERVER_INITIAL_ONLINE_USERS", onlineUserIds);
         }, 600);
-    
+
         io.emit("SERVER_RETURN_USER_ONLINE", userData._id);
         const isPasswordValid = await bcrypt.compare(password, userData.password);
         if (!isPasswordValid) {
@@ -120,7 +120,7 @@ module.exports.Login = async (req, res) => {
         const tokenOption = {
             httpOnly: true,
             secure: process.env.NODE_ENV === "production",
-            sameSite: "strict"
+            sameSite: "none"
         };
 
         return res.cookie("token", token, tokenOption).json({
@@ -148,12 +148,11 @@ module.exports.Login = async (req, res) => {
 };
 
 module.exports.Logout = async (req, res) => {
- 
-   
+
+
     try {
 
         const { userId } = req.body; // Lấy userId từ request body
-
         if (!userId) {
             return res.status(400).json({
                 message: "User ID is required",
@@ -161,7 +160,7 @@ module.exports.Logout = async (req, res) => {
                 error: true
             });
         }
-    
+
         await User.updateOne(
             { _id: userId },
             { statusOnline: "offline" }
@@ -229,7 +228,7 @@ module.exports.SetCoverPhoto = async (req, res) => {
             });
         }
 
-       
+
         if (!req.file) {
             return res.status(400).json({ message: "Please upload an image file", success: false, error: true });
         }
