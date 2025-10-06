@@ -354,7 +354,7 @@ const Post = React.forwardRef(
             <ThumbUpIcon /> {liked ? "Đã thích" : "Thích"}
           </button>
           <button className={cx("btn")} onClick={() => handleOpenComments(id)}>
-          <i class="fa-regular fa-comments"></i> Bình luận
+            <i class="fa-regular fa-comments"></i> Bình luận
           </button>
           <button className={cx("btn")} onClick={handleShareOpen} ><i class="fa-solid fa-share"></i> Chia sẻ</button>
           {editing && (
@@ -375,10 +375,19 @@ const Post = React.forwardRef(
             <h3>Chia sẻ bài viết</h3>
             <div className={cx("user-info")}>
               <img
-                src={loading ? "loading..." : (user ? user?.avatarImage[0].url : "anh")}
+                src={
+                  loading
+                    ? "loading..."
+                    : user?.avatarImage && Array.isArray(user.avatarImage) && user.avatarImage.length > 0
+                      ? user.avatarImage[0]?.url
+                      : user?.avatarImage && typeof user.avatarImage === "string"
+                        ? user.avatarImage // nếu backend trả về string URL
+                        : "/default-avatar.png"
+                }
                 alt=""
                 className={cx("avatar")}
               />
+
               <div className={cx("user-details")}>
                 <h5>{loading ? "Loading..." : (user ? user.firstName + user.lastName : "Guest")}</h5>
                 <div className={cx("share-options")}>
