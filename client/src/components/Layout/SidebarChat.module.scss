@@ -1,9 +1,9 @@
 .skeleton-loading {
   padding: 15px;
-  
+
   .skeleton-item {
     height: 60px;
-    background: #f0f0f0;
+    background: #232323;
     border-radius: 8px;
     margin-bottom: 10px;
     animation: pulse 1.5s infinite ease-in-out;
@@ -17,69 +17,68 @@
 }
 
 .container {
-  transition: opacity 0.3s ease;
-  
+  width: 300px;
+  height: 100vh;
+  background: linear-gradient(135deg, #181818 0%, #232323 100%);
+  color: #fff;
+  display: flex;
+  flex-direction: column;
+  border-right: 1px solid #232323;
+  box-shadow: 0 0 15px rgba(0,0,0,0.5);
+  transition: all 0.3s ease;
+
   &.loading {
     opacity: 0.5;
   }
-}
-// SidebarChat.module.scss
-.container {
-  width: 300px;
-  height: 100vh;
-  background: #1a1a1a; // Màu đen chủ đạo
-  color: #ffffff;
-  display: flex;
-  flex-direction: column;
-  border-right: 1px solid #333;
-  box-shadow: 0 0 15px rgba(0, 0, 0, 0.5);
-  transition: all 0.3s ease;
 
   .logo {
     display: flex;
     align-items: center;
-    padding: 15px;
-    gap: 10px;
-    border-bottom: 1px solid #333;
+    padding: 18px 18px 14px 18px;
+    gap: 12px;
+    border-bottom: 1px solid #232323;
 
     img {
-      width: 40px;
-      height: 40px;
+      width: 42px;
+      height: 42px;
       border-radius: 50%;
       object-fit: cover;
-      border: 2px solid #00c4cc; // Viền xanh ngọc nổi bật
+      border: 2px solid #fff;
+      background: #232323;
+      transition: border-color 0.2s;
     }
 
     h1 {
       font-size: 20px;
-      font-weight: 600;
+      font-weight: 700;
       margin: 0;
-      color: #00c4cc; // Màu xanh ngọc cho tiêu đề
+      color: #fff;
+      letter-spacing: 0.5px;
     }
   }
 
   .searchBar {
-    padding: 10px 15px;
+    padding: 12px 18px 8px 18px;
 
     input {
       width: 100%;
-      padding: 8px 12px;
-      background: #2c2c2c;
-      border: 1px solid #444;
-      border-radius: 20px;
-      color: #ddd;
-      font-size: 14px;
+      padding: 9px 14px;
+      background: #232323;
+      border: 1.5px solid #333;
+      border-radius: 22px;
+      color: #fff;
+      font-size: 15px;
       outline: none;
-      transition: all 0.3s ease;
+      transition: all 0.2s;
 
       &::placeholder {
         color: #888;
       }
 
       &:focus {
-        border-color: #007bff;
-        background: #333;
-        box-shadow: 0 0 5px rgba(0, 123, 255, 0.5);
+        border-color: #fff;
+        background: #181818;
+        box-shadow: 0 0 0 2px #232323;
       }
     }
   }
@@ -87,31 +86,34 @@
   .chatList {
     flex: 1;
     overflow-y: auto;
-    padding: 10px 0;
+    padding: 8px 0;
 
     &::-webkit-scrollbar {
       width: 6px;
     }
 
     &::-webkit-scrollbar-thumb {
-      background: #007bff;
+      background: #444;
       border-radius: 3px;
     }
 
     &::-webkit-scrollbar-track {
-      background: #2c2c2c;
+      background: #232323;
     }
 
     .chatItem {
       display: flex;
       align-items: center;
-      padding: 10px 15px;
-      gap: 12px;
+      padding: 10px 18px;
+      gap: 13px;
       cursor: pointer;
-      transition: all 0.3s ease;
+      border-radius: 12px;
+      background: transparent;
+      transition: background 0.2s, transform 0.2s;
 
       &:hover {
-        background: #2c2c2c;
+        background: #232323;
+        transform: scale(1.02);
       }
 
       .avatar {
@@ -122,21 +124,24 @@
           height: 40px;
           border-radius: 50%;
           object-fit: cover;
-          border: 2px solid #fff;
+          border: 2px solid #232323;
+          background: #181818;
+          transition: border-color 0.2s;
         }
 
         .statusDot {
           position: absolute;
           bottom: 0;
           right: 0;
-          width: 10px;
-          height: 10px;
+          width: 12px;
+          height: 12px;
           border-radius: 50%;
-          background: #888; // Trạng thái offline
-          border: 2px solid #1a1a1a;
+          background: #888;
+          border: 2px solid #181818;
+          transition: background 0.2s;
 
           &.active {
-            background: #00cc00; // Trạng thái online
+            background: #00ff7f;
           }
         }
       }
@@ -164,25 +169,27 @@
   }
 
   .footer {
-    padding: 15px;
-    border-top: 1px solid #333;
+    padding: 15px 18px;
+    border-top: 1px solid #232323;
+    background: #181818;
 
     button {
       width: 100%;
       padding: 10px;
-      background: #007bff;
-      color: #fff;
+      background: #fff;
+      color: #181818;
       border: none;
-      border-radius: 20px;
-      font-size: 14px;
-      font-weight: 600;
+      border-radius: 22px;
+      font-size: 15px;
+      font-weight: 700;
       cursor: pointer;
-      transition: all 0.3s ease;
+      transition: all 0.2s;
 
       &:hover {
-        background: #0056b3;
+        background: #232323;
+        color: #fff;
+        box-shadow: 0 4px 10px rgba(255,255,255,0.08);
         transform: translateY(-2px);
-        box-shadow: 0 4px 10px rgba(0, 123, 255, 0.5);
       }
     }
   }
@@ -194,15 +201,15 @@
     width: 250px;
 
     .logo {
-      padding: 10px;
+      padding: 12px 10px 10px 10px;
 
       img {
-        width: 35px;
-        height: 35px;
+        width: 34px;
+        height: 34px;
       }
 
       h1 {
-        font-size: 18px;
+        font-size: 17px;
       }
     }
 
@@ -212,8 +219,8 @@
 
         .avatar {
           img {
-            width: 35px;
-            height: 35px;
+            width: 32px;
+            height: 32px;
           }
         }
 

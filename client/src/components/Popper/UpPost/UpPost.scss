@@ -2,14 +2,16 @@
   width: 100%;
   max-width: 600px;
   margin: 20px auto;
-  background: #fff;
-  border-radius: 12px;
-  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
-  padding: 15px;
-  transition: all 0.3s ease;
+  background: linear-gradient(135deg, #181818 0%, #232323 100%);
+  border-radius: 15px;
+  box-shadow: 0 4px 18px rgba(0,0,0,0.22);
+  padding: 18px 18px 12px 18px;
+  color: #fff;
+  transition: all 0.3s cubic-bezier(.4,0,.2,1);
 
   &:hover {
-    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.15);
+    box-shadow: 0 8px 32px rgba(0,0,0,0.28);
+    transform: translateY(-2px) scale(1.01);
   }
 
   .upPostTop {
@@ -17,33 +19,35 @@
     align-items: center;
     gap: 10px;
     padding-bottom: 10px;
-    border-bottom: 1px solid #eee;
+    border-bottom: 1px solid #232323;
 
     .avatar {
       width: 40px;
       height: 40px;
-      border: 2px solid #007bff;
+      border: 2px solid #00ff7f;
       border-radius: 50%;
+      object-fit: cover;
+      background: #232323;
     }
 
     input {
       flex: 1;
       padding: 10px 15px;
       border: none;
-      background: #f0f2f5;
+      background: #232323;
       border-radius: 20px;
       font-size: 15px;
-      color: #333;
+      color: #fff;
       outline: none;
       cursor: pointer;
       transition: all 0.3s ease;
 
       &::placeholder {
-        color: #777;
+        color: #aaa;
       }
 
-      &:hover {
-        background: #e6e9ec;
+      &:hover, &:focus {
+        background: #181818;
       }
     }
   }
@@ -63,17 +67,18 @@
       transition: all 0.3s ease;
 
       &:hover {
-        background: #f0f2f5;
+        background: #232323;
       }
 
       .MuiSvgIcon-root {
         font-size: 24px;
+        color: #00ff7f;
       }
 
       p {
         margin: 0;
         font-size: 14px;
-        color: #555;
+        color: #fff;
         font-weight: 500;
       }
     }
@@ -86,11 +91,12 @@
   left: 50%;
   transform: translate(-50%, -50%);
   width: 500px;
-  background: #fff;
+  background: linear-gradient(135deg, #181818 0%, #232323 100%);
   border-radius: 15px;
-  box-shadow: 0 6px 25px rgba(0, 0, 0, 0.2);
+  box-shadow: 0 6px 25px rgba(0, 0, 0, 0.22);
   padding: 20px;
   outline: none;
+  color: #fff;
 
   form {
     display: flex;
@@ -102,21 +108,21 @@
       justify-content: space-between;
       align-items: center;
       padding-bottom: 10px;
-      border-bottom: 1px solid #eee;
+      border-bottom: 1px solid #232323;
 
       h3 {
         margin: 0;
         font-size: 18px;
         font-weight: 700;
-        color: #2c3e50;
+        color: #fff;
       }
 
       .MuiIconButton-root {
-        color: #555;
+        color: #aaa;
 
         &:hover {
-          color: #007bff;
-          background: #f0f2f5;
+          color: #00ff7f;
+          background: #232323;
         }
       }
     }
@@ -131,14 +137,16 @@
         .avatar {
           width: 40px;
           height: 40px;
-          border: 2px solid #007bff;
+          border: 2px solid #00ff7f;
           border-radius: 50%;
+          object-fit: cover;
+          background: #232323;
         }
 
         h5 {
           margin: 0;
           font-size: 16px;
-          color: #2c3e50;
+          color: #fff;
           font-weight: 600;
         }
       }
@@ -148,21 +156,22 @@
       textarea {
         width: 100%;
         padding: 15px;
-        border: 1px solid #ddd;
+        border: 1px solid #333;
         border-radius: 10px;
         font-size: 16px;
-        color: #333;
+        color: #fff;
+        background: #181818;
         resize: none;
         outline: none;
         transition: all 0.3s ease;
 
         &::placeholder {
-          color: #777;
+          color: #aaa;
         }
 
         &:focus {
-          border-color: #007bff;
-          box-shadow: 0 0 5px rgba(0, 123, 255, 0.3);
+          border-color: #00ff7f;
+          box-shadow: 0 0 5px #00ff7f33;
         }
       }
 
@@ -177,7 +186,8 @@
           height: 100px;
           object-fit: cover;
           border-radius: 8px;
-          border: 1px solid #ddd;
+          border: 1px solid #232323;
+          background: #181818;
         }
       }
     }
@@ -187,7 +197,7 @@
         display: flex;
         justify-content: space-around;
         padding: 10px 0;
-        border-top: 1px solid #eee;
+        border-top: 1px solid #232323;
 
         .modalOption {
           display: flex;
@@ -199,17 +209,18 @@
           transition: all 0.3s ease;
 
           &:hover {
-            background: #f0f2f5;
+            background: #232323;
           }
 
           .MuiSvgIcon-root {
             font-size: 24px;
+            color: #00ff7f;
           }
 
           p {
             margin: 0;
             font-size: 14px;
-            color: #555;
+            color: #fff;
             font-weight: 500;
           }
 
@@ -225,8 +236,8 @@
 
     .postSubmit {
       padding: 10px;
-      background: #007bff;
-      color: #fff;
+      background: #00ff7f;
+      color: #181818;
       border: none;
       border-radius: 25px;
       font-size: 15px;
@@ -235,9 +246,10 @@
       transition: all 0.3s ease;
 
       &:hover {
-        background: #0056b3;
+        background: #00cc66;
+        color: #fff;
         transform: translateY(-2px);
-        box-shadow: 0 4px 10px rgba(0, 123, 255, 0.3);
+        box-shadow: 0 4px 10px rgba(0,255,127,0.08);
       }
     }
   }
@@ -250,7 +262,7 @@
   }
 
   .modalPop {
-    width: 90%;
-    padding: 15px;
+    width: 96vw;
+    padding: 10px;
   }
 }

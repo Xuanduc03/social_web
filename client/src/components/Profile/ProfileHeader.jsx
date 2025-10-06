@@ -107,7 +107,15 @@ const ProfileHeader = ({ user, loading }) => {
 
   return (
     <div className={styles.profileHeader}>
-      <div className={styles.coverPhoto} style={{ backgroundImage: `url(${user?.coverPhoto[0].url || ''})` }}>
+      <div className={styles.coverPhoto}
+        style={{
+          backgroundImage:
+            `url(${Array.isArray(user?.coverPhoto)
+              ? user.coverPhoto[0]?.url || ""
+              : typeof user?.coverPhoto === "string"
+                ? user.coverPhoto
+                : ""})`
+        }}>
       </div>
       <div className={styles.profileInfo}>
         <div className={styles.avatarContainer}>

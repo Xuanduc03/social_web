@@ -2,30 +2,33 @@
   width: 100%;
   max-width: 650px;
   margin: 20px auto;
-  background: #ffffff; // Nền trắng
+  background: linear-gradient(135deg, #181818 0%, #232323 100%);
   border-radius: 15px;
-  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1); // Shadow nhẹ hơn
-  padding: 15px;
-  color: #333; // Chữ đen xám
-  transition: all 0.3s ease;
+  box-shadow: 0 4px 18px rgba(0,0,0,0.22);
+  padding: 18px 18px 12px 18px;
+  color: #fff;
+  transition: all 0.3s cubic-bezier(.4,0,.2,1);
 
   &:hover {
-    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.15);
+    box-shadow: 0 8px 32px rgba(0,0,0,0.28);
+    transform: translateY(-2px) scale(1.01);
   }
 
   .postHeader {
     display: flex;
     align-items: center;
-    gap: 10px;
-    padding-bottom: 10px;
-    border-bottom: 1px solid #eee; // Viền sáng hơn
+    gap: 12px;
+    padding-bottom: 12px;
+    border-bottom: 1px solid #232323;
 
     .avatar {
-      width: 40px;
-      height: 40px;
+      width: 42px;
+      height: 42px;
       border-radius: 50%;
       object-fit: cover;
-      border: 2px solid #007bff; // Viền xanh đậm
+      border: 2px solid #fff;
+      background: #232323;
+      transition: border-color 0.2s;
     }
 
     .userInfo {
@@ -34,28 +37,29 @@
       h4 {
         margin: 0;
         font-size: 16px;
-        font-weight: 600;
-        color: #2c3e50; // Xám đậm cho tên
+        font-weight: 700;
+        color: #fff;
+        letter-spacing: 0.2px;
       }
 
       .postTime {
         margin: 2px 0 0;
         font-size: 12px;
-        color: #777; // Xám nhạt
+        color: #aaa;
       }
     }
 
     .moreButton {
-      color: #666; // Xám trung cho nút ba chấm
+      color: #aaa;
       padding: 6px;
-      transition: all 0.3s ease;
+      transition: all 0.3s;
       position: relative;
+      border-radius: 50%;
 
       &:hover {
-        color: #007bff; // Chuyển xanh khi hover
-        background: #f0f2f5; // Nền xám nhạt
-        border-radius: 50%;
-        box-shadow: 0 0 8px rgba(0, 123, 255, 0.2);
+        color: #fff;
+        background: #232323;
+        box-shadow: 0 0 8px rgba(255,255,255,0.08);
       }
 
       .MuiSvgIcon-root {
@@ -65,11 +69,11 @@
 
     .dropMenu {
       .menuPaper {
-        background: #ffffff; // Nền trắng
+        background: #232323;
         border-radius: 15px;
-        box-shadow: 0 8px 25px rgba(0, 0, 0, 0.2); // Shadow nhẹ hơn
+        box-shadow: 0 8px 25px rgba(0,0,0,0.28);
         min-width: 160px;
-        border: 1px solid #ddd; // Viền xám nhạt
+        border: 1px solid #333;
         overflow: hidden;
       }
 
@@ -78,15 +82,15 @@
         align-items: center;
         gap: 10px;
         padding: 12px 20px;
-        color: #555; // Chữ xám đậm
+        color: #eee;
         font-size: 15px;
         font-weight: 500;
         background: transparent;
-        transition: all 0.3s ease;
+        transition: all 0.2s;
 
         &:hover {
-          background: #f0f2f5; // Nền xám nhạt khi hover
-          color: #007bff; // Chữ xanh khi hover
+          background: #181818;
+          color: #00ff7f;
         }
 
         .menuIcon {
@@ -94,10 +98,10 @@
         }
 
         &.deleteItem {
-          color: #e63946; // Đỏ nhạt hơn cho "Xóa"
+          color: #ff7675;
 
           &:hover {
-            background: #e63946;
+            background: #ff7675;
             color: #fff;
           }
         }
@@ -106,37 +110,36 @@
   }
 
   .postContent {
-    padding: 10px 0;
+    padding: 12px 0 0 0;
 
     p {
       margin: 0;
       font-size: 15px;
-      color: #333;
+      color: #fff;
       word-wrap: break-word;
     }
 
     .editTextarea {
       width: 100%;
       padding: 10px;
-      background: #f9f9f9; // Nền sáng nhẹ
-      border: 1px solid #ddd;
+      background: #181818;
+      border: 1px solid #333;
       border-radius: 8px;
-      color: #333;
+      color: #fff;
       font-size: 15px;
       resize: none;
       outline: none;
 
       &:focus {
-        border-color: #007bff;
-        box-shadow: 0 0 5px rgba(0, 123, 255, 0.3);
+        border-color: #00ff7f;
+        box-shadow: 0 0 5px #00ff7f33;
       }
     }
   }
 
   .postImage {
-    margin: 10px 0;
+    margin: 12px 0;
 
-    /* Hiển thị khi có 1 ảnh */
     .singleImage {
       display: flex;
       justify-content: center;
@@ -146,21 +149,24 @@
       max-width: 100%;
       max-height: 400px;
       object-fit: cover;
-      border-radius: 8px;
+      border-radius: 10px;
+      border: 1px solid #232323;
+      background: #181818;
     }
 
-    /* Hiển thị khi có nhiều ảnh (từ 2 ảnh trở lên) */
     .multiImages {
       display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
       gap: 10px;
     }
 
     .multiImages img {
       width: 100%;
-      height: 100px;
+      height: 110px;
       object-fit: cover;
       border-radius: 8px;
+      border: 1px solid #232323;
+      background: #181818;
     }
 
     img {
@@ -168,7 +174,8 @@
       max-height: 400px;
       object-fit: cover;
       border-radius: 10px;
-      border: 1px solid #ddd; // Viền sáng
+      border: 1px solid #232323;
+      background: #181818;
     }
   }
 
@@ -176,10 +183,10 @@
     display: flex;
     justify-content: space-between;
     padding: 10px 0;
-    border-top: 1px solid #eee;
-    border-bottom: 1px solid #eee;
+    border-top: 1px solid #232323;
+    border-bottom: 1px solid #232323;
     font-size: 14px;
-    color: #666; // Xám trung
+    color: #aaa;
 
     .reactionCount {
       display: flex;
@@ -187,20 +194,20 @@
       gap: 5px;
 
       .fa-thumbs-up {
-        color: #007bff;
+        color: #00ff7f;
       }
     }
 
     .actionButtons {
       display: flex;
-      gap: 15px;
+      gap: 18px;
 
       span {
         cursor: pointer;
-        transition: color 0.3s ease;
+        transition: color 0.2s;
 
         &:hover {
-          color: #007bff;
+          color: #00ff7f;
         }
       }
     }
@@ -214,8 +221,8 @@
     .btn {
       flex: 1;
       padding: 8px 10px;
-      background: #f0f2f5; // Nền xám nhạt
-      color: #555; // Chữ xám đậm
+      background: #232323;
+      color: #fff;
       border: none;
       border-radius: 20px;
       font-size: 14px;
@@ -225,37 +232,37 @@
       align-items: center;
       justify-content: center;
       gap: 5px;
-      transition: all 0.3s ease;
+      transition: all 0.2s;
 
       &:hover {
-        background: #e6e9ec;
-        color: #007bff;
+        background: #181818;
+        color: #00ff7f;
       }
 
       &.liked {
-        background: #007bff;
-        color: #fff;
+        background: #00ff7f;
+        color: #181818;
 
         &:hover {
-          background: #0056b3;
+          background: #00cc66;
         }
       }
 
       &.saveBtn {
-        background: #007bff;
-        color: #fff;
+        background: #00ff7f;
+        color: #181818;
 
         &:hover {
-          background: #0056b3;
+          background: #00cc66;
         }
       }
 
       &.cancelBtn {
-        background: #e63946;
+        background: #ff7675;
         color: #fff;
 
         &:hover {
-          background: #cc3333;
+          background: #d63031;
         }
       }
 
@@ -274,24 +281,26 @@
 }
 
 .modalPop {
-  background: white;
+  background: #232323;
   width: 400px;
   padding: 20px;
-  border-radius: 10px;
+  border-radius: 12px;
   position: absolute;
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
-  box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
+  box-shadow: 0px 4px 18px rgba(0,0,0,0.22);
   display: flex;
   flex-direction: column;
   gap: 15px;
   text-align: center;
+  color: #fff;
 
   h3 {
     font-size: 20px;
     font-weight: bold;
     margin-bottom: 10px;
+    color: #fff;
   }
 
   .user-info {
@@ -304,6 +313,8 @@
       height: 55px;
       border-radius: 50%;
       object-fit: cover;
+      border: 2px solid #fff;
+      background: #232323;
     }
 
     .user-details {
@@ -314,6 +325,7 @@
         font-size: 16px;
         font-weight: 600;
         margin-right: 70%;
+        color: #fff;
       }
 
       .share-options {
@@ -326,14 +338,16 @@
           align-items: center;
           gap: 5px;
           font-size: 14px;
-          background: #f0f2f5;
+          background: #181818;
           padding: 6px 12px;
           border-radius: 20px;
           cursor: pointer;
-          transition:  0.3s ease;
+          color: #fff;
+          transition: background 0.2s;
 
           &:hover {
-            background: #e4e6eb;
+            background: #232323;
+            color: #00ff7f;
           }
         }
       }
@@ -344,44 +358,47 @@
     width: 100%;
     min-height: 80px;
     padding: 10px;
-    border: 1px solid #ddd;
+    border: 1px solid #333;
     border-radius: 8px;
     font-size: 14px;
+    background: #181818;
+    color: #fff;
     resize: none;
     outline: none;
 
     &:focus {
-      border-color: #1877f2;
+      border-color: #00ff7f;
     }
   }
 
   .postSubmit {
-    background: #1877f2;
-    color: white;
+    background: #00ff7f;
+    color: #181818;
     padding: 10px;
     border: none;
     border-radius: 8px;
     font-size: 16px;
     font-weight: bold;
     cursor: pointer;
-    transition:  0.3s ease;
+    transition: background 0.2s;
 
     &:hover {
-      background: #166fe5;
+      background: #00cc66;
+      color: #fff;
     }
   }
 }
 
 .sharedPost {
-  background: #f9f9f9; // Nền xám nhạt
+  background: #181818;
   border-radius: 10px;
   padding: 12px;
   margin-top: 10px;
-  border: 1px solid #ddd; // Viền sáng
-  transition: all 0.3s ease;
+  border: 1px solid #232323;
+  transition: all 0.2s;
 
   &:hover {
-    box-shadow: 0 3px 10px rgba(0, 0, 0, 0.1);
+    box-shadow: 0 3px 10px rgba(0,0,0,0.18);
   }
 
   .postHeader {
@@ -391,36 +408,33 @@
     margin-bottom: 10px;
 
     div {
-
       h4 {
         margin: 0;
         margin-right: 5px;
         font-size: 14px;
         font-weight: 600;
-        color: #2c3e50; 
+        color: #fff;
         display: inline-block;
-        // Xám đậm
       }
 
       p {
         margin: 2px 0 0;
         font-size: 12px;
-        color: #777; // Xám nhạt
+        color: #aaa;
       }
     }
   }
 }
 
-
 @media (max-width: 600px) {
   .post {
-    margin: 10px;
-    padding: 10px;
+    margin: 8px;
+    padding: 10px 4px;
 
     .postHeader {
       .avatar {
-        width: 35px;
-        height: 35px;
+        width: 34px;
+        height: 34px;
       }
 
       h4 {
@@ -443,5 +457,10 @@
         flex-direction: column;
       }
     }
+  }
+
+  .modalPop {
+    width: 96vw;
+    padding: 10px;
   }
 }

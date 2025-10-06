@@ -1,16 +1,15 @@
-
 .sidebar {
   width: 280px;
   padding: 20px 10px;
-  background: linear-gradient(180deg, #f7f9fc 0%, #e9ecef 100%);
+  background: linear-gradient(180deg, #181818 0%, #232323 100%);
   border-radius: 15px;
-  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.18);
   position: sticky;
   top: 20px;
   transition: all 0.3s ease;
 
   &:hover {
-    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.12);
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.22);
   }
 
   .sidebarRow {
@@ -20,15 +19,15 @@
     padding: 12px 15px;
     margin: 5px 0;
     border-radius: 12px;
-    background: rgba(255, 255, 255, 0.8);
+    background: rgba(36, 36, 36, 0.95);
     cursor: pointer;
     transition: all 0.3s ease;
 
     &:hover {
-      background: #007bff;
+      background: #232323;
       color: #fff;
       transform: translateX(5px);
-      box-shadow: 0 4px 15px rgba(0, 123, 255, 0.3);
+      box-shadow: 0 4px 15px rgba(255, 255, 255, 0.04);
 
       .MuiAvatar-root {
         border-color: #fff;
@@ -40,53 +39,50 @@
       }
     }
 
-    // Trạng thái active
     &.active {
-      background: #007bff; // Màu nền khi active
+      background: #232323;
       color: #fff;
-      box-shadow: 0 4px 15px rgba(0, 123, 255, 0.3);
+      box-shadow: 0 4px 15px rgba(255, 255, 255, 0.04);
 
       .MuiAvatar-root {
         border-color: #fff;
       }
 
       .MuiSvgIcon-root {
-        color: #fff; // Màu icon khi active
+        color: #fff;
       }
 
       p {
-        color: #fff; // Màu chữ khi active
+        color: #fff;
         font-weight: 600;
       }
     }
 
-    // Avatar
     .MuiAvatar-root {
       width: 36px;
       height: 36px;
-      border: 2px solid #007bff;
+      border: 2px solid #444;
       padding: 2px;
       transition: all 0.3s ease;
+      background: #232323;
     }
 
-    // Icon
     .MuiSvgIcon-root {
       font-size: 28px;
-      color: #007bff;
+      color: #fff;
       transition: color 0.3s ease;
     }
 
-    // Text
     p {
       margin: 0;
       font-size: 15px;
       font-weight: 500;
-      color: #2c3e50;
+      color: #fff;
       transition: color 0.3s ease;
     }
 
     &:first-child {
-      background: linear-gradient(90deg, #007bff 0%, #00c4cc 100%);
+      background: linear-gradient(90deg, #232323 0%, #181818 100%);
       color: #fff;
 
       .MuiAvatar-root {
@@ -99,14 +95,13 @@
       }
 
       &:hover {
-        background: linear-gradient(90deg, #0066cc 0%, #009b9f 100%);
+        background: linear-gradient(90deg, #181818 0%, #232323 100%);
         transform: translateX(8px);
       }
     }
   }
 }
 
-// Responsive (giữ nguyên)
 @media (max-width: 768px) {
   .sidebar {
     display: none;
