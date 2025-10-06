@@ -22,7 +22,7 @@ function Feed() {
   // Lấy thông tin người dùng
   const fetchUser = async () => {
     try {
-      const response = await axios.get(`${process.env.REACT_APP_API_URL}me`, { withCredentials: true });
+      const response = await axios.get(`${process.env.REACT_APP_API_URL}/me`, { withCredentials: true });
       if (response.data.success) setUser(response.data.data);
       else setError("Không lấy được thông tin user.");
     } catch (error) {

@@ -3,8 +3,8 @@
   justify-content: space-between;
   align-items: center;
   padding: 10px 20px;
-  background: linear-gradient(90deg, #007bff 0%, #00c4cc 100%);
-  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+   background: #101010;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.08);
   position: sticky;
   top: 0;
   z-index: 1000;
@@ -39,7 +39,7 @@
       position: relative;
       display: flex;
       align-items: center;
-      background: rgba(255, 255, 255, 0.2);
+      background: #232323;
       border-radius: 25px;
       padding: 8px 15px;
       transition: all 0.3s ease;
@@ -78,6 +78,8 @@
       }
 
       .searchResults {
+        background: #232323; // Đổi sang nền tối
+        color: #fff;   
         position: absolute;
         top: 100%;
         left: 0;
@@ -86,7 +88,6 @@
         overflow-y: auto;
         margin-top: 5px;
         padding: 15px;
-        background: #ffffff;
         border-radius: 10px;
         box-shadow: 0 6px 20px rgba(0, 0, 0, 0.15);
         z-index: 1000;
@@ -223,7 +224,8 @@
         display: flex;
         flex-direction: column;
         padding: 5px;
-        background: #fff;
+        background: #232323; // Nền tối
+        color: #fff; 
         border-radius: 12px;
         box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
         overflow: hidden;
@@ -241,20 +243,20 @@
           height: 0;
           border-left: 8px solid transparent;
           border-right: 8px solid transparent;
-          border-bottom: 8px solid white;
+          border-bottom: 8px solid #232323; // Mũi tên nền tối
         }
 
         .dropdown-header {
           padding: 12px 15px;
           font-weight: bold;
-          background: #f0f2f5;
-          color: #333;
+          background: #181818; // Nền header tối hơn
+          color: #fff;
           text-align: center;
         }
 
         a {
           padding: 6px;
-          color: #333;
+          color: #fff;
         }
 
         a:hover {
@@ -278,8 +280,8 @@
           }
 
           &:hover {
-            background: rgba(0, 123, 255, 0.1);
-            color: #007bff;
+           color: #00c4cc;
+          background: rgba(0,196,204,0.08);
           }
         }
 
