@@ -38,20 +38,19 @@ const Login = () => {
     <div className={styles.loginPage}>
       <div className={styles.loginContainer}>
         <div className={styles.loginLeft}>
-          <h1>Social Humg</h1>
-          <p>Connect with friends and the world around you on Social Humg.</p>
+          <h1>Social Telink</h1>
         </div>
 
         <div className={styles.loginRight}>
           <div className={styles.loginBox}>
-            <h2>Log In</h2>
-            <p>Welcome back! Please enter your details.</p>
+            <h2>Đăng nhập</h2>
+            <p>Chào mừng bạn trở lại.</p>
 
             <form onSubmit={handleSubmit} method="post">
               <input
                 type="email"
                 name="email"
-                placeholder="Email or mobile number"
+                placeholder="Email"
                 value={form.email}
                 onChange={handleChange}
                 required
@@ -60,18 +59,18 @@ const Login = () => {
               <input
                 type="password"
                 name="password"
-                placeholder="Password"
+                placeholder="Mật khẩu"
                 value={form.password}
                 onChange={handleChange}
                 required
               />
 
               <button type="submit" className={styles.loginButton}>
-                Log In
+                Đăng nhập
               </button>
 
               <a href="#" className={styles.forgotPassword}>
-                Forgot password?
+                Quên mật khẩu?
               </a>
 
               <div className={styles.divider}></div>
@@ -81,7 +80,7 @@ const Login = () => {
                 className={styles.registerLink}
                 onClick={() => navigate("/register")}
               >
-                Create New Account
+                Tạo tài khoản mới
               </button>
             </form>
           </div>

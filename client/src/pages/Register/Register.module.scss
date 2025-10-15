@@ -1,8 +1,7 @@
-
 // Register.module.scss
 .registerPage {
   min-height: 100vh;
-  background: linear-gradient(135deg, #f0f2f5 0%, #e6e9ec 100%);
+  background: linear-gradient(135deg, #181818 0%, #232323 100%);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -19,14 +18,14 @@
     .registerLeft {
       flex: 1;
       text-align: left;
-      color: #2c3e50;
+      color: #fff;
 
       h1 {
         font-size: 48px;
         font-weight: 700;
-        color: #007bff;
+        color: #00ff7f;
         margin: 0 0 10px;
-        text-shadow: 0 2px 5px rgba(0, 123, 255, 0.2);
+        text-shadow: 0 2px 8px rgba(0,255,127,0.10);
       }
 
       p {
@@ -34,6 +33,7 @@
         line-height: 1.4;
         margin: 0;
         max-width: 400px;
+        color: #ccc;
       }
     }
 
@@ -42,23 +42,23 @@
       flex: 1;
 
       .registerBox {
-        background: #fff;
+        background: linear-gradient(135deg, #232323 0%, #181818 100%);
         border-radius: 15px;
-        box-shadow: 0 6px 25px rgba(0, 0, 0, 0.1);
+        box-shadow: 0 6px 25px rgba(0, 0, 0, 0.22);
         padding: 30px;
         max-width: 450px;
 
         h2 {
           font-size: 28px;
           font-weight: 700;
-          color: #2c3e50;
+          color: #fff;
           margin: 0 0 5px;
           text-align: center;
         }
 
         p {
           font-size: 14px;
-          color: #666;
+          color: #aaa;
           margin: 0 0 20px;
           text-align: center;
         }
@@ -79,26 +79,28 @@
 
           input {
             padding: 12px 15px;
-            border: 1px solid #ddd;
+            border: 1px solid #333;
             border-radius: 8px;
             font-size: 15px;
-            color: #333;
+            color: #fff;
+            background: #232323;
             outline: none;
             transition: all 0.3s ease;
 
             &::placeholder {
-              color: #999;
+              color: #888;
             }
 
             &:focus {
-              border-color: #007bff;
-              box-shadow: 0 0 5px rgba(0, 123, 255, 0.3);
+              border-color: #00ff7f;
+              box-shadow: 0 0 5px #00ff7f33;
+              background: #181818;
             }
           }
 
           label {
             font-size: 14px;
-            color: #2c3e50;
+            color: #fff;
             font-weight: 600;
             margin-top: 10px;
           }
@@ -112,23 +114,24 @@
               align-items: center;
               gap: 5px;
               font-size: 14px;
-              color: #555;
+              color: #ccc;
               font-weight: 500;
               cursor: pointer;
 
               input[type="radio"] {
                 width: 16px;
                 height: 16px;
-                accent-color: #007bff; // Màu xanh cho radio button
+                accent-color: #00ff7f;
                 cursor: pointer;
+                background: #232323;
               }
             }
           }
 
           .registerButton {
             padding: 12px;
-            background: #007bff;
-            color: #fff;
+            background: #00ff7f;
+            color: #181818;
             border: none;
             border-radius: 25px;
             font-size: 16px;
@@ -138,9 +141,10 @@
             transition: all 0.3s ease;
 
             &:hover {
-              background: #0056b3;
+              background: #00cc66;
+              color: #fff;
               transform: translateY(-2px);
-              box-shadow: 0 4px 10px rgba(0, 123, 255, 0.3);
+              box-shadow: 0 4px 10px rgba(0,255,127,0.18);
             }
           }
         }

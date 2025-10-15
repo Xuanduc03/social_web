@@ -1,25 +1,29 @@
 import React, { useEffect, useState } from "react";
-import styles from "./Rightsidebar.module.scss"; // Import CSS Module
-import CircleIcon from '@mui/icons-material/Circle'; // Icon trạng thái online
+import "./Rightsidebar.scss";
+import CircleIcon from '@mui/icons-material/Circle';
 import axios from "axios";
 import { io } from "socket.io-client";
-const socket = io(`${process.env.REACT_APP_SOCKET_URL}`, { withCredentials: true, transports: ["websocket"], });
+
+const socket = io(`${process.env.REACT_APP_SOCKET_URL}`, { 
+  withCredentials: true, 
+  transports: ["websocket"] 
+});
 
 function Rightsidebar() {
   const [friends, setFriends] = useState(null);
   const [loading, setLoading] = useState("");
   const [modalOpen, setModalOpen] = useState(false);
 
-
-  // Lấy danh sách bạn bè ban đầu
   useEffect(() => {
     const fetchFriends = async () => {
       try {
-        const res = await axios.get(`${process.env.REACT_APP_API_URL}/all-friends`, { withCredentials: true });
+        const res = await axios.get(`${process.env.REACT_APP_API_URL}/all-friends`, { 
+          withCredentials: true 
+        });
 
         setFriends(res.data.map(friend => ({
           ...friend,
-          statusOnline: friend.statusOnline  // Khởi tạo trạng thái ban đầu
+          statusOnline: friend.statusOnline
         })));
         setLoading(false);
       } catch (error) {
@@ -33,7 +37,7 @@ function Rightsidebar() {
   useEffect(() => {
     socket.on("SERVER_INITIAL_ONLINE_USERS", (onlineUserIds) => {
       setFriends(prevFriends => {
-        if (!Array.isArray(prevFriends)) return prevFriends; // Tránh lỗi khi chưa có dữ liệu
+        if (!Array.isArray(prevFriends)) return prevFriends;
         return prevFriends.map(friend =>
           onlineUserIds.includes(friend._id)
             ? { ...friend, statusOnline: "online" }
@@ -47,12 +51,9 @@ function Rightsidebar() {
     };
   }, []);
 
-
-  // Lắng nghe sự kiện user online từ server
   useEffect(() => {
     socket.on("SERVER_RETURN_USER_ONLINE", (userId) => {
       setFriends(prevFriends => {
-        // Cập nhật trạng thái online cho người dùng tương ứng
         return prevFriends.map(friend =>
           friend._id === userId
             ? { ...friend, statusOnline: "online" }
@@ -60,13 +61,12 @@ function Rightsidebar() {
         );
       });
     });
-    // Dọn dẹp khi component unmount
+
     return () => {
       socket.off("SERVER_RETURN_USER_ONLINE");
     };
   }, []);
 
-  // Lắng nghe sự kiện user offline từ server
   useEffect(() => {
     socket.on("SERVER_RETURN_USER_OFFLINE", (userId) => {
       setFriends(prevFriends => {
@@ -84,39 +84,70 @@ function Rightsidebar() {
     };
   }, []);
 
-
-
   return (
-    <div className={styles.widget}>
-      <div className={styles.widgetHeader}>
-        <h4>Người liên hệ</h4>
-      </div>
-      <div className={styles.widgetContacts}>
-        {Array.isArray(friends) && friends.length > 0 ? (
-          friends.map((user) => (
-            <div key={user._id} className={styles.contactItem}>
-              <div className={styles.avatarWrapper}>
-                <img
-                  src={user?.avatarImage[0].url || "/default-avatar.png"}
-                  alt={`${user.firstName} ${user.lastName}`}
-                  className={styles.contactAvatar}
-                />
-                {/* <CircleIcon className={styles.onlineIcon} /> */}
-                <CircleIcon
-                  className={styles.onlineIcon}
-                  style={{ color: user.statusOnline === "online" ? "green" : "grey" }}
-                />
+    <>
+      {/* Desktop Version */}
+      <div className="widget">
+        <div className="widgetHeader">
+          <h4>Người liên hệ</h4>
+        </div>
+        <div className="widgetContacts">
+          {Array.isArray(friends) && friends.length > 0 ? (
+            friends.map((user) => (
+              <div key={user._id} className="contactItem">
+                <div className="avatarWrapper">
+                  <img
+                    src={user?.avatarImage[0]?.url || "/default-avatar.png"}
+                    alt={`${user.firstName} ${user.lastName}`}
+                    className="contactAvatar"
+                  />
+                  <CircleIcon
+                    className="onlineIcon"
+                    style={{ 
+                      color: user.statusOnline === "online" ? "#00ff7f" : "#808080" 
+                    }}
+                  />
+                </div>
+                <p>{user.firstName} {user.lastName}</p>
               </div>
-              <p>{user.firstName} {user.lastName}</p>
-            </div>
-          ))
-        ) : (
-          <p>Không có liên hệ nào</p>
-        )}
-
-
+            ))
+          ) : (
+            <p className="noContacts">Không có liên hệ nào</p>
+          )}
+        </div>
       </div>
-    </div>
+
+      {/* Mobile Version */}
+      <div className="mobileWidget">
+        <div className="widgetHeader">
+          <h4>Liên hệ</h4>
+        </div>
+        <div className="widgetContacts">
+          {Array.isArray(friends) && friends.length > 0 ? (
+            friends.slice(0, 5).map((user) => ( // Chỉ hiển thị 5 liên hệ trên mobile
+              <div key={user._id} className="contactItem">
+                <div className="avatarWrapper">
+                  <img
+                    src={user?.avatarImage[0]?.url || "/default-avatar.png"}
+                    alt={`${user.firstName} ${user.lastName}`}
+                    className="contactAvatar"
+                  />
+                  <CircleIcon
+                    className="onlineIcon"
+                    style={{ 
+                      color: user.statusOnline === "online" ? "#00ff7f" : "#808080" 
+                    }}
+                  />
+                </div>
+                <p>{user.firstName} {user.lastName}</p>
+              </div>
+            ))
+          ) : (
+            <p className="noContacts">Không có liên hệ</p>
+          )}
+        </div>
+      </div>
+    </>
   );
 }
 

@@ -1,10 +1,11 @@
+// Header.scss
 .header {
   display: flex;
   justify-content: space-between;
   align-items: center;
   padding: 10px 20px;
-   background: #101010;
-  box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+  background: #101010;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
   position: sticky;
   top: 0;
   z-index: 1000;
@@ -13,309 +14,310 @@
 
   a {
     cursor: pointer;
+    text-decoration: none;
   }
+
   &:hover {
     box-shadow: 0 6px 20px rgba(0, 0, 0, 0.25);
   }
+}
 
-  // Header Left
-  .headerLeft {
-    display: flex;
-    align-items: center;
-    gap: 15px;
+.headerLeft {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+}
 
-    .headerLogo {
-      img {
-        height: 40px;
-        transition: transform 0.3s ease;
+.headerLogo {
+  img {
+    height: 40px;
+    transition: transform 0.3s ease;
 
-        &:hover {
-          transform: scale(1.1);
-        }
-      }
-    }
-
-    .headerSearch {
-      position: relative;
-      display: flex;
-      align-items: center;
-      background: #232323;
-      border-radius: 25px;
-      padding: 8px 15px;
-      transition: all 0.3s ease;
-      width: 250px;
-
-      &:hover {
-        background: rgba(255, 255, 255, 0.3);
-        .MuiSvgIcon-root {
-          color: #fff; // Hover cho SearchIcon
-        }
-      }
-
-      .MuiSvgIcon-root {
-        color: rgba(255, 255, 255, 0.8);
-        font-size: 22px;
-        transition: color 0.3s ease;
-      }
-
-      .icon-active {
-        color: #fff; // Trạng thái active cho SearchIcon
-        transform: scale(1.1); // Phóng to nhẹ khi active
-      }
-
-      input {
-        border: none;
-        background: transparent;
-        outline: none;
-        color: #fff;
-        font-size: 14px;
-        margin-left: 8px;
-        width: 100%;
-
-        &::placeholder {
-          color: rgba(255, 255, 255, 0.8);
-        }
-      }
-
-      .searchResults {
-        background: #232323; // Đổi sang nền tối
-        color: #fff;   
-        position: absolute;
-        top: 100%;
-        left: 0;
-        width: 350px;
-        max-height: 400px;
-        overflow-y: auto;
-        margin-top: 5px;
-        padding: 15px;
-        border-radius: 10px;
-        box-shadow: 0 6px 20px rgba(0, 0, 0, 0.15);
-        z-index: 1000;
-      }
-    }
-  }
-
-  // Header Mid
-  .headerMid {
-    display: flex;
-    gap: 20px;
-
-    .headerOptions {
-      padding: 10px 20px;
-      cursor: pointer;
-      border-radius: 10px;
-      transition: all 0.3s ease;
-
-      .MuiSvgIcon-root {
-        color: rgba(255, 255, 255, 0.8);
-        font-size: 28px;
-        transition: color 0.3s ease, transform 0.3s ease;
-      }
-
-      &:hover {
-        background: rgba(255, 255, 255, 0.2);
-        .MuiSvgIcon-root {
-          color: #fff; // Hover cho HomeIcon, PeopleIcon, GroupAddOutlined
-          transform: scale(1.1); // Phóng to nhẹ khi hover
-        }
-      }
-
-      &.active {
-        background: rgba(255, 255, 255, 0.3);
-        position: relative;
-
-        &::after {
-          content: '';
-          position: absolute;
-          bottom: -5px;
-          left: 50%;
-          transform: translateX(-50%);
-          width: 50%;
-          height: 3px;
-          background: #fff;
-          border-radius: 2px;
-        }
-
-        .MuiSvgIcon-root {
-          color: #fff;
-        }
-      }
-
-      .icon-active {
-        color: #fff; // Trạng thái active cho HomeIcon, PeopleIcon, GroupAddOutlined
-        transform: scale(1.1); // Phóng to nhẹ khi active
-      }
-    }
-  }
-
-  // Header Right
-  .headerRight {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-
-    .headerInfo {
-      display: flex;
-      align-items: center;
-      gap: 8px;
-      padding: 5px 10px;
-      border-radius: 20px;
-      transition: all 0.3s ease;
-
-      .MuiAvatar-root {
-        width: 32px;
-        height: 32px;
-        border: 2px solid #fff;
-      }
-      .avatar {
-        width: 40px;
-        height: 40px;
-        border-radius: 50%;
-        object-fit: cover;
-      }
-
-      h5 {
-        color: #fff;
-        font-size: 14px;
-        margin: 0;
-        font-weight: 600;
-      }
-
-      &:hover {
-        background: rgba(255, 255, 255, 0.2);
-      }
-    }
-
-    .chat {
-      line-height: 10px;
-      .chatIcon {
-        color: #fff;
-        align-items: center;
-      }
-    } 
-
-    .MuiIconButton-root {
-      color: rgba(255, 255, 255, 0.8);
-      padding: 8px;
-      transition: all 0.3s ease;
-
-      &:hover {
-        background: rgba(255, 255, 255, 0.2);
-        color: #fff;
-      }
-
-      .MuiSvgIcon-root {
-        font-size: 24px;
-      }
-    }
-
-    .dropdown-container {
-      display: flex;
-      gap: 10px;
-    }
-
-    .dropdown {
-      position: relative;
-
-      .dropdown-menu {
-        position: absolute;
-        top: 110%;
-        right: 0;
-        display: flex;
-        flex-direction: column;
-        padding: 5px;
-        background: #232323; // Nền tối
-        color: #fff; 
-        border-radius: 12px;
-        box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
-        overflow: hidden;
-        min-width: 250px;
-        max-width: 300px;
-        animation: fadeIn 0.3s ease-in-out;
-        z-index: 100;
-
-        &::before {
-          content: "";
-          position: absolute;
-          top: -8px;
-          right: 15px;
-          width: 0;
-          height: 0;
-          border-left: 8px solid transparent;
-          border-right: 8px solid transparent;
-          border-bottom: 8px solid #232323; // Mũi tên nền tối
-        }
-
-        .dropdown-header {
-          padding: 12px 15px;
-          font-weight: bold;
-          background: #181818; // Nền header tối hơn
-          color: #fff;
-          text-align: center;
-        }
-
-        a {
-          padding: 6px;
-          color: #fff;
-        }
-
-        a:hover {
-          color: #00c4cc;
-        }
-
-        .dropdown-item {
-          display: flex;
-          align-items: center;
-          gap: 12px;
-          padding: 12px 15px;
-          font-size: 14px;
-          color: #333;
-          transition: background 0.2s ease-in-out;
-          text-decoration: none;
-          cursor: pointer;
-
-          i {
-            font-size: 16px;
-            color: #007bff;
-          }
-
-          &:hover {
-           color: #00c4cc;
-          background: rgba(0,196,204,0.08);
-          }
-        }
-
-        .logout {
-          border-top: 1px solid #e0e0e0;
-          padding: 12px 15px;
-          text-align: center;
-          font-weight: bold;
-          color: #d9534f;
-          cursor: pointer;
-          transition: background 0.2s;
-
-          &:hover {
-            background: rgba(217, 83, 79, 0.1);
-            color: #c9302c;
-          }
-        }
-      }
-    }
-
-    @keyframes fadeIn {
-      from {
-        opacity: 0;
-        transform: translateY(-10px);
-      }
-      to {
-        opacity: 1;
-        transform: translateY(0);
-      }
+    &:hover {
+      transform: scale(1.1);
     }
   }
 }
 
-@keyframes slideDown {
+.headerSearch {
+  position: relative;
+  display: flex;
+  align-items: center;
+  background: #232323;
+  border-radius: 25px;
+  padding: 8px 15px;
+  transition: all 0.3s ease;
+  width: 250px;
+
+  &:hover {
+    background: rgba(255, 255, 255, 0.3);
+    
+    .searchIcon {
+      color: #fff;
+    }
+  }
+}
+
+.searchIcon {
+  color: rgba(255, 255, 255, 0.8);
+  font-size: 22px;
+  transition: color 0.3s ease;
+}
+
+.icon-active {
+  color: #fff;
+  transform: scale(1.1);
+}
+
+.headerSearch {
+  input {
+    border: none;
+    background: transparent;
+    outline: none;
+    color: #fff;
+    font-size: 14px;
+    margin-left: 8px;
+    width: 100%;
+
+    &::placeholder {
+      color: rgba(255, 255, 255, 0.8);
+    }
+  }
+}
+
+.searchResults {
+  background: #232323;
+  color: #fff;
+  position: absolute;
+  top: 100%;
+  left: 0;
+  width: 350px;
+  max-height: 400px;
+  overflow-y: auto;
+  margin-top: 5px;
+  padding: 15px;
+  border-radius: 10px;
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.15);
+  z-index: 1000;
+}
+
+.headerMid {
+  display: flex;
+  gap: 20px;
+}
+
+.headerOptions {
+  padding: 10px 20px;
+  cursor: pointer;
+  border-radius: 10px;
+  transition: all 0.3s ease;
+
+  .midIcon {
+    color: rgba(255, 255, 255, 0.8);
+    font-size: 28px;
+    transition: color 0.3s ease, transform 0.3s ease;
+  }
+
+  &:hover {
+    background: rgba(255, 255, 255, 0.2);
+    
+    .midIcon {
+      color: #fff;
+      transform: scale(1.1);
+    }
+  }
+
+  &.active {
+    background: rgba(255, 255, 255, 0.3);
+    position: relative;
+
+    &::after {
+      content: '';
+      position: absolute;
+      bottom: -5px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 50%;
+      height: 3px;
+      background: #fff;
+      border-radius: 2px;
+    }
+
+    .midIcon {
+      color: #fff;
+    }
+  }
+}
+
+.headerRight {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.headerInfo {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 5px 10px;
+  border-radius: 20px;
+  transition: all 0.3s ease;
+
+  &:hover {
+    background: rgba(255, 255, 255, 0.2);
+  }
+}
+
+.avatar {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 2px solid #fff;
+}
+
+.headerInfo {
+  h5 {
+    color: #fff;
+    font-size: 14px;
+    margin: 0;
+    font-weight: 600;
+  }
+}
+
+.chat {
+  line-height: 10px;
+}
+
+.chatIcon {
+  color: #fff;
+  align-items: center;
+}
+
+.headerButton {
+  color: rgba(255, 255, 255, 0.8);
+  padding: 8px;
+  transition: all 0.3s ease;
+  background: none;
+  border: none;
+  cursor: pointer;
+
+  &:hover {
+    background: rgba(255, 255, 255, 0.2);
+    color: #fff;
+  }
+
+  .buttonIcon {
+    font-size: 24px;
+  }
+}
+
+.dropdown-container {
+  display: flex;
+  gap: 10px;
+}
+
+.dropdown {
+  position: relative;
+}
+
+.dropdown-menu {
+  position: absolute;
+  top: 110%;
+  right: 0;
+  display: flex;
+  flex-direction: column;
+  padding: 5px;
+  background: #232323;
+  color: #fff;
+  border-radius: 12px;
+  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+  overflow: hidden;
+  min-width: 250px;
+  max-width: 300px;
+  animation: fadeIn 0.3s ease-in-out;
+  z-index: 100;
+
+  &::before {
+    content: "";
+    position: absolute;
+    top: -8px;
+    right: 15px;
+    width: 0;
+    height: 0;
+    border-left: 8px solid transparent;
+    border-right: 8px solid transparent;
+    border-bottom: 8px solid #232323;
+  }
+}
+
+.dropdown-header {
+  padding: 12px 15px;
+  font-weight: bold;
+  background: #181818;
+  color: #fff;
+  text-align: center;
+}
+
+.dropdown-menu {
+  a {
+    padding: 12px 15px;
+    color: #fff;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    font-size: 14px;
+    transition: all 0.2s ease-in-out;
+    text-decoration: none;
+    cursor: pointer;
+
+    i {
+      font-size: 16px;
+      color: #007bff;
+    }
+
+    &:hover {
+      color: #00c4cc;
+      background: rgba(0, 196, 204, 0.08);
+    }
+  }
+}
+
+.no-notifications {
+  padding: 20px;
+  text-align: center;
+  color: rgba(255, 255, 255, 0.7);
+}
+
+.notification-list {
+  max-height: 300px;
+  overflow-y: auto;
+}
+
+.notification-item {
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  
+  &:last-child {
+    border-bottom: none;
+  }
+}
+
+.view-all {
+  padding: 12px 15px;
+  text-align: center;
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
+  
+  a {
+    color: #00c4cc;
+    font-weight: 500;
+    
+    &:hover {
+      text-decoration: underline;
+    }
+  }
+}
+
+@keyframes fadeIn {
   from {
     opacity: 0;
     transform: translateY(-10px);
@@ -326,47 +328,129 @@
   }
 }
 
+// Responsive cho điện thoại
 @media (max-width: 768px) {
   .header {
     padding: 10px;
     height: 50px;
+  }
 
-    .headerLeft {
-      .headerSearch {
-        input {
-          width: 100px;
-        }
+  .headerLeft {
+    .headerSearch {
+      width: 150px;
+      
+      input {
+        width: 80px;
+        font-size: 12px;
+      }
+    }
+  }
+
+  .headerLogo {
+    img {
+      height: 30px;
+    }
+  }
+
+  .headerMid {
+    gap: 5px;
+    
+    .headerOptions {
+      padding: 6px 12px;
+      
+      .midIcon {
+        font-size: 22px;
+      }
+    }
+  }
+
+  .headerRight {
+    .headerInfo {
+      h5 {
+        display: none;
+      }
+    }
+    
+    .avatar {
+      width: 32px;
+      height: 32px;
+    }
+  }
+
+  .dropdown {
+    &.profile {
+      .dropdown-menu {
+        width: 180px;
+        min-width: auto;
       }
     }
 
-    .headerMid {
-      gap: 10px;
-
-      .headerOptions {
-        padding: 8px 15px;
+    &.notifications {
+      .dropdown-menu {
+        width: 280px;
+        right: -50px;
+        
+        &::before {
+          right: 65px;
+        }
       }
     }
+  }
 
-    .headerRight {
-      .headerInfo {
-        h5 {
-          display: none;
-        }
+  .searchResults {
+    width: 280px;
+    right: 0;
+    left: auto;
+  }
+}
+
+@media (max-width: 480px) {
+  .header {
+    padding: 8px 5px;
+  }
+
+  .headerLeft {
+    .headerSearch {
+      width: 120px;
+      padding: 6px 10px;
+      
+      input {
+        width: 60px;
+        font-size: 11px;
+        margin-left: 4px;
       }
-
-      .dropdown {
-        &.profile {
-          .dropdown-menu {
-            width: 180px;
-          }
-        }
-
-        &.notifications {
-          .dropdown-menu {
-            width: 220px;
-          }
-        }
+      
+      .searchIcon {
+        font-size: 18px;
       }
+    }
+  }
+
+  .headerMid {
+    gap: 2px;
+    
+    .headerOptions {
+      padding: 4px 8px;
+      
+      .midIcon {
+        font-size: 20px;
+      }
+    }
+  }
+
+  .headerRight {
+    gap: 5px;
+  }
+
+  .dropdown-container {
+    gap: 5px;
+  }
+
+  .headerButton {
+    padding: 6px;
+    
+    .buttonIcon {
+      font-size: 20px;
     }
   }
 }

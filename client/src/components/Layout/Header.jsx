@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from "react";
-import styles from "./Header.scss"; // Chuyển sang CSS Module
-import classNames from "classnames/bind";
+import "./Header.scss"; // Import SCSS
 import SearchIcon from "@mui/icons-material/Search";
 import HomeIcon from "@mui/icons-material/Home";
 import PeopleIcon from "@mui/icons-material/People";
@@ -15,7 +14,6 @@ import { io } from "socket.io-client";
 import { formatDistanceToNow } from "date-fns";
 import { GroupAddOutlined } from "@mui/icons-material";
 
-const cx = classNames.bind(styles);
 const socket = io(`${process.env.REACT_APP_SOCKET_URL}`, { withCredentials: true, transports: ["websocket"] });
 
 function Header() {
@@ -24,14 +22,13 @@ function Header() {
     const [user, setUser] = useState(null);
     const [userId, setUserId] = useState("");
     const [posts, setPosts] = useState([]);
-    const [notifications, setNotifications] = useState([]); // Lưu danh sách thông báo
+    const [notifications, setNotifications] = useState([]);
     const [loading, setLoading] = useState(true);
     const [searchText, setSearchText] = useState("");
     const [suggestedFriends, setSuggestedFriends] = useState([]);
     const navigate = useNavigate();
     const location = useLocation();
 
-    // Lấy thông tin user hiện tại
     useEffect(() => {
         const fetchUser = async () => {
             try {
@@ -49,7 +46,6 @@ function Header() {
         fetchUser();
     }, []);
 
-    // Lấy bài viết của user hiện tại
     useEffect(() => {
         if (!userId) return;
       
@@ -75,7 +71,6 @@ function Header() {
           setPosts((prevPosts) => [newPost, ...prevPosts]);
         });
 
-      
         socket.on("notification", (notification) => {
           console.log("Received notification:", notification);
           setNotifications((prev) => [
@@ -99,8 +94,6 @@ function Header() {
           ]);
         });
         
-
-          
         socket.on("likeNoti", ({ message, postId, createdAt }) => {
             console.log("✅ Received notification:", { message, postId, createdAt });
           
@@ -109,13 +102,12 @@ function Header() {
                 message,
                 postId,
                 createdAt,
-                type: "updateLikes", // hoặc 'post' nếu muốn phân loại
+                type: "updateLikes",
               },
               ...prev,
             ]);
           });
           
-      
         return () => {
           socket.off("newPost");
           socket.off("notification");
@@ -124,9 +116,6 @@ function Header() {
         };
       }, [socket, userId]);
 
-      
-
-    // Tìm kiếm bạn bè khi nhập
     useEffect(() => {
         if (searchText.trim() !== "") {
             const fetchFriends = async () => {
@@ -165,7 +154,6 @@ function Header() {
         }
     };
 
-
     const handleUserClick = (id) => {
         setSearchText("");
         setSuggestedFriends([]);
@@ -173,16 +161,16 @@ function Header() {
     };
 
     return (
-        <div className={cx("header")}>
-            <div className={cx("headerLeft")}>
-                <Link to="/" className={cx("headerLogo")}>
+        <div className="header">
+            <div className="headerLeft">
+                <Link to="/" className="headerLogo">
                     <img
                         src="https://upload.wikimedia.org/wikipedia/vi/thumb/d/df/Lamborghini_Logo.svg/1792px-Lamborghini_Logo.svg.png"
                         alt="Logo"
                     />
                 </Link>
-                <div className={cx("headerSearch")} onBlur={() => setTimeout(() => setSuggestedFriends([]), 300)}>
-                    <SearchIcon className={cx({ "icon-active": location.pathname === "/search" })} />
+                <div className="headerSearch" onBlur={() => setTimeout(() => setSuggestedFriends([]), 300)}>
+                    <SearchIcon className={`searchIcon ${location.pathname === "/search" ? "icon-active" : ""}`} />
                     <input
                         type="text"
                         placeholder="Tìm kiếm bạn bè..."
@@ -192,7 +180,7 @@ function Header() {
                         onFocus={() => setSuggestedFriends([])}
                     />
                     {suggestedFriends.length > 0 && (
-                        <Paper className={cx("searchResults")}>
+                        <Paper className="searchResults">
                             <List>
                                 {suggestedFriends.map((friend) => (
                                     <ListItem key={friend._id} button onMouseDown={() => handleUserClick(friend._id)}>
@@ -208,35 +196,35 @@ function Header() {
                 </div>
             </div>
 
-            <div className={cx("headerMid")}>
-                <Link to="/" className={cx("headerOptions", { active: location.pathname === "/" })}>
-                    <HomeIcon fontSize="large" className={cx({ "icon-active": location.pathname === "/" })} />
+            <div className="headerMid">
+                <Link to="/" className={`headerOptions ${location.pathname === "/" ? "active" : ""}`}>
+                    <HomeIcon fontSize="large" className={`midIcon ${location.pathname === "/" ? "icon-active" : ""}`} />
                 </Link>
-                <Link to="/groups" className={cx("headerOptions", { active: location.pathname === "/groups" })}>
-                    <GroupAddOutlined fontSize="large" className={cx({ "icon-active": location.pathname === "/groups" })} />
+                <Link to="/groups" className={`headerOptions ${location.pathname === "/groups" ? "active" : ""}`}>
+                    <GroupAddOutlined fontSize="large" className={`midIcon ${location.pathname === "/groups" ? "icon-active" : ""}`} />
                 </Link>
-                <Link to="/Friend" className={cx("headerOptions", { active: location.pathname === "/Friend" })}>
-                    <PeopleIcon fontSize="large" className={cx({ "icon-active": location.pathname === "/Friend" })} />
+                <Link to="/Friend" className={`headerOptions ${location.pathname === "/Friend" ? "active" : ""}`}>
+                    <PeopleIcon fontSize="large" className={`midIcon ${location.pathname === "/Friend" ? "icon-active" : ""}`} />
                 </Link>
             </div>
 
-            <div className={cx("headerRight")}>
-                <Link to={userId ? `/profile/${userId}` : "/login"} className={cx("headerInfo")}>
-                    <Avatar src={loading ? "" : user?.avatarImage?.[0]?.url || "https://cellphones.com.vn/sforum/wp-content/uploads/2023/10/avatar-trang-4.jpg"} className={cx("avatar")} />
+            <div className="headerRight">
+                <Link to={userId ? `/profile/${userId}` : "/login"} className="headerInfo">
+                    <Avatar src={loading ? "" : user?.avatarImage?.[0]?.url || "https://cellphones.com.vn/sforum/wp-content/uploads/2023/10/avatar-trang-4.jpg"} className="avatar" />
                     <h5>{loading ? "Loading..." : user ? user.lastName : "Guest"}</h5>
                 </Link>
 
-                <IconButton className={cx("chat")}>
-                    <Link to="/chat" className={cx("chatIcon")}>
-                        <ChatIcon />
+                <IconButton className="headerButton">
+                    <Link to="/chat" className="chatIcon">
+                        <ChatIcon className="buttonIcon" />
                     </Link>
                 </IconButton>
 
                 <div className="dropdown-container">
                     <div className="dropdown notifications">
-                        <IconButton onClick={() => setNotiDropdownOpen(!notiDropdownOpen)}>
+                        <IconButton className="headerButton" onClick={() => setNotiDropdownOpen(!notiDropdownOpen)}>
                             <Badge badgeContent={notifications.length} color="error">
-                                <NotificationsIcon />
+                                <NotificationsIcon className="buttonIcon" />
                             </Badge>
                         </IconButton>
 
@@ -282,8 +270,8 @@ function Header() {
                     </div>
 
                     <div className="dropdown profile">
-                        <IconButton onClick={() => setProfileDropdownOpen(!profileDropdownOpen)}>
-                            <ArrowDropDownIcon />
+                        <IconButton className="headerButton" onClick={() => setProfileDropdownOpen(!profileDropdownOpen)}>
+                            <ArrowDropDownIcon className="buttonIcon" />
                         </IconButton>
                         {profileDropdownOpen && (
                             <div className="dropdown-menu">

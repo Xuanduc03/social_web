@@ -64,8 +64,8 @@ const SidebarChat = ({ onSelectFriend }) => {
             >
               <div className={cx("avatar")}>
                 <img
-                  src={user?.avatarImage[0].url || "https://cellphones.com.vn/sforum/wp-content/uploads/2023/10/avatar-trang-4.jpg"}
-                  alt={`${user.firstName} ${user.lastName}`}
+                  src={user?.avatarImage[0]?.url || "https://cellphones.com.vn/sforum/wp-content/uploads/2023/10/avatar-trang-4.jpg"}
+                  alt={`${user?.firstName} ${user?.lastName}`}
                 />
                 <span className={cx("statusDot", { active: true })}></span>
               </div>

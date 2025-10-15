@@ -246,7 +246,7 @@ const UpComment = () => {
 
         <div className={style.commentForm}>
           <Avatar
-            src={user?.avatarImage[0].url || "https://via.placeholder.com/40"} // Dùng photoURL nếu có
+            src={user?.avatarImage[0]?.url || "https://via.placeholder.com/40"} // Dùng photoURL nếu có
             alt="avatar"
             className={style.avatar}
           />

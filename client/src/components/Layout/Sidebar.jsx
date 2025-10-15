@@ -5,7 +5,7 @@ import GroupsIcon from "@mui/icons-material/Groups";
 import VideoLibraryIcon from "@mui/icons-material/VideoLibrary";
 import BookmarkIcon from "@mui/icons-material/Bookmark";
 import StorefrontIcon from "@mui/icons-material/Storefront";
-import styles from "./Sidebar.module.scss";
+import "./Sidebar.scss";
 import axios from "axios";
 import { Link, useLocation } from "react-router-dom";
 
@@ -13,7 +13,7 @@ const Sidebar = () => {
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
-  const location = useLocation(); // Lấy URL hiện tại
+  const location = useLocation();
 
   useEffect(() => {
     const fetchUser = async () => {
@@ -35,9 +35,9 @@ const Sidebar = () => {
 
   const sidebarOptions = [
     {
-      src: user?.avatarImage?.[0]?.url || "https://i.pravatar.cc/150", // Sửa avatarImage[0].url thành avatarImage
+      src: user?.avatarImage?.[0]?.url || "https://i.pravatar.cc/150",
       title: "Trang cá nhân",
-      link: user ? `/profile/${user._id}` : "/login", // Thêm userId vào link
+      link: user ? `/profile/${user._id}` : "/login",
     },
     { Icon: PeopleIcon, title: "Bạn bè", link: "/friend" },
     { Icon: GroupsIcon, title: "Nhóm", link: "/groups" },
@@ -47,31 +47,60 @@ const Sidebar = () => {
   ];
 
   return (
-    <div className={styles.sidebar}>
-      {loading ? (
-        <div className={styles.loading}>Đang tải...</div>
-      ) : (
-        sidebarOptions.map((option, index) => (
-          <Link
-            to={option.link}
-            key={index}
-            className={`${styles.sidebarRow} ${
-              location.pathname === option.link ? styles.active : ""
-            }`}
-          >
-            {option.src && (
-              <Avatar
-                src={option.src}
-                alt="User Avatar"
-                className={styles.avatar}
-              />
-            )}
-            {option.Icon && <option.Icon className={styles.icon} />}
-            <p className={styles.title}>{option.title}</p>
-          </Link>
-        ))
-      )}
-    </div>
+    <>
+      {/* Desktop Sidebar */}
+      <div className="sidebar">
+        {loading ? (
+          <div className="loading">Đang tải...</div>
+        ) : (
+          sidebarOptions.map((option, index) => (
+            <Link
+              to={option.link}
+              key={index}
+              className={`sidebarRow ${
+                location.pathname === option.link ? "active" : ""
+              }`}
+            >
+              {option.src && (
+                <Avatar
+                  src={option.src}
+                  alt="User Avatar"
+                  className="avatar"
+                />
+              )}
+              {option.Icon && <option.Icon className="icon" />}
+              <p className="title">{option.title}</p>
+            </Link>
+          ))
+        )}
+      </div>
+
+      {/* Mobile Sidebar */}
+      <div className="mobileSidebar">
+        <div className="mobileSidebarContent">
+          {!loading && sidebarOptions.map((option, index) => (
+            <Link
+              to={option.link}
+              key={index}
+              className={`mobileSidebarItem ${
+                location.pathname === option.link ? "active" : ""
+              }`}
+            >
+              {option.src ? (
+                <img
+                  src={option.src}
+                  alt="User Avatar"
+                  className="mobileAvatar"
+                />
+              ) : option.Icon ? (
+                <option.Icon className="mobileIcon" />
+              ) : null}
+              <span className="mobileTitle">{option.title}</span>
+            </Link>
+          ))}
+        </div>
+      </div>
+    </>
   );
 };
 

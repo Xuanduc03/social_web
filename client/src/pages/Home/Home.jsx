@@ -8,12 +8,19 @@ const Home = () => {
   return (
     <div className={styles.homeContainer}>
       <div className={styles.mainContent}>
+        {/* Desktop Sidebar */}
         <div className={styles.sidebar}>
           <Sidebar />
         </div>
+
+        {/* Mobile Sidebar sẽ tự động hiển thị trong component Sidebar */}
+        
+        {/* Main Feed */}
         <div className={styles.feed}>
           <Feed />
         </div>
+
+        {/* Right Sidebar */}
         <div className={styles.rightSidebar}>
           <Rightsidebar />
         </div>

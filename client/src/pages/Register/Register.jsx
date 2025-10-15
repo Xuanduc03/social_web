@@ -47,21 +47,20 @@ const Register = () => {
     <div className={styles.registerPage}>
       <div className={styles.registerContainer}>
         <div className={styles.registerLeft}>
-          <h1>Social Humg</h1>
-          <p>Connect with friends and the world around you on Facebook.</p>
+          <h1>Đăng ký để trải nghiệm</h1>
+          <p>Kết nối bạn bè muôn nơi trải nghiệm ngay.</p>
         </div>
 
         <div className={styles.registerRight}>
           <div className={styles.registerBox}>
-            <h2>Sign Up</h2>
-            <p>It’s free and always will be.</p>
-
+            <h2>Đăng ký</h2>
+            
             <form onSubmit={handleSubmit} method="post">
               <div className={styles.inputGroup}>
                 <input
                   type="text"
                   name="firstName"
-                  placeholder="First name"
+                  placeholder="Họ"
                   value={form.firstName}
                   onChange={handleChange}
                   required
@@ -69,7 +68,7 @@ const Register = () => {
                 <input
                   type="text"
                   name="lastName"
-                  placeholder="Last name"
+                  placeholder="Tên"
                   value={form.lastName}
                   onChange={handleChange}
                   required
@@ -79,7 +78,7 @@ const Register = () => {
               <input
                 type="email"
                 name="email"
-                placeholder="Mobile number or email"
+                placeholder="Số điện thoại hoặc email"
                 value={form.email}
                 onChange={handleChange}
                 required
@@ -88,7 +87,7 @@ const Register = () => {
               <input
                 type="password"
                 name="password"
-                placeholder="New password"
+                placeholder="Mật khẩu"
                 value={form.password}
                 onChange={handleChange}
                 required
@@ -113,7 +112,7 @@ const Register = () => {
                     onChange={handleChange}
                     required
                   />
-                  Male
+                  Nam
                 </label>
                 <label>
                   <input
@@ -123,7 +122,7 @@ const Register = () => {
                     onChange={handleChange}
                     required
                   />
-                  Female
+                  Nữ
                 </label>
                 <label>
                   <input
@@ -133,12 +132,12 @@ const Register = () => {
                     onChange={handleChange}
                     required
                   />
-                  Other
+                  Khác
                 </label>
               </div>
 
               <button type="submit" className={styles.registerButton}>
-                Sign Up
+                Đăng ký ngay
               </button>
 
               <p className={styles.link}>

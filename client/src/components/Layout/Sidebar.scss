@@ -1,0 +1,309 @@
+// Sidebar.scss
+.sidebar {
+  width: 280px;
+  padding: 20px 10px;
+  background: linear-gradient(180deg, #181818 0%, #232323 100%);
+  border-radius: 15px;
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.18);
+  position: sticky;
+  top: 20px;
+  transition: all 0.3s ease;
+
+  &:hover {
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.22);
+  }
+}
+
+.loading {
+  text-align: center;
+  color: #fff;
+  padding: 20px;
+  font-style: italic;
+}
+
+.sidebarRow {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px 15px;
+  margin: 5px 0;
+  border-radius: 12px;
+  background: rgba(36, 36, 36, 0.95);
+  cursor: pointer;
+  transition: all 0.3s ease;
+  text-decoration: none;
+
+  &:hover {
+    background: #232323;
+    color: #fff;
+    transform: translateX(5px);
+    box-shadow: 0 4px 15px rgba(255, 255, 255, 0.04);
+
+    .avatar {
+      border-color: #fff;
+      transform: scale(1.1);
+    }
+
+    .icon {
+      color: #fff;
+    }
+  }
+
+  &.active {
+    background: #232323;
+    color: #fff;
+    box-shadow: 0 4px 15px rgba(255, 255, 255, 0.04);
+
+    .avatar {
+      border-color: #fff;
+    }
+
+    .icon {
+      color: #fff;
+    }
+
+    .title {
+      color: #fff;
+      font-weight: 600;
+    }
+  }
+}
+
+.avatar {
+  width: 36px;
+  height: 36px;
+  border: 2px solid #444;
+  padding: 2px;
+  transition: all 0.3s ease;
+  background: #232323;
+}
+
+.icon {
+  font-size: 28px;
+  color: #fff;
+  transition: color 0.3s ease;
+}
+
+.title {
+  margin: 0;
+  font-size: 15px;
+  font-weight: 500;
+  color: #fff;
+  transition: color 0.3s ease;
+}
+
+// Style cho item đầu tiên (Trang cá nhân)
+.sidebarRow:first-child {
+  background: linear-gradient(90deg, #232323 0%, #181818 100%);
+  color: #fff;
+
+  .avatar {
+    border-color: #fff;
+  }
+
+  .title {
+    font-weight: 600;
+    color: #fff;
+  }
+
+  &:hover {
+    background: linear-gradient(90deg, #181818 0%, #232323 100%);
+    transform: translateX(8px);
+  }
+}
+
+// Responsive
+@media (max-width: 1200px) {
+  .sidebar {
+    width: 250px;
+  }
+}
+
+@media (max-width: 1024px) {
+  .sidebar {
+    width: 220px;
+    padding: 15px 8px;
+    
+    .sidebarRow {
+      padding: 10px 12px;
+      gap: 10px;
+      
+      .avatar {
+        width: 32px;
+        height: 32px;
+      }
+      
+      .icon {
+        font-size: 24px;
+      }
+      
+      .title {
+        font-size: 14px;
+      }
+    }
+  }
+}
+
+@media (max-width: 900px) {
+  .sidebar {
+    width: 200px;
+    
+    .sidebarRow {
+      padding: 8px 10px;
+      
+      .title {
+        font-size: 13px;
+      }
+    }
+  }
+}
+
+@media (max-width: 768px) {
+  .sidebar {
+    display: none; // Ẩn sidebar desktop trên mobile
+  }
+}
+
+// Mobile Sidebar Version
+.mobileSidebar {
+  display: none;
+  width: 100%;
+  background: linear-gradient(180deg, #181818 0%, #232323 100%);
+  border-radius: 10px;
+  padding: 15px 10px;
+  margin-bottom: 15px;
+  overflow-x: auto;
+  
+  .mobileSidebarContent {
+    display: flex;
+    gap: 15px;
+    min-width: max-content;
+  }
+  
+  .mobileSidebarItem {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 6px;
+    padding: 10px 8px;
+    border-radius: 10px;
+    background: rgba(36, 36, 36, 0.95);
+    cursor: pointer;
+    transition: all 0.3s ease;
+    text-decoration: none;
+    min-width: 70px;
+    
+    &:hover {
+      background: #232323;
+      
+      .mobileAvatar {
+        border-color: #fff;
+        transform: scale(1.1);
+      }
+      
+      .mobileIcon {
+        color: #fff;
+      }
+    }
+    
+    &.active {
+      background: #232323;
+      
+      .mobileAvatar {
+        border-color: #fff;
+      }
+      
+      .mobileIcon {
+        color: #fff;
+      }
+      
+      .mobileTitle {
+        color: #fff;
+        font-weight: 600;
+      }
+    }
+  }
+  
+  .mobileAvatar {
+    width: 40px;
+    height: 40px;
+    border: 2px solid #444;
+    border-radius: 50%;
+    transition: all 0.3s ease;
+  }
+  
+  .mobileIcon {
+    font-size: 24px;
+    color: #fff;
+    transition: color 0.3s ease;
+  }
+  
+  .mobileTitle {
+    font-size: 11px;
+    color: #fff;
+    text-align: center;
+    font-weight: 500;
+    transition: color 0.3s ease;
+    line-height: 1.2;
+  }
+}
+
+@media (max-width: 768px) {
+  .mobileSidebar {
+    display: block;
+  }
+}
+
+@media (max-width: 480px) {
+  .mobileSidebar {
+    padding: 12px 8px;
+    
+    .mobileSidebarContent {
+      gap: 10px;
+    }
+    
+    .mobileSidebarItem {
+      padding: 8px 6px;
+      min-width: 60px;
+      
+      .mobileAvatar {
+        width: 35px;
+        height: 35px;
+      }
+      
+      .mobileIcon {
+        font-size: 22px;
+      }
+      
+      .mobileTitle {
+        font-size: 10px;
+      }
+    }
+  }
+}
+
+@media (max-width: 375px) {
+  .mobileSidebar {
+    .mobileSidebarContent {
+      gap: 8px;
+    }
+    
+    .mobileSidebarItem {
+      min-width: 55px;
+      padding: 6px 4px;
+      
+      .mobileAvatar {
+        width: 32px;
+        height: 32px;
+      }
+      
+      .mobileIcon {
+        font-size: 20px;
+      }
+      
+      .mobileTitle {
+        font-size: 9px;
+      }
+    }
+  }
+}

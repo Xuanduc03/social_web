@@ -1,0 +1,250 @@
+// Rightsidebar.scss
+.widget {
+  width: 300px;
+  background: linear-gradient(135deg, #181818 0%, #232323 100%);
+  border-radius: 15px;
+  padding: 15px;
+  box-shadow: 0 5px 25px rgba(0, 0, 0, 0.18);
+  position: sticky;
+  top: 20px;
+  transition: transform 0.3s ease;
+
+  &:hover {
+    transform: translateY(-5px);
+  }
+}
+
+.widgetHeader {
+  padding-bottom: 10px;
+  border-bottom: 2px solid rgba(255, 255, 255, 0.08);
+
+  h4 {
+    margin: 0;
+    font-size: 18px;
+    font-weight: 700;
+    color: #fff;
+    letter-spacing: 0.5px;
+    position: relative;
+
+    &::after {
+      content: '';
+      position: absolute;
+      bottom: -12px;
+      left: 0;
+      width: 40px;
+      height: 3px;
+      background: #fff;
+      border-radius: 2px;
+      opacity: 0.2;
+    }
+  }
+}
+
+.widgetContacts {
+  padding-top: 15px;
+  max-height: 400px;
+  overflow-y: auto;
+  scrollbar-width: thin;
+  scrollbar-color: #444 #232323;
+
+  &::-webkit-scrollbar {
+    width: 6px;
+  }
+
+  &::-webkit-scrollbar-thumb {
+    background: #444;
+    border-radius: 3px;
+  }
+
+  &::-webkit-scrollbar-track {
+    background: #232323;
+  }
+}
+
+.contactItem {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 10px;
+  margin-bottom: 8px;
+  border-radius: 10px;
+  background: rgba(36, 36, 36, 0.95);
+  cursor: pointer;
+  transition: all 0.3s ease;
+
+  &:hover {
+    background: #232323;
+    transform: scale(1.02);
+    box-shadow: 0 2px 10px rgba(255, 255, 255, 0.04);
+  }
+}
+
+.avatarWrapper {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.contactAvatar {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 2px solid #232323;
+  box-shadow: 0 0 0 2px rgba(255, 255, 255, 0.1);
+  transition: transform 0.2s ease;
+
+  &:hover {
+    transform: scale(1.1);
+  }
+}
+
+.onlineIcon {
+  position: absolute;
+  bottom: 0;
+  right: 0;
+  font-size: 12px;
+  background: #181818;
+  border-radius: 50%;
+  padding: 1px;
+  box-shadow: 0 0 0 2px #181818;
+}
+
+.noContacts {
+  text-align: center;
+  color: #aaa;
+  font-style: italic;
+  margin: 20px 0;
+}
+
+// Responsive
+@media (max-width: 1200px) {
+  .widget {
+    width: 280px;
+  }
+}
+
+@media (max-width: 1024px) {
+  .widget {
+    width: 260px;
+    padding: 12px;
+  }
+  
+  .contactItem {
+    padding: 8px;
+    gap: 10px;
+  }
+  
+  .contactAvatar {
+    width: 36px;
+    height: 36px;
+  }
+}
+
+@media (max-width: 900px) {
+  .widget {
+    width: 240px;
+    
+    .widgetHeader h4 {
+      font-size: 16px;
+    }
+  }
+}
+
+@media (max-width: 768px) {
+  .widget {
+    display: none; // Ẩn hoàn toàn trên mobile
+  }
+}
+
+// Hiển thị phiên bản mobile tối ưu
+.mobileWidget {
+  display: none;
+  width: 100%;
+  background: linear-gradient(135deg, #181818 0%, #232323 100%);
+  border-radius: 10px;
+  padding: 12px;
+  margin-bottom: 15px;
+
+  .widgetHeader {
+    padding-bottom: 8px;
+    
+    h4 {
+      font-size: 16px;
+      
+      &::after {
+        bottom: -10px;
+        width: 30px;
+      }
+    }
+  }
+
+  .widgetContacts {
+    max-height: 200px;
+    padding-top: 10px;
+    
+    .contactItem {
+      padding: 8px 10px;
+      margin-bottom: 6px;
+      
+      .avatarWrapper {
+        .contactAvatar {
+          width: 32px;
+          height: 32px;
+        }
+        
+        .onlineIcon {
+          font-size: 10px;
+        }
+      }
+      
+      p {
+        font-size: 14px;
+      }
+    }
+  }
+}
+
+@media (max-width: 480px) {
+  .mobileWidget {
+    display: block;
+    
+    .widgetContacts {
+      .contactItem {
+        padding: 6px 8px;
+        
+        .avatarWrapper {
+          .contactAvatar {
+            width: 28px;
+            height: 28px;
+          }
+        }
+        
+        p {
+          font-size: 13px;
+        }
+      }
+    }
+  }
+}
+
+// Phiên bản hiển thị khi có không gian hạn chế
+@media (max-width: 375px) {
+  .mobileWidget {
+    padding: 10px 8px;
+    
+    .widgetHeader h4 {
+      font-size: 15px;
+    }
+    
+    .widgetContacts {
+      .contactItem {
+        gap: 8px;
+        
+        p {
+          font-size: 12px;
+        }
+      }
+    }
+  }
+}
